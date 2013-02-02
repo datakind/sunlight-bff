@@ -17,7 +17,7 @@ def get_text(x):
 
 	if hasattr(x, 'childNodes'):
 		# OTHER NODE WITH CHILDREN
-		return reduce(operator.__add__, map(get_text, x.childNodes))
+		return reduce(operator.__add__, map(get_text, x.childNodes), '')
 
 	# I DON'T KNOW WHAT KIND OF NODE THIS IS
 	return ''
@@ -26,7 +26,7 @@ def strip_text(s):
 	"""
 	From a string s, only keep around A-z and make everything lowercase.
 	"""
-	return reduce(operator.__add__, [ss for ss in s if ss.isalpha()]).lower()
+	return reduce(operator.__add__, [ss for ss in s if ss.isalpha()], '').lower()
 	
 def get_sha_of_text(x):
 	"""
