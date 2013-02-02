@@ -2,7 +2,10 @@ from sunlight.legislation.parser import paragraphs_to_sha
 from sunlight.utilities import ProgressBar
 import sunlight.runtime as runtime
 
+from argparse import FileType
+
 import csv
+import sys
 import os
 
 def _add_legislation_parsers(subparsers):
@@ -11,9 +14,8 @@ def _add_legislation_parsers(subparsers):
 
 	parser.add_argument('directory', type=str, nargs=1, 
 		help='The directory to find legislative xml to parse.')
-	parser.add_argument('--outfile', type=str, nargs=1,
-		help='If given, the file to output to.', default='----',
-		dest='outfile')
+	parser.add_argument('--outfile', type=FileType('w'),
+		help='If given, the file to output to.', dest='outfile')
 
 	parser.set_defaults(func=_parser)
 
@@ -21,11 +23,7 @@ def _parser(args):
 	"""
 	Globs the files from the given directory and outputs the 
 	"""
-	outfile_name = args.outfile[0]
-	if outfile_name != '----':
-		outfile = csv.writer(open(outfile_name, 'w'))
-	else:
-		outfile = csv.writer(sys.stdout)
+	outfile = csv.writer(args.outfile)
 
 	directory = args.directory[0]
 	if not os.path.isdir(directory):
@@ -38,8 +36,15 @@ def _parser(args):
 
 	if runtime.verbose:
 		for f in ProgressBar(files, which_tick=True):
-			outfile.writerows(paragraphs_to_sha(open(f, 'r')))
+			try:
+				to_write = paragraphs_to_sha(open(f, 'r'))
+				outfile.writerows(to_write)
+			except Exception, e:
+				sys.stderr.write("Error with %s: %s\n" % (f, str(e)))
 	else:
 		for f in files:
-			outfile.writerows(paragraphs_to_sha(open(f, 'r')))
-
+			try:
+				to_write = paragraphs_to_sha(open(f, 'r'))
+				outfile.writerows(to_write)
+			except Exception, e:
+				sys.stderr.write("Error with %s: %s\n" % (f, str(e)))
