@@ -32,7 +32,10 @@ def get_sha_of_text(x):
 	"""
 	Returns the hexdigest of the sha1 hash of get_text(x)
 	"""
-	return sha(strip_text(get_text(x))).hexdigest()
+	text = get_text(x)
+	text = strip_text(text)
+	shatext = sha(text.encode('utf-8'))
+	return shatext.hexdigest()
 
 def paragraphs_to_sha(f):
 	"""
@@ -73,16 +76,14 @@ def paragraphs_to_sha(f):
 	# Bill names are structured as
 	# 	number_of_congress type_of_bill number_of_bill subtype_of_bill: full_name_of_bill
 	#	e.g. 112 HR 7 HR: American Energy and Infrasturcture Jobs Act of 2012
+	# But sometimes there are errors......
 	bill_id = bill_name.split(':')[0]
-	number_of_congress, type_of_bill, number_of_bill, subtype_of_bill = bill_id.split(' ')
-	number_of_congress = int(number_of_congress)
-	number_of_bill = int(number_of_bill)
 
 	paragraphs = tree.getElementsByTagName("paragraph")
-	paragraphs = [ (number_of_congress, 
-					type_of_bill, 
-					number_of_bill, 
-					subtype_of_bill, 
+	paragraphs = [ (bill_id, #number_of_congress, 
+					#type_of_bill, 
+					#number_of_bill, 
+					#subtype_of_bill, 
 					p.attributes['id'].value.lower(),
 					get_sha_of_text(p)) for p in paragraphs ]
 	return paragraphs
