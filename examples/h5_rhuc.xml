@@ -1,0 +1,805 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="billres.xsl"?>
+<!--<?xml version="1.0"?>-->
+<!--<!DOCTYPE bill PUBLIC "-//US Congress//DTDs/bill.dtd//EN" "C:\Program Files\JustSystems\rules\bill.dtd" []>-->
+<!DOCTYPE bill PUBLIC "-//US Congress//DTDs/bill v2.8 20020720//EN" "http://thomas.loc.gov/dtd/bill.dtd">
+<bill bill-stage="Placed-on-Calendar-Senate" bill-type="olc" dms-id="H38F283A7BF2046FC9500C3F4513181E0" key="H" public-private="public" stage-count="1">
+	<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+<dublinCore>
+<dc:title>112 HR 5 PCS: Protecting Access to Healthcare Act</dc:title>
+<dc:publisher>U.S. House of Representatives</dc:publisher>
+<dc:date></dc:date>
+<dc:format>text/xml</dc:format>
+<dc:language>EN</dc:language>
+<dc:rights>Pursuant to Title 17 Section 105 of the United States Code, this file is not subject to copyright protection and is in the public domain.</dc:rights>
+</dublinCore>
+</metadata>
+<form>
+		<distribution-code display="yes">II</distribution-code>
+		<congress>112th CONGRESS</congress>
+		<session>2d Session</session>
+		<legis-num>H. R. 5</legis-num>
+		<current-chamber display="yes">IN THE SENATE OF THE UNITED
+		  STATES</current-chamber>
+		<action>
+			<action-date>March 22, 2012</action-date>
+			<action-desc>Received; read the first time</action-desc>
+		</action>
+		<action>
+			<action-date>March 26, 2012</action-date>
+			<action-desc>Read the second time and placed on the
+			 calendar</action-desc>
+		</action>
+		<action>
+			<action-date>March 27, 2012</action-date>
+			<action-desc>Ordered returned to the House</action-desc>
+		</action>
+		<legis-type>AN ACT</legis-type>
+		<official-title display="yes">To improve patient access to health care
+		  services and provide improved medical care by reducing the excessive burden the
+		  liability system places on the health care delivery system. </official-title>
+	</form>
+	<legis-body id="HC3EC887153894CB38D0AFFE28358B12A" style="OLC">
+		<section id="H99FCD152EA9A433591EF7A06ECBF18A1" section-type="section-one"><enum>1.</enum><header>Short title</header><text display-inline="no-display-inline">This Act may be cited as the
+			 <quote><short-title>Protecting Access to Healthcare
+			 Act</short-title></quote>.</text>
+		</section><title id="HBE513F6BBDC440C4A1AE1F32A46D35A9"><enum>I</enum><header>HEALTH
+			 Act</header>
+			<section id="HF6A53BA63DAB4252816BD2030186074E" section-type="subsequent-section"><enum>101.</enum><header>Short
+			 title</header><text display-inline="no-display-inline">This title may be cited
+			 as the <quote><short-title>Help Efficient, Accessible,
+			 Low-cost, Timely Healthcare (HEALTH) Act of 2012</short-title></quote>.</text>
+			</section><section id="H40B146F8450F44D7B4C51AD8C4BDCC37"><enum>102.</enum><header>Findings and
+			 purpose</header><text display-inline="no-display-inline">It is the purpose of
+			 this title to implement reasonable, comprehensive, and effective health care
+			 liability reforms designed to—</text>
+				<paragraph id="HAF2F537194EF4FBDAF73991C4CDADD9F"><enum>(1)</enum><text>improve the
+			 availability of health care services in cases in which health care liability
+			 actions have been shown to be a factor in the decreased availability of
+			 services;</text>
+				</paragraph><paragraph id="H75B2350A335D4CC89568B3BD44689A44"><enum>(2)</enum><text>reduce the
+			 incidence of <quote>defensive medicine</quote> and lower the cost of health
+			 care liability insurance, all of which contribute to the escalation of health
+			 care costs;</text>
+				</paragraph><paragraph id="H5A75972834BE4743A0D6884930AE44DD"><enum>(3)</enum><text>ensure that
+			 persons with meritorious health care injury claims receive fair and adequate
+			 compensation, including reasonable noneconomic damages;</text>
+				</paragraph><paragraph id="H827D112272744AD5AFBB867FA7AAA34E"><enum>(4)</enum><text>improve the
+			 fairness and cost-effectiveness of our current health care liability system to
+			 resolve disputes over, and provide compensation for, health care liability by
+			 reducing uncertainty in the amount of compensation provided to injured
+			 individuals; and</text>
+				</paragraph><paragraph id="H1425BC40F7E84CA38B516E7628C406C1"><enum>(5)</enum><text>provide an
+			 increased sharing of information in the health care system which will reduce
+			 unintended injury and improve patient care.</text>
+				</paragraph></section><section id="H10B5074E4D7047A8953EE4952AA8E8B8"><enum>103.</enum><header>Encouraging
+			 speedy resolution of claims</header><text display-inline="no-display-inline">The time for the commencement of a health
+			 care lawsuit shall be 3 years after the date of manifestation of injury or 1
+			 year after the claimant discovers, or through the use of reasonable diligence
+			 should have discovered, the injury, whichever occurs first. In no event shall
+			 the time for commencement of a health care lawsuit exceed 3 years after the
+			 date of manifestation of injury unless tolled for any of the following—</text>
+				<paragraph id="H486CD81D49B64A54ACDCB7E9B7C636E6"><enum>(1)</enum><text>upon proof of
+			 fraud;</text>
+				</paragraph><paragraph id="H5F68674C9E1C4A28B957CB220942B03F"><enum>(2)</enum><text>intentional
+			 concealment; or</text>
+				</paragraph><paragraph id="HCC2C38F547B44883AA49C4DAEFBC34A0"><enum>(3)</enum><text>the presence of a
+			 foreign body, which has no therapeutic or diagnostic purpose or effect, in the
+			 person of the injured person.</text>
+				</paragraph><continuation-text continuation-text-level="section">Actions by a
+			 minor shall be commenced within 3 years from the date of the alleged
+			 manifestation of injury except that actions by a minor under the full age of 6
+			 years shall be commenced within 3 years of manifestation of injury or prior to
+			 the minor’s 8th birthday, whichever provides a longer period. Such time
+			 limitation shall be tolled for minors for any period during which a parent or
+			 guardian and a health care provider or health care organization have committed
+			 fraud or collusion in the failure to bring an action on behalf of the injured
+			 minor.</continuation-text></section><section id="H2BFB79C6758448CE95C356736C9DE48C"><enum>104.</enum><header>Compensating
+			 patient injury</header>
+				<subsection id="H21020A0A4E3043F988BDD5E17587FB98"><enum>(a)</enum><header>Unlimited Amount
+			 of Damages for Actual Economic Losses in Health Care Lawsuits</header><text>In
+			 any health care lawsuit, nothing in this title shall limit a claimant’s
+			 recovery of the full amount of the available economic damages, notwithstanding
+			 the limitation in
+			 <internal-xref idref="HBD3DE0C8F3214EFFB8BAC507D2DDD625" legis-path="4.(b)">subsection (b)</internal-xref>.</text>
+				</subsection><subsection id="HBD3DE0C8F3214EFFB8BAC507D2DDD625"><enum>(b)</enum><header>Additional
+			 Noneconomic Damages</header><text>In any health care lawsuit, the amount of
+			 noneconomic damages, if available, may be as much as $250,000, regardless of
+			 the number of parties against whom the action is brought or the number of
+			 separate claims or actions brought with respect to the same injury.</text>
+				</subsection><subsection id="H7F48EF93B2A94C339B2D32AAEB03F6F3"><enum>(c)</enum><header>No Discount of
+			 Award for Noneconomic Damages</header><text>For purposes of applying the
+			 limitation in
+			 <internal-xref idref="HBD3DE0C8F3214EFFB8BAC507D2DDD625" legis-path="4.(b)">subsection (b)</internal-xref>, future noneconomic damages
+			 shall not be discounted to present value. The jury shall not be informed about
+			 the maximum award for noneconomic damages. An award for noneconomic damages in
+			 excess of $250,000 shall be reduced either before the entry of judgment, or by
+			 amendment of the judgment after entry of judgment, and such reduction shall be
+			 made before accounting for any other reduction in damages required by law. If
+			 separate awards are rendered for past and future noneconomic damages and the
+			 combined awards exceed $250,000, the future noneconomic damages shall be
+			 reduced first.</text>
+				</subsection><subsection id="HCABC7545EDEB46BDB53C790541119124"><enum>(d)</enum><header>Fair Share
+			 Rule</header><text>In any health care lawsuit, each party shall be liable for
+			 that party’s several share of any damages only and not for the share of any
+			 other person. Each party shall be liable only for the amount of damages
+			 allocated to such party in direct proportion to such party’s percentage of
+			 responsibility. Whenever a judgment of liability is rendered as to any party, a
+			 separate judgment shall be rendered against each such party for the amount
+			 allocated to such party. For purposes of this section, the trier of fact shall
+			 determine the proportion of responsibility of each party for the claimant’s
+			 harm.</text>
+				</subsection></section><section id="H8556D8CFBE7C47BC845F9F269D240D0E"><enum>105.</enum><header>Maximizing
+			 patient recovery</header>
+				<subsection id="H49E75058B01B417AA1B52802D4DCD6B6"><enum>(a)</enum><header>Court
+			 Supervision of Share of Damages Actually Paid to Claimants</header><text>In any
+			 health care lawsuit, the court shall supervise the arrangements for payment of
+			 damages to protect against conflicts of interest that may have the effect of
+			 reducing the amount of damages awarded that are actually paid to claimants. In
+			 particular, in any health care lawsuit in which the attorney for a party claims
+			 a financial stake in the outcome by virtue of a contingent fee, the court shall
+			 have the power to restrict the payment of a claimant’s damage recovery to such
+			 attorney, and to redirect such damages to the claimant based upon the interests
+			 of justice and principles of equity. In no event shall the total of all
+			 contingent fees for representing all claimants in a health care lawsuit exceed
+			 the following limits:</text>
+					<paragraph id="H67698D4D6A404D21B810A061544B1C67"><enum>(1)</enum><text>Forty percent of
+			 the first $50,000 recovered by the claimant(s).</text>
+					</paragraph><paragraph id="HE4052D94F9E344A78D322AA552FA5BF9"><enum>(2)</enum><text>Thirty-three and
+			 one-third percent of the next $50,000 recovered by the claimant(s).</text>
+					</paragraph><paragraph id="HAC011592C5D841559BB4DE0B6A42809D"><enum>(3)</enum><text>Twenty-five
+			 percent of the next $500,000 recovered by the claimant(s).</text>
+					</paragraph><paragraph id="HE2ABFB9830C04E21BA882F1A7FDDA164"><enum>(4)</enum><text>Fifteen percent of
+			 any amount by which the recovery by the claimant(s) is in excess of
+			 $600,000.</text>
+					</paragraph></subsection><subsection id="HAC4015BAE7644F459BC337EA887BDE0E"><enum>(b)</enum><header>Applicability</header><text>The
+			 limitations in this section shall apply whether the recovery is by judgment,
+			 settlement, mediation, arbitration, or any other form of alternative dispute
+			 resolution. In a health care lawsuit involving a minor or incompetent person, a
+			 court retains the authority to authorize or approve a fee that is less than the
+			 maximum permitted under this section. The requirement for court supervision in
+			 the first two sentences of
+			 <internal-xref idref="H49E75058B01B417AA1B52802D4DCD6B6" legis-path="5.(a)">subsection (a)</internal-xref> applies only in civil
+			 actions.</text>
+				</subsection></section><section id="HF4D0C33790F8467C8457A85DD187D6C7"><enum>106.</enum><header>Punitive
+			 damages</header>
+				<subsection id="H20B8BB913320482980C94F043E24E3A4"><enum>(a)</enum><header>In
+			 General</header><text>Punitive damages may, if otherwise permitted by
+			 applicable State or Federal law, be awarded against any person in a health care
+			 lawsuit only if it is proven by clear and convincing evidence that such person
+			 acted with malicious intent to injure the claimant, or that such person
+			 deliberately failed to avoid unnecessary injury that such person knew the
+			 claimant was substantially certain to suffer. In any health care lawsuit where
+			 no judgment for compensatory damages is rendered against such person, no
+			 punitive damages may be awarded with respect to the claim in such lawsuit. No
+			 demand for punitive damages shall be included in a health care lawsuit as
+			 initially filed. A court may allow a claimant to file an amended pleading for
+			 punitive damages only upon a motion by the claimant and after a finding by the
+			 court, upon review of supporting and opposing affidavits or after a hearing,
+			 after weighing the evidence, that the claimant has established by a substantial
+			 probability that the claimant will prevail on the claim for punitive damages.
+			 At the request of any party in a health care lawsuit, the trier of fact shall
+			 consider in a separate proceeding—</text>
+					<paragraph id="H6C90F46455124AD990BD41B1A621CD6C"><enum>(1)</enum><text>whether punitive
+			 damages are to be awarded and the amount of such award; and</text>
+					</paragraph><paragraph id="H7399654232E44EBE91931D8A2FF92DCF"><enum>(2)</enum><text>the amount of
+			 punitive damages following a determination of punitive liability.</text>
+					</paragraph><continuation-text continuation-text-level="subsection">If a
+			 separate proceeding is requested, evidence relevant only to the claim for
+			 punitive damages, as determined by applicable State law, shall be inadmissible
+			 in any proceeding to determine whether compensatory damages are to be
+			 awarded.</continuation-text></subsection><subsection id="H0D753C3B03484400AC81B3BA33BD8AE5"><enum>(b)</enum><header>Determining
+			 Amount of Punitive Damages</header>
+					<paragraph id="H3D3333C217924249A1692CBAF77ED831"><enum>(1)</enum><header>Factors
+			 considered</header><text>In determining the amount of punitive damages, if
+			 awarded, in a health care lawsuit, the trier of fact shall consider only the
+			 following—</text>
+						<subparagraph id="H47CA13A765B6447EA48881586A6CB055"><enum>(A)</enum><text>the severity of
+			 the harm caused by the conduct of such party;</text>
+						</subparagraph><subparagraph id="H733F1896EA1B49FEA780396BA6DE4C03"><enum>(B)</enum><text>the duration of
+			 the conduct or any concealment of it by such party;</text>
+						</subparagraph><subparagraph id="H93F626C3C16241119E5AB06CA70A5BEA"><enum>(C)</enum><text>the profitability
+			 of the conduct to such party;</text>
+						</subparagraph><subparagraph id="HDDC296C5B2354AC4B0064CC2148AEFEF"><enum>(D)</enum><text>the number of
+			 products sold or medical procedures rendered for compensation, as the case may
+			 be, by such party, of the kind causing the harm complained of by the
+			 claimant;</text>
+						</subparagraph><subparagraph id="H2FC4D910874D4A6CB40784B452F08312"><enum>(E)</enum><text>any criminal
+			 penalties imposed on such party, as a result of the conduct complained of by
+			 the claimant; and</text>
+						</subparagraph><subparagraph id="H28459CDAB1FB4AEA95806B03752C1D08"><enum>(F)</enum><text>the amount of any
+			 civil fines assessed against such party as a result of the conduct complained
+			 of by the claimant.</text>
+						</subparagraph></paragraph><paragraph id="H911F043F35A44AF49A9EF63C978D6F17"><enum>(2)</enum><header>Maximum
+			 award</header><text>The amount of punitive damages, if awarded, in a health
+			 care lawsuit may be as much as $250,000 or as much as two times the amount of
+			 economic damages awarded, whichever is greater. The jury shall not be informed
+			 of this limitation.</text>
+					</paragraph></subsection><subsection id="HCBD31F875F2148108C2932DEB72A01D4"><enum>(c)</enum><header>No Punitive
+			 Damages for Products That Comply With FDA Standards</header>
+					<paragraph id="HB7199B1EEADF496690435FB4CBC992F8"><enum>(1)</enum><header>In
+			 general</header>
+						<subparagraph id="H3AF2914DCBF649C6BE8311E8FC5E8D2F"><enum>(A)</enum><text>No punitive
+			 damages may be awarded against the manufacturer or distributor of a medical
+			 product, or a supplier of any component or raw material of such medical
+			 product, based on a claim that such product caused the claimant’s harm
+			 where—</text>
+							<clause id="HD30C7810B1F14E44AD55F9D1C1CED507"><enum>(i)</enum><subclause commented="no" display-inline="yes-display-inline" id="H03C5F18352A94424A2508CBEF1A94D8A"><enum>(I)</enum><text>such medical product was
+			 subject to premarket approval, clearance, or licensure by the Food and Drug
+			 Administration with respect to the safety of the formulation or performance of
+			 the aspect of such medical product which caused the claimant’s harm or the
+			 adequacy of the packaging or labeling of such medical product; and</text>
+								</subclause><subclause id="H9F092FBBD53A4DAAA5CC7005FEE064C5" indent="up1"><enum>(II)</enum><text>such medical product was so approved,
+			 cleared, or licensed; or</text>
+								</subclause></clause><clause id="H30CF539A523147BF8D04E0C90DCEDAC0"><enum>(ii)</enum><text>such medical
+			 product is generally recognized among qualified experts as safe and effective
+			 pursuant to conditions established by the Food and Drug Administration and
+			 applicable Food and Drug Administration regulations, including without
+			 limitation those related to packaging and labeling, unless the Food and Drug
+			 Administration has determined that such medical product was not manufactured or
+			 distributed in substantial compliance with applicable Food and Drug
+			 Administration statutes and regulations.</text>
+							</clause></subparagraph><subparagraph id="H7363F9C70DB445A6B4ADACFFE4BB4D01"><enum>(B)</enum><header>Rule of
+			 construction</header><text><internal-xref idref="H3AF2914DCBF649C6BE8311E8FC5E8D2F" legis-path="7.(c)(1)(A)">Subparagraph
+			 (A)</internal-xref> may not be construed as establishing the obligation of the
+			 Food and Drug Administration to demonstrate affirmatively that a manufacturer,
+			 distributor, or supplier referred to in such subparagraph meets any of the
+			 conditions described in such subparagraph.</text>
+						</subparagraph></paragraph><paragraph id="HC4C92FD3F38144D99DCA49E7570CA787"><enum>(2)</enum><header>Liability of
+			 health care providers</header><text>A health care provider who prescribes, or
+			 who dispenses pursuant to a prescription, a medical product approved, licensed,
+			 or cleared by the Food and Drug Administration shall not be named as a party to
+			 a product liability lawsuit involving such product and shall not be liable to a
+			 claimant in a class action lawsuit against the manufacturer, distributor, or
+			 seller of such product. Nothing in this paragraph prevents a court from
+			 consolidating cases involving health care providers and cases involving
+			 products liability claims against the manufacturer, distributor, or product
+			 seller of such medical product.</text>
+					</paragraph><paragraph id="HBDC8A951EEBA4DF8BDBCA7A914E85131"><enum>(3)</enum><header>Packaging</header><text>In
+			 a health care lawsuit for harm which is alleged to relate to the adequacy of
+			 the packaging or labeling of a drug which is required to have tamper-resistant
+			 packaging under regulations of the Secretary of Health and Human Services
+			 (including labeling regulations related to such packaging), the manufacturer or
+			 product seller of the drug shall not be held liable for punitive damages unless
+			 such packaging or labeling is found by the trier of fact by clear and
+			 convincing evidence to be substantially out of compliance with such
+			 regulations.</text>
+					</paragraph><paragraph id="H4D3C99D32F8F4D5CB54B26A0215886D0"><enum>(4)</enum><header>Exception</header><text><internal-xref idref="HB7199B1EEADF496690435FB4CBC992F8" legis-path="7.(c)(1)">Paragraph
+			 (1)</internal-xref> shall not apply in any health care lawsuit in which—</text>
+						<subparagraph id="H48B8E9057B284F12BE56B18541759CB0"><enum>(A)</enum><text>a person, before
+			 or after premarket approval, clearance, or licensure of such medical product,
+			 knowingly misrepresented to or withheld from the Food and Drug Administration
+			 information that is required to be submitted under the
+			 <act-name parsable-cite="FFDCA">Federal Food, Drug, and Cosmetic Act</act-name>
+			 (<external-xref legal-doc="usc" parsable-cite="usc/21/301">21 U.S.C. 301 et seq.</external-xref>) or section 351 of the <act-name parsable-cite="PHSA">Public Health Service Act</act-name> (<external-xref legal-doc="usc" parsable-cite="usc/42/262">42 U.S.C. 262</external-xref>) that
+			 is material and is causally related to the harm which the claimant allegedly
+			 suffered;</text>
+						</subparagraph><subparagraph id="H2199269E962A4C5E9928E7264DE9DF2B"><enum>(B)</enum><text>a person made an
+			 illegal payment to an official of the Food and Drug Administration for the
+			 purpose of either securing or maintaining approval, clearance, or licensure of
+			 such medical product; or</text>
+						</subparagraph><subparagraph id="HBE68481F137B4A6C8D346A3B5A2D463C"><enum>(C)</enum><text>the defendant
+			 caused the medical product which caused the claimant’s harm to be misbranded or
+			 adulterated (as such terms are used in chapter V of the Federal Food, Drug, and
+			 Cosmetic Act (<external-xref legal-doc="usc" parsable-cite="usc/21/351">21 U.S.C. 351 et seq.</external-xref>)).</text>
+						</subparagraph></paragraph></subsection></section><section id="H83A5EB5835A540DFB566AC23443C8A76"><enum>107.</enum><header>Authorization
+			 of payment of future damages to claimants in health care lawsuits</header>
+				<subsection id="HDA4B0A1A24AE4D42B8B852AADC23C39B"><enum>(a)</enum><header>In
+			 General</header><text>In any health care lawsuit, if an award of future
+			 damages, without reduction to present value, equaling or exceeding $50,000 is
+			 made against a party with sufficient insurance or other assets to fund a
+			 periodic payment of such a judgment, the court shall, at the request of any
+			 party, enter a judgment ordering that the future damages be paid by periodic
+			 payments, in accordance with the Uniform Periodic Payment of Judgments Act
+			 promulgated by the National Conference of Commissioners on Uniform State
+			 Laws.</text>
+				</subsection><subsection id="HB2190A1B28BD4D838303C158A09207C0"><enum>(b)</enum><header>Applicability</header><text>This
+			 section applies to all actions which have not been first set for trial or
+			 retrial before the effective date of this title.</text>
+				</subsection></section><section id="H2F0661E334D74A28A0993B85DDAFD02F"><enum>108.</enum><header>Definitions</header><text display-inline="no-display-inline">In this title:</text>
+				<paragraph id="H6782622526734E68847E95E45E07AF00"><enum>(1)</enum><header>Alternative
+			 dispute resolution system; ADR</header><text>The term <term>alternative dispute
+			 resolution system</term> or <term>ADR</term> means a system that provides for
+			 the resolution of health care lawsuits in a manner other than through a civil
+			 action brought in a State or Federal court.</text>
+				</paragraph><paragraph id="H6AE6B0B834EC4889AFE9AEF0CDE341AD"><enum>(2)</enum><header>Claimant</header><text>The
+			 term <term>claimant</term> means any person who brings a health care lawsuit,
+			 including a person who asserts or claims a right to legal or equitable
+			 contribution, indemnity, or subrogation, arising out of a health care liability
+			 claim or action, and any person on whose behalf such a claim is asserted or
+			 such an action is brought, whether deceased, incompetent, or a minor.</text>
+				</paragraph><paragraph id="H8C9184319B4D4B64946040AAB40BD2C4"><enum>(3)</enum><header>Compensatory
+			 damages</header><text>The term <term>compensatory damages</term> means
+			 objectively verifiable monetary losses incurred as a result of the provision
+			 of, use of, or payment for (or failure to provide, use, or pay for) health care
+			 services or medical products, such as past and future medical expenses, loss of
+			 past and future earnings, cost of obtaining domestic services, loss of
+			 employment, and loss of business or employment opportunities, damages for
+			 physical and emotional pain, suffering, inconvenience, physical impairment,
+			 mental anguish, disfigurement, loss of enjoyment of life, loss of society and
+			 companionship, loss of consortium (other than loss of domestic service),
+			 hedonic damages, injury to reputation, and all other nonpecuniary losses of any
+			 kind or nature. The term <term>compensatory damages</term> includes economic
+			 damages and noneconomic damages, as such terms are defined in this
+			 section.</text>
+				</paragraph><paragraph id="H06687484616D452F8EBB514ED0352472"><enum>(4)</enum><header>Contingent
+			 fee</header><text>The term <term>contingent fee</term> includes all
+			 compensation to any person or persons which is payable only if a recovery is
+			 effected on behalf of one or more claimants.</text>
+				</paragraph><paragraph id="H0E7FB976CD934D7090EA80B178AFCC82"><enum>(5)</enum><header>Economic
+			 damages</header><text>The term <term>economic damages</term> means objectively
+			 verifiable monetary losses incurred as a result of the provision of, use of, or
+			 payment for (or failure to provide, use, or pay for) health care services or
+			 medical products, such as past and future medical expenses, loss of past and
+			 future earnings, cost of obtaining domestic services, loss of employment, and
+			 loss of business or employment opportunities.</text>
+				</paragraph><paragraph id="H76C93C209FE94AD3A60B5CA6F5F2BAB0"><enum>(6)</enum><header>Health care
+			 lawsuit</header><text>The term <term>health care lawsuit</term> means any
+			 health care liability claim concerning the provision of health care goods or
+			 services or any medical product affecting interstate commerce, or any health
+			 care liability action concerning the provision of health care goods or services
+			 or any medical product affecting interstate commerce, brought in a State or
+			 Federal court or pursuant to an alternative dispute resolution system, against
+			 a health care provider, a health care organization, or the manufacturer,
+			 distributor, supplier, marketer, promoter, or seller of a medical product,
+			 regardless of the theory of liability on which the claim is based, or the
+			 number of claimants, plaintiffs, defendants, or other parties, or the number of
+			 claims or causes of action, in which the claimant alleges a health care
+			 liability claim. Such term does not include a claim or action which is based on
+			 criminal liability; which seeks civil fines or penalties paid to Federal,
+			 State, or local government; or which is grounded in antitrust.</text>
+				</paragraph><paragraph id="H9F903A6703B54CECB6FA0D0DA7D6A7DC"><enum>(7)</enum><header>Health care
+			 liability action</header><text>The term <term>health care liability
+			 action</term> means a civil action brought in a State or Federal court or
+			 pursuant to an alternative dispute resolution system, against a health care
+			 provider, a health care organization, or the manufacturer, distributor,
+			 supplier, marketer, promoter, or seller of a medical product, regardless of the
+			 theory of liability on which the claim is based, or the number of plaintiffs,
+			 defendants, or other parties, or the number of causes of action, in which the
+			 claimant alleges a health care liability claim.</text>
+				</paragraph><paragraph id="H7B86E1E6524F4ACB9E8625B4DAE1312C"><enum>(8)</enum><header>Health care
+			 liability claim</header><text>The term <term>health care liability claim</term>
+			 means a demand by any person, whether or not pursuant to ADR, against a health
+			 care provider, health care organization, or the manufacturer, distributor,
+			 supplier, marketer, promoter, or seller of a medical product, including, but
+			 not limited to, third-party claims, cross-claims, counter-claims, or
+			 contribution claims, which are based upon the provision of, use of, or payment
+			 for (or the failure to provide, use, or pay for) health care services or
+			 medical products, regardless of the theory of liability on which the claim is
+			 based, or the number of plaintiffs, defendants, or other parties, or the number
+			 of causes of action.</text>
+				</paragraph><paragraph id="H3000E70BB52B4F7D9EDA71A17EB9B13A"><enum>(9)</enum><header>Health care
+			 organization</header><text>The term <term>health care organization</term> means
+			 any person or entity which is obligated to provide or pay for health benefits
+			 under any health plan, including any person or entity acting under a contract
+			 or arrangement with a health care organization to provide or administer any
+			 health benefit.</text>
+				</paragraph><paragraph id="HACF4D08BF06B4B0B818BDE3148DE6A2B"><enum>(10)</enum><header>Health care
+			 provider</header><text>The term <term>health care provider</term> means any
+			 person or entity required by State or Federal laws or regulations to be
+			 licensed, registered, or certified to provide health care services, and being
+			 either so licensed, registered, or certified, or exempted from such requirement
+			 by other statute or regulation.</text>
+				</paragraph><paragraph id="H27B80BFB5ED74841A8EE2765DD021023"><enum>(11)</enum><header>Health care
+			 goods or services</header><text>The term <term>health care goods or
+			 services</term> means any goods or services provided by a health care
+			 organization, provider, or by any individual working under the supervision of a
+			 health care provider, that relates to the diagnosis, prevention, or treatment
+			 of any human disease or impairment, or the assessment or care of the health of
+			 human beings.</text>
+				</paragraph><paragraph id="HF587117ADCB84F62A88F84F94D664771"><enum>(12)</enum><header>Malicious
+			 intent to injure</header><text>The term <term>malicious intent to injure</term>
+			 means intentionally causing or attempting to cause physical injury other than
+			 providing health care goods or services.</text>
+				</paragraph><paragraph id="H1EFBE76B908142BEAF41BF50FB8FEC1A"><enum>(13)</enum><header>Medical
+			 product</header><text>The term <term>medical product</term> means a drug,
+			 device, or biological product intended for humans, and the terms
+			 <term>drug</term>, <term>device</term>, and <term>biological product</term>
+			 have the meanings given such terms in sections 201(g)(1) and 201(h) of the
+			 Federal Food, Drug and Cosmetic Act (<external-xref legal-doc="usc" parsable-cite="usc/21/321">21 U.S.C. 321(g)(1)</external-xref> and (h)) and
+			 section 351(a) of the <act-name parsable-cite="PHSA">Public Health Service
+			 Act</act-name> (<external-xref legal-doc="usc" parsable-cite="usc/42/262">42 U.S.C. 262(a)</external-xref>), respectively, including any component or raw
+			 material used therein, but excluding health care services.</text>
+				</paragraph><paragraph id="H62442A1BF2EE4C97951284C176413296"><enum>(14)</enum><header>Noneconomic
+			 damages</header><text>The term <term>noneconomic damages</term> means damages
+			 for physical and emotional pain, suffering, inconvenience, physical impairment,
+			 mental anguish, disfigurement, loss of enjoyment of life, loss of society and
+			 companionship, loss of consortium (other than loss of domestic service),
+			 hedonic damages, injury to reputation, and all other nonpecuniary losses of any
+			 kind or nature.</text>
+				</paragraph><paragraph id="HFE7970D09E47477386A19420AD2480C5"><enum>(15)</enum><header>Punitive
+			 damages</header><text>The term <term>punitive damages</term> means damages
+			 awarded, for the purpose of punishment or deterrence, and not solely for
+			 compensatory purposes, against a health care provider, health care
+			 organization, or a manufacturer, distributor, or supplier of a medical product.
+			 Punitive damages are neither economic nor noneconomic damages.</text>
+				</paragraph><paragraph id="HA77F68E508E146DF9B1AC5EC24DA0C41"><enum>(16)</enum><header>Recovery</header><text>The
+			 term <term>recovery</term> means the net sum recovered after deducting any
+			 disbursements or costs incurred in connection with prosecution or settlement of
+			 the claim, including all costs paid or advanced by any person. Costs of health
+			 care incurred by the plaintiff and the attorneys’ office overhead costs or
+			 charges for legal services are not deductible disbursements or costs for such
+			 purpose.</text>
+				</paragraph><paragraph id="H590ACAF3D9ED461C874408E0270481E0"><enum>(17)</enum><header>State</header><text>The
+			 term <term>State</term> means each of the several States, the District of
+			 Columbia, the Commonwealth of Puerto Rico, the Virgin Islands, Guam, American
+			 Samoa, the Northern Mariana Islands, the Trust Territory of the Pacific
+			 Islands, and any other territory or possession of the United States, or any
+			 political subdivision thereof.</text>
+				</paragraph></section><section id="H68DDA6270E8F488193D92183EC48D7AB"><enum>109.</enum><header>Effect on other
+			 laws</header>
+				<subsection id="H291CFA5232264C07B9C804689CE7EECC"><enum>(a)</enum><header>Vaccine
+			 Injury</header>
+					<paragraph id="H6E9396FEBF2C42BE80FC63CBAB03EB1D"><enum>(1)</enum><text>To the extent that
+			 title XXI of the <act-name parsable-cite="PHSA">Public Health Service
+			 Act</act-name> establishes a Federal rule of law applicable to a civil action
+			 brought for a vaccine-related injury or death—</text>
+						<subparagraph id="H93AA56D3C12E4BAE9D339414BBB0080A"><enum>(A)</enum><text>this title does
+			 not affect the application of the rule of law to such an action; and</text>
+						</subparagraph><subparagraph id="HB0D94290612F4E1796CB30E4A6059593"><enum>(B)</enum><text>any rule of law
+			 prescribed by this title in conflict with a rule of law of such title XXI shall
+			 not apply to such action.</text>
+						</subparagraph></paragraph><paragraph id="HD7C7D840981748F4B87C939AC768AA25"><enum>(2)</enum><text>If there is an
+			 aspect of a civil action brought for a vaccine-related injury or death to which
+			 a Federal rule of law under title XXI of the <act-name parsable-cite="PHSA">Public Health Service Act</act-name> does not apply, then
+			 this title or otherwise applicable law (as determined under this title) will
+			 apply to such aspect of such action.</text>
+					</paragraph></subsection><subsection id="HE996113F28A3408A805EB3EAFEE6CB52"><enum>(b)</enum><header>Other Federal
+			 Law</header><text>Except as provided in this section, nothing in this title
+			 shall be deemed to affect any defense available to a defendant in a health care
+			 lawsuit or action under any other provision of Federal law.</text>
+				</subsection></section><section id="HB18B1397F5B046C187BD286C20C79F61"><enum>110.</enum><header>State
+			 flexibility and protection of States’ rights</header>
+				<subsection id="HA8C15C85C944496D85DE3D9598D13D3E"><enum>(a)</enum><header>Health Care
+			 Lawsuits</header><text>The provisions governing health care lawsuits set forth
+			 in this title preempt, subject to subsections (b) and (c), State law to the
+			 extent that State law prevents the application of any provisions of law
+			 established by or under this title. The provisions governing health care
+			 lawsuits set forth in this title supersede
+			 <external-xref legal-doc="usc-chapter" parsable-cite="usc-chapter/28/171">chapter 171</external-xref> of title 28,
+			 United States Code, to the extent that such chapter—</text>
+					<paragraph id="H633839DD5E2B4B5CA30361E37D8D933A"><enum>(1)</enum><text>provides for a
+			 greater amount of damages or contingent fees, a longer period in which a health
+			 care lawsuit may be commenced, or a reduced applicability or scope of periodic
+			 payment of future damages, than provided in this title; or</text>
+					</paragraph><paragraph id="H8FEA3A480DFF4F85A9199876DEDD3DED"><enum>(2)</enum><text>prohibits the
+			 introduction of evidence regarding collateral source benefits, or mandates or
+			 permits subrogation or a lien on collateral source benefits.</text>
+					</paragraph></subsection><subsection id="HBAB4FFB3AC2146DE805F93C1F02F7C0A"><enum>(b)</enum><header>Protection of
+			 States’ Rights and Other Laws</header><paragraph commented="no" display-inline="yes-display-inline" id="H715408EB0FA041B5AB6A4C2F53DE904D"><enum>(1)</enum><text>Any issue that is not
+			 governed by any provision of law established by or under this title (including
+			 State standards of negligence) shall be governed by otherwise applicable State
+			 or Federal law.</text>
+					</paragraph><paragraph id="HCE7B7CBC83184DE5A2CE289AABDD48B0" indent="up1"><enum>(2)</enum><text>This title shall not preempt or
+			 supersede any State or Federal law that imposes greater procedural or
+			 substantive protections for health care providers and health care organizations
+			 from liability, loss, or damages than those provided by this title or create a
+			 cause of action.</text>
+					</paragraph></subsection><subsection id="H2A7FEE2FFFF34C2BBF0960CED9E6F82D"><enum>(c)</enum><header>State
+			 Flexibility</header><text>No provision of this title shall be construed to
+			 preempt—</text>
+					<paragraph id="H5F26AA36EB954C438A984663CAF7D667"><enum>(1)</enum><text>any State law
+			 (whether effective before, on, or after the date of the enactment of this
+			 title) that specifies a particular monetary amount of compensatory or punitive
+			 damages (or the total amount of damages) that may be awarded in a health care
+			 lawsuit, regardless of whether such monetary amount is greater or lesser than
+			 is provided for under this title, notwithstanding
+			 <internal-xref idref="H21020A0A4E3043F988BDD5E17587FB98" legis-path="4.(a)">section 4(a)</internal-xref>; or</text>
+					</paragraph><paragraph id="HD62C46758CCF4ED3AA242432D0027454"><enum>(2)</enum><text>any defense
+			 available to a party in a health care lawsuit under any other provision of
+			 State or Federal law.</text>
+					</paragraph></subsection></section><section id="H7DDE7F30578848839643B078A3BC139C"><enum>111.</enum><header>Applicability;
+			 effective date</header><text display-inline="no-display-inline">This title
+			 shall apply to any health care lawsuit brought in a Federal or State court, or
+			 subject to an alternative dispute resolution system, that is initiated on or
+			 after the date of the enactment of this title, except that any health care
+			 lawsuit arising from an injury occurring prior to the date of the enactment of
+			 this title shall be governed by the applicable statute of limitations
+			 provisions in effect at the time the injury occurred.</text>
+			</section></title><title id="H0291FD6A37754CC48FF51353973AFF1D"><enum>II</enum><header>Repeal of
+			 Independent Payment Advisory Board</header>
+			<section id="H02F0166C1F8047E6AC3CBFA3BA94D6FE" section-type="subsequent-section"><enum>201.</enum><header>Short
+			 title</header><text display-inline="no-display-inline">This title may be cited
+			 as the <quote><short-title>Medicare Decisions
+			 Accountability Act of 2012</short-title></quote>.</text>
+			</section><section id="HAC963C8EF212493EBAB325231E92A5CE"><enum>202.</enum><header>Repeal of the
+			 Independent Payment Advisory Board</header><text display-inline="no-display-inline">Effective as of the enactment of the Patient
+			 Protection and Affordable Care Act (<external-xref legal-doc="public-law" parsable-cite="pl/111/148">Public Law 111–148</external-xref>), sections 3403
+			 and 10320 of such Act (including the amendments made by such sections, but
+			 excluding subsection (d) of section 1899A of the Social Security Act, as added
+			 and amended by such sections) are repealed, and any provision of law amended by
+			 such sections is hereby restored as if such sections had not been enacted into
+			 law.</text>
+			</section></title><title id="HA3BE520D14424900BBE668B90ACFD8BB"><enum>III</enum><header>Health Care
+			 Safety Net Enhancement</header>
+			<section id="H50E9A8C42D74485D851E284176487323" section-type="subsequent-section"><enum>301.</enum><header>Short
+			 title</header><text display-inline="no-display-inline">This title may be cited
+			 as the <quote><short-title>Health Care Safety Net
+			 Enhancement Act of 2012</short-title></quote>.</text>
+			</section><section id="HEC151B8C7F4741C2AAAC3811B01BEFC0"><enum>302.</enum><header>Protection for
+			 emergency and related services furnished pursuant to EMTALA</header><text display-inline="no-display-inline">Section 224(g) of the Public Health Service
+			 Act (<external-xref legal-doc="usc" parsable-cite="usc/42/233">42 U.S.C. 233(g)</external-xref>) is amended—</text>
+				<paragraph id="H3D24ADD72A704C3CBB1231C1F52B51CF"><enum>(1)</enum><text>in paragraph (4),
+			 by striking <quote>An entity</quote> and inserting <quote>Subject to paragraph
+			 (6), an entity</quote>; and</text>
+				</paragraph><paragraph id="H3229E1542AF4407AB3065E8467D05EA2"><enum>(2)</enum><text>by adding at the
+			 end the following:</text>
+					<quoted-block id="H812ADBBA581D40CD80F49C25852F294D" style="OLC">
+						<paragraph id="H580A32F0117F4BAE8E0BC86220DD8A98"><enum>(6)</enum><subparagraph commented="no" display-inline="yes-display-inline" id="H7E0A5863B2654615B8ADFB5057748BF0"><enum>(A)</enum><text>For purposes of this
+				section—</text>
+								<clause id="H4823215423264339AE4741C4A567EBA3" indent="up1"><enum>(i)</enum><text>an entity described in subparagraph
+				(B) shall be considered to be an entity described in paragraph (4); and</text>
+								</clause><clause id="H5168A22D91314E94A6AD97F9F5FF8494" indent="up1"><enum>(ii)</enum><text>the provisions of this section
+				shall apply to an entity described in subparagraph (B) in the same manner as
+				such provisions apply to an entity described in paragraph (4), except
+				that—</text>
+									<subclause id="H01C070F012BA46A99ABFE434E3BC449D"><enum>(I)</enum><text>notwithstanding paragraph (1)(B), the
+				deeming of any entity described in subparagraph (B), or of an officer,
+				governing board member, employee, contractor, or on-call provider of such an
+				entity, to be an employee of the Public Health Service for purposes of this
+				section shall apply only with respect to items and services that are furnished
+				to an individual pursuant to section 1867 of the Social Security Act and to
+				post stabilization services (as defined in subparagraph (D)) furnished to such
+				an individual;</text>
+									</subclause><subclause id="H273AE059E644415E9A144788F6754595"><enum>(II)</enum><text>nothing in paragraph (1)(D) shall be
+				construed as preventing a physician or physician group described in
+				subparagraph (B)(ii) from making the application referred to in such paragraph
+				or as conditioning the deeming of a physician or physician group that makes
+				such an application upon receipt by the Secretary of an application from the
+				hospital or emergency department that employs or contracts with the physician
+				or group, or enlists the physician or physician group as an on-call
+				provider;</text>
+									</subclause><subclause id="H47F8B409A86F4A92BD129EB17F8669F3"><enum>(III)</enum><text>notwithstanding paragraph (3), this
+				paragraph shall apply only with respect to causes of action arising from acts
+				or omissions that occur on or after January 1, 2012;</text>
+									</subclause><subclause id="H83FE8489BCE748CC9D8DDB29634C9BF1"><enum>(IV)</enum><text>paragraph (5) shall not apply to a
+				physician or physician group described in subparagraph (B)(ii);</text>
+									</subclause><subclause id="H12636E0C9E67451599FF33492E09B87C"><enum>(V)</enum><text>the Attorney General, in consultation
+				with the Secretary, shall make separate estimates under subsection (k)(1) with
+				respect to entities described in subparagraph (B) and entities described in
+				paragraph (4) (other than those described in subparagraph (B)), and the
+				Secretary shall establish separate funds under subsection (k)(2) with respect
+				to such groups of entities, and any appropriations under this subsection for
+				entities described in subparagraph (B) shall be separate from the amounts
+				authorized by subsection (k)(2);</text>
+									</subclause><subclause id="HBA8C3C151D7240BE80DCC4027B6C3D01"><enum>(VI)</enum><text>notwithstanding subsection (k)(2), the
+				amount of the fund established by the Secretary under such subsection with
+				respect to entities described in subparagraph (B) may exceed a total of
+				$10,000,000 for a fiscal year; and</text>
+									</subclause><subclause id="HB67FBC74D5284BDFB969A9270CAE056D"><enum>(VII)</enum><text>subsection (m) shall not apply to
+				entities described in subparagraph (B).</text>
+									</subclause></clause></subparagraph><subparagraph id="HDA05D21A98D34306A701EC58342F53BB" indent="up1"><enum>(B)</enum><text>An entity described in this
+				subparagraph is—</text>
+								<clause id="HB2B205E4D1A74691A6B6509103276E33"><enum>(i)</enum><text>a hospital or an emergency
+				department to which section 1867 of the Social Security Act applies; and</text>
+								</clause><clause id="H9EE4E52BD5E440669CE2B0146BFBD5F0"><enum>(ii)</enum><text>a physician or physician group
+				that is employed by, is under contract with, or is an on-call provider of such
+				hospital or emergency department, to furnish items and services to individuals
+				under such section.</text>
+								</clause></subparagraph><subparagraph id="H3668EA45C35B42C09E2CA09E3E1FA8CE" indent="up1"><enum>(C)</enum><text>For purposes of this paragraph, the
+				term <term>on-call provider</term> means a physician or physician group
+				that—</text>
+								<clause id="H0D61EABFCBD84CCEA9D8371A9BF8A1D6"><enum>(i)</enum><text>has full, temporary, or locum
+				tenens staff privileges at a hospital or emergency department to which section
+				1867 of the Social Security Act applies; and</text>
+								</clause><clause id="H9FA8BE5606B74E29B2F75CA293571E6E"><enum>(ii)</enum><text>is not employed by or under
+				contract with such hospital or emergency department, but agrees to be ready and
+				available to provide services pursuant to section 1867 of the Social Security
+				Act or post-stabilization services to individuals being treated in the hospital
+				or emergency department with or without compensation from the hospital or
+				emergency department.</text>
+								</clause></subparagraph><subparagraph id="H818BAE7DA60C4504BC9D059EE16C680A" indent="up1"><enum>(D)</enum><text>For purposes of this paragraph, the
+				term <term>post stabilization services</term> means, with respect to an
+				individual who has been treated by an entity described in subparagraph (B) for
+				purposes of complying with section 1867 of the Social Security Act, services
+				that are—</text>
+								<clause id="H41919111C60F47279BC23117D28197DB"><enum>(i)</enum><text>related to the condition that was
+				so treated; and</text>
+								</clause><clause id="HBEECE9858120420EBA60DFEAF547A179"><enum>(ii)</enum><text>provided after the individual is
+				stabilized in order to maintain the stabilized condition or to improve or
+				resolve the condition of the individual.</text>
+								</clause></subparagraph><subparagraph id="H7AB57EC2F0FF4C4FAEC35B152319AA0B" indent="up1"><enum>(E)</enum><clause commented="no" display-inline="yes-display-inline" id="HF4F186F2C2CE490C85F52458146951C6"><enum>(i)</enum><text>Nothing in this
+				paragraph (or in any other provision of this section as such provision applies
+				to entities described in subparagraph (B) by operation of subparagraph (A))
+				shall be construed as authorizing or requiring the Secretary to make payments
+				to such entities, the budget authority for which is not provided in advance by
+				appropriation Acts.</text>
+								</clause><clause id="HC64915A7A23A4EC091E304378CFCD7D8" indent="up1"><enum>(ii)</enum><text>The Secretary shall limit the total
+				amount of payments under this paragraph for a fiscal year to the total amount
+				appropriated in advance by appropriation Acts for such purpose for such fiscal
+				year. If the total amount of payments that would otherwise be made under this
+				paragraph for a fiscal year exceeds such total amount appropriated, the
+				Secretary shall take such steps as may be necessary to ensure that the total
+				amount of payments under this paragraph for such fiscal year does not exceed
+				such total amount
+				appropriated.</text>
+								</clause></subparagraph></paragraph><after-quoted-block>.</after-quoted-block></quoted-block>
+				</paragraph></section><section id="H5402886E661443E3A15CC979FE945399"><enum>303.</enum><header>Constitutional
+			 authority</header><text display-inline="no-display-inline">The constitutional
+			 authority upon which this title rests is the power of the Congress to provide
+			 for the general welfare, to regulate commerce, and to make all laws which shall
+			 be necessary and proper for carrying into execution Federal powers, as
+			 enumerated in section 8 of article I of the Constitution of the United
+			 States.</text>
+			</section></title><title id="H16E6BA1167FE4102B1DBD6E5A3C5B281"><enum>IV</enum><header>Restoring the
+			 application of antitrust laws to health sector insurers</header>
+			<section id="H14C836250C2B4EDF8FD64B6BA1D55DF0" section-type="subsequent-section"><enum>401.</enum><header>Short
+			 title</header><text display-inline="no-display-inline">This title may be cited
+			 as the <quote><short-title>Health Insurance Industry Fair
+			 Competition Act</short-title> of 2012</quote>.</text>
+			</section><section id="H9B77B47131CD4329A97D948662139D10"><enum>402.</enum><header>Application of
+			 the antitrust laws to the business of health insurance</header>
+				<subsection id="H9CE42ED430F94D5EA48DF3ABD8B5A6E9"><enum>(a)</enum><header>Amendment to
+			 McCarran-Ferguson Act</header><text>Section 3 of the Act of March 9, 1945 (15
+			 U.S.C. 1013), commonly known as the McCarran-Ferguson Act, is amended by adding
+			 at the end the following:</text>
+					<quoted-block id="H1AEF6310906C4688A3CF66B95874BB2C" style="OLC">
+						<subsection display-inline="no-display-inline" id="H1938C3630A0C408FAAD52A23084A327E"><enum>(c)</enum><text display-inline="yes-display-inline">Nothing contained in this Act shall modify,
+				impair, or supersede the operation of any of the antitrust laws with respect to
+				the business of health insurance. For purposes of the preceding sentence, the
+				term <quote>antitrust laws</quote> has the meaning given it in subsection (a)
+				of the first section of the Clayton Act, except that such term includes section
+				5 of the Federal Trade Commission Act to the extent that such section 5 applies
+				to unfair methods of competition. For the purposes of this subsection, the term
+				‘business of health insurance’ shall—</text>
+							<paragraph id="H3F3488241438406A841298501497A2A6"><enum>(1)</enum><text>mean <quote>health
+				insurance coverage</quote> offered by a <quote>health insurance issuer</quote>
+				as those terms are defined in section 9001 of the Patient Protection and
+				Affordable Care Act, which incorporates by reference and utilizes the
+				definitions included in section 9832 of the Internal Revenue Code (26 U.S.C.
+				9832); and</text>
+							</paragraph><paragraph id="HC7D66BBAF1AD4B79A0A4E05332494154"><enum>(2)</enum><text>not
+				include—</text>
+								<subparagraph id="HC9B2A3AA3D89405C97947D8CF8427347"><enum>(A)</enum><text>life insurance and
+				annuities;</text>
+								</subparagraph><subparagraph id="HDB9C9D4B8C114F6EA74044D0C8F8310D"><enum>(B)</enum><text>property or
+				casualty insurance, including but not limited to, automobile, medical
+				malpractice or workers’ compensation insurance; or</text>
+								</subparagraph><subparagraph id="H019FF5F357E24D5AB39A0A1247DC0407"><enum>(C)</enum><text>any insurance or
+				benefits defined as <quote>excepted benefits</quote> under section 9832(c) of
+				the Internal Revenue Code (<external-xref legal-doc="usc" parsable-cite="usc/26/9832">26 U.S.C. 9832(c)</external-xref>), whether offered
+				separately or in combination with products described in subparagraph
+				(A).</text>
+								</subparagraph></paragraph></subsection><after-quoted-block>.</after-quoted-block></quoted-block>
+				</subsection><subsection id="H2B0C2BD2FA0A43A6ACD3F2F47C5E1DB3"><enum>(b)</enum><header>Related
+			 Provision</header><text>For purposes of section 5 of the Federal Trade
+			 Commission Act (<external-xref legal-doc="usc" parsable-cite="usc/15/45">15 U.S.C. 45</external-xref>) to the extent such section applies to unfair
+			 methods of competition, section 3(c) of the McCarran-Ferguson Act shall apply
+			 with respect to the business of health insurance without regard to whether such
+			 business is carried on for profit, notwithstanding the definition of
+			 <quote>Corporation</quote> contained in section 4 of the Federal Trade
+			 Commission Act.</text>
+				</subsection><subsection id="H691496588B4E4F9DA001AB76FD0655A7"><enum>(c)</enum><header>Limitation on
+			 class actions</header>
+					<paragraph id="H8F67824C227E4E4BB66B3A757840C91B"><enum>(1)</enum><header>Limitation</header><text>No
+			 class action may be heard in a Federal or State court on a claim against a
+			 person engaged in the business of health insurance for a violation of any of
+			 the antitrust laws (as defined in section 3(c) of the Act of March 9, 1945 (15
+			 U.S.C. 1013), commonly known as the McCarran-Ferguson Act).</text>
+					</paragraph><paragraph id="HDF2C2DF3789543CD87FC66D0A29339B5"><enum>(2)</enum><header>Exemption</header><text display-inline="yes-display-inline">Paragraph (1) shall not apply with respect
+			 to any action commenced—</text>
+						<subparagraph id="H9D7BE4BEA2D54B7DA14B422BA472063B"><enum>(A)</enum><text>by the United
+			 States or any State; or</text>
+						</subparagraph><subparagraph id="H1AE16E95052A4DCA9FC967A2C4B95A0B"><enum>(B)</enum><text>by a named
+			 claimant for an injury only to itself.</text>
+						</subparagraph></paragraph></subsection></section></title><title id="H2E490F71B16E4DFE8E1F0F6567C4C333"><enum>V</enum><header>Protections for
+			 Good Samaritan Health Professionals</header>
+			<section commented="no" id="HFF4C53FDDA4D4567B12BF2BD360708DB" section-type="subsequent-section"><enum>501.</enum><header>Short
+			 title</header><text display-inline="no-display-inline">This title may be cited
+			 as the <quote><short-title>Good Samaritan Health
+			 Professionals Act of 2012</short-title></quote>.</text>
+			</section><section id="HF5B70F32AB604869BCF7673D6E62F88B"><enum>502.</enum><header>Limitation on
+			 liability for volunteer health care professionals</header>
+				<subsection id="HBC961EDB6F3C4BCB8B25E3D94FC6CB1A"><enum>(a)</enum><header>In
+			 general</header><text display-inline="yes-display-inline">Title II of the
+			 Public Health Service Act (<external-xref legal-doc="usc" parsable-cite="usc/42/202">42 U.S.C. 202 et seq.</external-xref>) is amended by
+			 inserting after section 224 the following:</text>
+					<quoted-block display-inline="no-display-inline" id="H3BA1C2C8BEA3430BAEB2C7B35BF0CB5F" style="OLC">
+						<section id="HA4D48FCB4C3C4CAB84BD568DAABA67DB"><enum>224A.</enum><header>Limitation on
+				liability for volunteer health care professionals</header>
+							<subsection id="HE3C78AEE5B4542359ECCF9C3011EC90E"><enum>(a)</enum><header>Limitation on
+				liability</header><text display-inline="yes-display-inline">Except as provided
+				in subsection (b), a health care professional shall not be liable under Federal
+				or State law for any harm caused by an act or omission of the professional
+				if—</text>
+								<paragraph id="H510E761EED8645099A14EC3586D89504"><enum>(1)</enum><text>the professional
+				is serving as a volunteer for purposes of responding to a disaster; and</text>
+								</paragraph><paragraph id="HAAD28C7EC798420FA4BCD5A06BB9F81E"><enum>(2)</enum><text>the act or
+				omission occurs—</text>
+									<subparagraph commented="no" id="HE3DC9B15839F416686D87D35ED507822"><enum>(A)</enum><text>during the period
+				of the disaster, as determined under the laws listed in subsection
+				(e)(1);</text>
+									</subparagraph><subparagraph id="H07D6DD247B014AEE86037BA6510F8FF7"><enum>(B)</enum><text>in the health care
+				professional’s capacity as such a volunteer; and</text>
+									</subparagraph><subparagraph commented="no" id="H0543853EB58C4507A8A20827B7ABD854"><enum>(C)</enum><text display-inline="yes-display-inline">in a good faith belief that the individual
+				being treated is in need of health care services.</text>
+									</subparagraph></paragraph></subsection><subsection id="H21AA8044CF4B4783A9ADD86CCE7B1D72"><enum>(b)</enum><header>Exceptions</header><text>Subsection
+				(a) does not apply if—</text>
+								<paragraph id="H13715B5E466E4EA0B34A5401D560F18A"><enum>(1)</enum><text>the harm was
+				caused by an act or omission constituting willful or criminal misconduct, gross
+				negligence, reckless misconduct, or a conscious flagrant indifference to the
+				rights or safety of the individual harmed by the health care professional;
+				or</text>
+								</paragraph><paragraph commented="no" id="H0A89C8013DF941E89CFDB50BB76D06D6"><enum>(2)</enum><text>the health care
+				professional rendered the health care services under the influence (as
+				determined pursuant to applicable State law) of intoxicating alcohol or an
+				intoxicating drug.</text>
+								</paragraph></subsection><subsection commented="no" id="H13AB7F3506B04230BEF4AD5A1DD3CEA0"><enum>(c)</enum><header>Standard of
+				proof</header><text>In any civil action or proceeding against a health care
+				professional claiming that the limitation in subsection (a) applies, the
+				plaintiff shall have the burden of proving by clear and convincing evidence the
+				extent to which limitation does not apply.</text>
+							</subsection><subsection commented="no" id="H9E79BC1B1FDD4F46A711456B1381A623"><enum>(d)</enum><header>Preemption</header>
+								<paragraph commented="no" id="HDF5E15DF4C4E4B9695975F03B3665D8A"><enum>(1)</enum><header>In
+				general</header><text display-inline="yes-display-inline">This section preempts
+				the laws of a State or any political subdivision of a State to the extent that
+				such laws are inconsistent with this section, unless such laws provide greater
+				protection from liability.</text>
+								</paragraph><paragraph commented="no" id="H98D77216E8D74BAEA226F6432920FF00"><enum>(2)</enum><header>Volunteer
+				Protection Act</header><text>Protections afforded by this section are in
+				addition to those provided by the Volunteer Protection Act of 1997.</text>
+								</paragraph></subsection><subsection id="HD5F64E0F35F54316AAD6617A915E1EA0"><enum>(e)</enum><header>Definitions</header><text>In
+				this section:</text>
+								<paragraph id="H9BB2B416BCF1456C9647CD6FCA4A97E0"><enum>(1)</enum><text>The term
+				<term>disaster</term> means—</text>
+									<subparagraph id="H1A7452601002457F83493FC288829113"><enum>(A)</enum><text>a national
+				emergency declared by the President under the National Emergencies Act;</text>
+									</subparagraph><subparagraph id="H446C959B80AC4263A8108D1BD375F4C6"><enum>(B)</enum><text>an emergency or
+				major disaster declared by the President under the Robert T. Stafford Disaster
+				Relief and Emergency Assistance Act; or</text>
+									</subparagraph><subparagraph id="HE1D7D5989A4F44E1809D91EFDBD7C763"><enum>(C)</enum><text>a public health
+				emergency determined by the Secretary under section 319 of this Act.</text>
+									</subparagraph></paragraph><paragraph id="H079FC9AD9A9B453F993C5C8A02AE4DC1"><enum>(2)</enum><text>The term
+				<term>harm</term> includes physical, nonphysical, economic, and noneconomic
+				losses.</text>
+								</paragraph><paragraph id="H9F23E055EFBA4A14A6D64123C1ED8495"><enum>(3)</enum><text>The term
+				<term>health care professional</term> means an individual who is licensed,
+				certified, or authorized in one or more States to practice a health care
+				profession.</text>
+								</paragraph><paragraph id="H3270A8FFAAC24E6191CD474956E4CC8E"><enum>(4)</enum><text>The term
+				<term>State</term> includes each of the several States, the District of
+				Columbia, the Commonwealth of Puerto Rico, the Virgin Islands, Guam, American
+				Samoa, the Northern Mariana Islands, and any other territory or possession of
+				the United States.</text>
+								</paragraph><paragraph id="H739F4AAD355B444E84627A3B77A06537"><enum>(5)</enum><subparagraph commented="no" display-inline="yes-display-inline" id="H37D6F2252C314504800037477D0715F7"><enum>(A)</enum><text>The term
+				<term>volunteer</term> means a health care professional who, with respect to
+				the health care services rendered, does not receive—</text>
+										<clause id="H943DD35FA624432FBD920891F683BB1E" indent="up1"><enum>(i)</enum><text>compensation; or</text>
+										</clause><clause id="HF76B29BC5FA145F391FAC7D23375127A" indent="up1"><enum>(ii)</enum><text display-inline="yes-display-inline">any other thing of value in lieu of
+				compensation, in excess of $500 per year.</text>
+										</clause></subparagraph><subparagraph id="H7905119BCE1449EC99229BDA253D5A78" indent="up1"><enum>(B)</enum><text>For purposes of subparagraph (A), the
+				term <term>compensation</term>—</text>
+										<clause id="H954A388DA4DD43CC90837D625B45C028"><enum>(i)</enum><text display-inline="yes-display-inline">includes payment under any insurance policy
+				or health plan, or under any Federal or State health benefits program;
+				and</text>
+										</clause><clause commented="no" id="HE6C4785B5AA243F5AAA7B38EAB9B5AE8"><enum>(ii)</enum><text display-inline="yes-display-inline">excludes—</text>
+											<subclause commented="no" id="HA2376A9D3A2F4482BCBD3605C0790245"><enum>(I)</enum><text>reasonable reimbursement or allowance for
+				expenses actually incurred;</text>
+											</subclause><subclause commented="no" id="HF312015B40EA40F4ADF13449643EF8D7"><enum>(II)</enum><text>receipt of paid leave; and</text>
+											</subclause><subclause commented="no" id="HABC3ECAEE73843E8A1AEF323D249E0EC"><enum>(III)</enum><text>receipt of items to be used exclusively
+				for rendering the health services in the health care professional’s capacity as
+				a volunteer described in subsection
+				(a)(1).</text>
+											</subclause></clause></subparagraph></paragraph></subsection></section><after-quoted-block>.</after-quoted-block></quoted-block>
+				</subsection><subsection id="H899FD9F008FA469491D7ED963F2E481D"><enum>(b)</enum><header>Effective
+			 date</header>
+					<paragraph id="HAADB27EFF9F94569A8713EBB4916153C"><enum>(1)</enum><header>In
+			 general</header><text>This title and the amendment made by subsection (a) shall
+			 take effect 90 days after the date of the enactment of this title.</text>
+					</paragraph><paragraph id="H7AB48E28573E4108A2FF6D34AAD4F66C"><enum>(2)</enum><header>Application</header><text>This
+			 title applies to any claim for harm caused by an act or omission of a health
+			 care professional where the claim is filed on or after the effective date of
+			 this title, but only if the harm that is the subject of the claim or the
+			 conduct that caused such harm occurred on or after such effective date.</text>
+					</paragraph></subsection></section></title></legis-body>
+	<attestation>
+		<attestation-group>
+			<attestation-date chamber="House" date="20120322">Passed the House of
+			 Representatives March 22, 2012.</attestation-date>
+			<attestor display="yes">Karen L. Haas,</attestor>
+			<role>Clerk</role>
+		</attestation-group>
+	</attestation>
+</bill>
+
+
