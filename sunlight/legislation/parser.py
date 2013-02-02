@@ -87,3 +87,13 @@ def paragraphs_to_sha(f):
 					p.attributes['id'].value.lower(),
 					get_sha_of_text(p)) for p in paragraphs ]
 	return paragraphs
+
+def paragraphs_with_shas(f, shas):
+	"""
+	Takes input a file f and returns the text of the paragraphs in f which
+	match one of the shas in shas.
+	"""
+	tree = domdom.parse(f)
+	paragraphs = tree.getElementsByTagName("paragraph")
+	return [ (get_sha_of_text(p), get_text(p)) for p in paragraphs 
+			if get_sha_of_text(p) in shas ]
