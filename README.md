@@ -1,5 +1,3 @@
-Sunlight BFF
-
 This is a set of libraries and command line utilities for parsing information 
 from Congress, the Sunlight Foundation, and others. The purpose is to track the
 influence of money in politics.
@@ -7,7 +5,7 @@ influence of money in politics.
 Wiki
 ====
 If you want to contribute to this project, you should join the wiki at
-????????
+http://paard.math.columbia.edu/dokuwiki/doku.php
 
 Components
 ==========
@@ -54,5 +52,5 @@ see that there is a very large number of pargraphs which read like
 For the fiscal year 2012, $10,000,0000.
 
 but have different years and values. This is an artifact of the fact that
-Congress set's the budget and that this is the standard phrasing for budget
-bills.
+Congress sets the budget and that this is the standard phrasing for budget
+bills and I sha only _forthefiscalyear_.
