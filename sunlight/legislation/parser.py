@@ -2,7 +2,9 @@ from sunlight.errors import LegislationError
 
 import xml.dom.minidom as domdom
 from hashlib import sha1 as sha
+
 import operator
+import re
 
 def get_text(x):
 	"""
@@ -37,7 +39,15 @@ def get_sha_of_text(x):
 	shatext = sha(text.encode('utf-8'))
 	return shatext.hexdigest()
 
-def paragraphs_to_sha(f):
+def make_printable(s):
+	"""
+	Removes newlines and carriage returns from s
+	Turns tabs to 4 spaces.
+	"""
+	# Would use s.translate, but that doesn't work with unicode strings
+	return re.sub('[\n\r]', '', s).replace('\t', '    ')
+
+def paragraphs_to_sha(f, keep_paragraphs=False):
 	"""
 	Takes as input a file handle which is a piece of legislative xml and returns
 	a list of lists containing shaed versions of paragraphs.
@@ -52,8 +62,7 @@ def paragraphs_to_sha(f):
 	Returns
 	-------
 	List of lists where the sublists are:
-		bill_id, paragraph_id, sha_of_manipulated_paragraph
-		bill_id = number_of_congress, type_of_bill, number_of_bill, subtype_of_bill
+		bill_id, paragraph_id, sha_of_manipulated_paragraph[, paragraph if keep_paragraphs]
 
 	Raises
 	------
@@ -80,12 +89,15 @@ def paragraphs_to_sha(f):
 	bill_id = bill_name.split(':')[0]
 
 	paragraphs = tree.getElementsByTagName("paragraph")
-	paragraphs = [ (bill_id, #number_of_congress, 
-					#type_of_bill, 
-					#number_of_bill, 
-					#subtype_of_bill, 
-					p.attributes['id'].value.lower(),
-					get_sha_of_text(p)) for p in paragraphs ]
+	if keep_paragraphs:
+		paragraphs = [ (bill_id, 
+						p.attributes['id'].value.lower(), 
+						get_sha_of_text(p),
+						make_printable(get_text(p))) for p in paragraphs ]
+	else:
+		paragraphs = [ (bill_id, 
+						p.attributes['id'].value.lower(), 
+						get_sha_of_text(p)) for p in paragraphs ]
 	return paragraphs
 
 def paragraphs_with_shas(f, shas):
@@ -95,5 +107,6 @@ def paragraphs_with_shas(f, shas):
 	"""
 	tree = domdom.parse(f)
 	paragraphs = tree.getElementsByTagName("paragraph")
-	return [ (get_sha_of_text(p), get_text(p)) for p in paragraphs 
-			if get_sha_of_text(p) in shas ]
+	return [ (get_sha_of_text(p), 
+				make_printable(get_text(p))) 
+					for p in paragraphs if get_sha_of_text(p) in shas ]
