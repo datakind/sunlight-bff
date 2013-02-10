@@ -24,6 +24,28 @@ sha1 of the text of the paragraphs of the legislation fed in and whose values
 are lists of appearance in the order (name\_of\_bill, paragraph\_id,
 full\_text\_of\_paragraph).
 
+To use this you will need to get the full text of the bills that congress
+passed. You can either scrape this yourself from Thomas (which is painful)
+OR you can get it from GovTrack.us. They like to use the rsync protocol, so
+make sure you have rsync, and then do
+
+```bash
+mkdir -p bill_directory/congress_number
+rsync -avz --delete --delete-excluded govtrack.us::govtrackdata/us/congress_number/bills.text
+```
+
+For example, if you want to compare the 110th through 112th congresses, you 
+would first rsync as follows:
+
+```bash
+for c in {110, 111, 112};
+do
+    mkdir -p bill_directory/${c};
+    rsync -avz --delete --delete-excluded govtrack.us::govtrackdata/us/${c}/bills.text;
+done;
+```
+
+
 Note the sha is computed from text of a paragraph stripped of the lowercased
 text of a paragraph stripped of all numbers, symbols and subtags. Hence, the
 full text of paragraphs may differ significantly. For example, you will quickly
