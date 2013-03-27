@@ -13,7 +13,7 @@ Components
 This describes the various components of the utilities. Currently there are
 very few. You should add some!!!!!
 
-Leglislation (legis)
+Legislation (legis)
 ------------
 
 This trolls through legislative xml trying to find identical paragraphs of
@@ -54,3 +54,20 @@ For the fiscal year 2012, $10,000,0000.
 but have different years and values. This is an artifact of the fact that
 Congress sets the budget and that this is the standard phrasing for budget
 bills and I sha only _forthefiscalyear_.
+
+Legilator Events
+------------
+
+This does two things: 1) create an json object with info about all of the 
+actions taken by or events relating to a given legislator and 2) visualizes 
+those actions and events on an interactive timeline.
+
+To generate data for, say, John Boehner do
+
+```bash
+./get_events.py john boehner
+```
+
+This command will create a data file to store the output json (and subsequent output files)
+as well as a cached folder for reusable data files that aren't output files themselves.  
+
