@@ -1,1 +1,0 @@
-#columns: industry, bill, session, amount
