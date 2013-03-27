@@ -68,6 +68,6 @@ To generate data for, say, John Boehner do
 ./get_events.py john boehner
 ```
 
-This command will create a data file to store the output json (and subsequent output files)
+This command will create a data folder to store the output json (and subsequent output files)
 as well as a cached folder for reusable data files that aren't output files themselves.  
 
