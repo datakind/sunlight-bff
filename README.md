@@ -58,16 +58,32 @@ bills and I sha only _forthefiscalyear_.
 Legislator Events
 ------------
 
-This does two things: 1) creates n json object with info about all of the 
+This does two things: 1) creates a json object with info about all of the 
 actions taken by, or events relating to, a given legislator and 2) visualizes 
 those actions and events on an interactive timeline.
 
-To generate data for, say, John Boehner do
+The CLI is inspired by https://github.com/unitedstates/congress.  To see the list of
+available senators:
 
 ```bash
-./get_events.py john boehner
+./run list-legislators --chamber=senate
 ```
 
+To see the list of available events/actions to include in the output object:
+
+```bash
+./run list-actions
+```
+
+To generate the json for a given legislator:
+
+```bash
+./run legislator-events --legislator="John Boehner"
+```
 This command will create a data folder to store the output json (and subsequent output files)
-as well as a cached folder for reusable data files that aren't output files themselves.  
+as well as a cached folder for reusable data files that aren't output files themselves. 
+
+Note: the legislator names are the full official names listed by the list-legislators task.  This
+is usually First Last, but sometimes names deviate.   
+ 
 

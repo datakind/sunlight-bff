@@ -45,8 +45,8 @@ d3.json('../data/john_boehner.json', function(data){
 		.attr("transform", "rotate(45)")
 
 	action.append('text')
-		.text( function(d) { 
-			return d.event 
+		.text( function(d) {
+			return d.event
 		})
 		.attr('class', function(d) { 
 			return d.event 
@@ -55,6 +55,7 @@ d3.json('../data/john_boehner.json', function(data){
 		.attr("x", 30)
 
 	action.on('click', function(d){
+		console.log(d)
 		showEventInfo(d)
 	})
 })
