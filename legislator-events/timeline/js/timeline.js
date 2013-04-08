@@ -1,4 +1,4 @@
-var w = 50000,
+var w = 70000,
     h = 400,
     p = 250
 
@@ -19,40 +19,68 @@ d3.json('../data/john_boehner.json', function(data){
 	var minTime = sorted[0].time,
 		maxTime = sorted[sorted.length - 1].time
 
+	var startDate = new Date(minTime * 1000),
+		endDate = new Date(maxTime * 1000)
+
 	var x = d3.scale.linear().domain([minTime, maxTime]).range([ w - (2 * p), 0 ])
+		t = d3.time.scale().domain([startDate, endDate]).range([ w - (2 * p), 0 ])
 
 	var action = vis.selectAll(".action")
 		.data(sorted)
 	  .enter().append('svg:g')
 	  	.attr('class', 'action')
-	  	.attr("transform", function(d) { return "translate(" + x(d.time) + ",50)"; })
+	  	.attr("transform", function(d) { return "translate(" + x(d.time) + ",75)"; })
+
+	var xAxis = d3.svg.axis()
+            .scale(t)
+            .orient('bottom')
+            .ticks(150)
+            .tickFormat(d3.time.format('%B %d %Y'))
+            .tickSize(5);
+
+    vis.append('svg:g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0, ' + 75 + ')')
+        .call(xAxis);
+
+    d3.selectAll('.axis').selectAll('text')
+    	.attr("transform", "rotate(90)")
+    	.attr("x", 10)
+    	.attr("y", -5)
+    	.style('font-size', 12)
+    	.style('fill', 'gray')
+    	.attr("text-anchor", "start")
 
 	action.append('line')
 	  	.attr('class', 'mark')
 	  	.attr('x1', 0)
 	  	.attr('x2', 0)
-	  	.attr('y1', 0)
-	  	.attr('y2', 20)
+	  	.attr('y1', -20)
+	  	.attr('y2', 0)
 	  	.style('stroke', 'black')
 
 	action.append('text')
 		.text( function(d) { 
-			var date = new Date( Number( d.time ) * 1000 )
-			return date 
-		})
-		.attr('class', 'date')
-		.attr("text-anchor", "end")
-		.attr("transform", "rotate(45)")
-
-	action.append('text')
-		.text( function(d) {
 			return d.event
 		})
 		.attr('class', function(d) { 
 			return d.event 
 		})
-		.attr("transform", "rotate(90)")
-		.attr("x", 30)
+		.attr('class', 'date')
+		.attr("text-anchor", "end")
+		.attr("transform", "rotate(45)")
+		.attr("y", -20)
+		.attr("x", -20)
+
+	// action.append('text')
+	// 	.text( function(d) {
+	// 		return d.event
+	// 	})
+	// 	.attr('class', function(d) { 
+	// 		return d.event 
+	// 	})
+	// 	.attr("transform", "rotate(90)")
+	// 	.attr("x", 30)
 
 	action.on('click', function(d){
 		console.log(d)
