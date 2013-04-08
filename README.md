@@ -5,7 +5,7 @@ influence of money in politics.
 Wiki
 ====
 If you want to contribute to this project, you should join the wiki at
-http://paard.math.columbia.edu/dokuwiki/doku.php
+http://datakind.org/mediawiki-1.19.0/index.php?title=Sunlight_Best_Friends
 
 Components
 ==========
@@ -68,11 +68,13 @@ available senators:
 ```bash
 ./run list-legislators --chamber=senate
 ```
+Available representatives can be listed by passing 'house' to the chamber flag.
+Both chambers will be listed if one or the other is not specified.
 
 To see the list of available events/actions to include in the output object:
 
 ```bash
-./run list-actions
+./run list-events
 ```
 
 To generate the json for a given legislator:
