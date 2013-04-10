@@ -80,7 +80,7 @@ To see the list of available events/actions to include in the output object:
 To generate the json for a given legislator:
 
 ```bash
-./run legislator-events --legislator="John Boehner"
+./run legislator-events --legislator="John A. Boehner"
 ```
 This command will create a data folder to store the output json (and subsequent output files)
 as well as a cached folder for reusable data files that aren't output files themselves. 
