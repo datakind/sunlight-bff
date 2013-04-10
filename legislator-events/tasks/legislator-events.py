@@ -57,6 +57,7 @@ class LegisEvents():
 
         try:
             self.legislator["name"]
+            print self.legislator["id"]
         except Exception:
             print ('Sorry, not a recognized legislator.  Please'
                     ' try ./run list-legislators to see available legislators')
@@ -110,8 +111,8 @@ class LegisEvents():
         cosponsored_bills = []
         #make initial request to get number of cosponsored bills
         cosponsor_url = ('http://congress.api.sunlightfoundation.com/'
-                         'bills?cosponsor_ids__all=S000148&per_page=50'
-                         '&apikey=7ed8089422bd4022bb9c236062377c5b')
+                         'bills?cosponsor_ids__all=%s&per_page=50'
+                         '&apikey=7ed8089422bd4022bb9c236062377c5b') % self.legislator['id']['bioguide']
         res = requests.get(cosponsor_url)
         total_pages = (res.json()["count"]/50) + 1
         page = 2
@@ -121,8 +122,8 @@ class LegisEvents():
         #this should probably use generators
         while page <= total_pages:
             cosponsor_url = ('http://congress.api.sunlightfoundation.com/'
-                             'bills?cosponsor_ids__all=S000148&per_page=50'
-                             '&page=%s&apikey=7ed8089422bd4022bb9c236062377c5b') % page
+                             'bills?cosponsor_ids__all=%s&per_page=50'
+                             '&page=%s&apikey=7ed8089422bd4022bb9c236062377c5b') % (self.legislator['id']['bioguide'], page)
             res = requests.get(cosponsor_url)
             for result in res.json()["results"]:
                 cosponsored_bills.append(result)
