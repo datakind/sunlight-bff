@@ -3,9 +3,10 @@ import requests
 import yaml
 import time
 import json
-import io
+import io as IO
 import sys
 import os
+import string
 
 from pandas import *
 
@@ -16,12 +17,15 @@ class LegisEvents():
 
     def __init__(self, options):
         self.legis_list = []
-        self.legis_name = options["legislator"].replace(" ", "_").lower()
+        self.legis_name = options["legislator"].lower()
+        self.legislator = None
         self.events = [
-            self.add_birthday, self.add_terms, 
+            self.add_birthday, self.add_terms,
             self.add_sponsored_bills, self.add_parties,
             self.add_cosponsored_bills
         ]
+
+        self.legis_name = self.legis_name.translate(string.maketrans("",""), string.punctuation)
 
         # create data file if it doesn't exist
         if not os.path.exists('data'):
@@ -39,7 +43,7 @@ class LegisEvents():
             r = requests.get(legislator_url)
             legis_yaml = yaml.load(r.text)
             #cache the current legislator yam
-            with io.open('cached/legislators-current.yaml', 'wb') as outfile:
+            with IO.open('cached/legislators-current.yaml', 'wb') as outfile:
                 yaml.dump(legis_yaml, outfile)
             #save the legislator yaml
 
@@ -51,13 +55,19 @@ class LegisEvents():
             if l["name"]["official_full"] == options["legislator"]:
                 self.legislator = l
 
+        try:
+            self.legislator["name"]
+        except Exception:
+            print ('Sorry, not a recognized legislator.  Please'
+                    ' try ./run list-legislators to see available legislators')
+
 
     def add_birthday(self):
         t = str(int(time.mktime(
             time.strptime(self.legislator["bio"]["birthday"], '%Y-%m-%d'))))
         self.legislator["bio"].update(self.legislator["name"])
         birth = { "time" : t , "event" : "born" , "info" : self.legislator["bio"]  }
-        self.legis_list.append(birth)        
+        self.legis_list.append(birth)
 
 
     def add_terms(self):
@@ -83,23 +93,24 @@ class LegisEvents():
 
     def add_parties(self):
         #fetch parties ADD CACHING!
-        parties_url = ('http://politicalpartytime.org/api/v1/event/'
-                       '?beneficiaries__crp_id=%s&format=json&apikey='
-                       '7ed8089422bd4022bb9c236062377c5b' ) % self.legislator['id']['opensecrets']
-        p = requests.get(parties_url)
-        self.parties = p.json()
+        if hasattr(self.legislator['id'], 'opensecrets'):        
+            parties_url = ('http://politicalpartytime.org/api/v1/event/'
+                           '?beneficiaries__crp_id=%s&format=json&apikey='
+                           '7ed8089422bd4022bb9c236062377c5b' ) % self.legislator['id']['opensecrets']
+            p = requests.get(parties_url)
+            self.parties = p.json()
 
-        for party in self.parties['objects']:
-            t = str(int(time.mktime(time.strptime(party["start_date"], '%Y-%m-%d'))))
-            party = { "time" : t , "event" : "event/party", "info" : party }
-            self.legis_list.append(party)
+            for party in self.parties['objects']:
+                t = str(int(time.mktime(time.strptime(party["start_date"], '%Y-%m-%d'))))
+                party = { "time" : t , "event" : "event/party", "info" : party }
+                self.legis_list.append(party)
 
 
     def add_cosponsored_bills(self):
         cosponsored_bills = []
         #make initial request to get number of cosponsored bills
         cosponsor_url = ('http://congress.api.sunlightfoundation.com/'
-                         'bills?cosponsor_ids__all=S000148&per_page=50' 
+                         'bills?cosponsor_ids__all=S000148&per_page=50'
                          '&apikey=7ed8089422bd4022bb9c236062377c5b')
         res = requests.get(cosponsor_url)
         total_pages = (res.json()["count"]/50) + 1
@@ -124,10 +135,6 @@ class LegisEvents():
 
 
     def add_sponsored_bill_lobbying(self):
-        """ this function will take a lot of time and 
-            resources.  It reads in multiple 100+ mb
-            files and then manipulates them """
-
         issues = read_csv(
             '/Users/pdarche/Downloads/Lobby/lob_issue.txt', 
             quotechar='|',
@@ -140,7 +147,7 @@ class LegisEvents():
             names = [ 'b_id', 'si_id', 'cong_no', 'bill_no' ]
         )
 
-        # strip pipe delimiters from bill 
+        # strip pipe delimiters from bill
         # and congress number strings
         lobbied_bills['bill_no'] = lobbied_bills['bill_no'].map(lambda x: x.replace('|',''))
         lobbied_bills['cong_no'] = lobbied_bills['cong_no'].map(lambda x: x.replace('|',''))
@@ -169,13 +176,6 @@ class LegisEvents():
         for event in self.events:
             event()
 
-        sorted_events = sorted(self.legis_list, key=lambda k: int(k['time']))
-        final_dict = { "data" : sorted_events }
-
-        filename = './data/%s.json' % self.legis_name
-        with io.open(filename, 'wb') as outfile:
-          json.dump(final_dict, outfile)
-
 
 def run(options):
     print "building json for %s" % options["legislator"]
@@ -186,8 +186,9 @@ def run(options):
     sorted_events = sorted(legis.legis_list, key=lambda k: int(k['time']))
     final_dict = { "data" : sorted_events }
 
-    filename = './data/%s.json' % legis.legis_name
-    with io.open(filename, 'wb') as outfile:
+    filename = './data/%s.json' % legis.legis_name.replace(" ", "_")
+    
+    with IO.open(filename, 'wb') as outfile:
       json.dump(final_dict, outfile)
 
 
