@@ -10,27 +10,31 @@ var vis = d3.select("#vis_container")
 	.attr("transform", "translate(" + p + "," + p + ")")
 
 
-d3.json('../data/john_boehner.json', function(data){
-	
-    console.log(data)
+d3.json('../data/john_a_boehner.json', function(data){	
 
+	// sort the objects by timestamp
 	var sorted = data.data.sort(compare).reverse()
 
+	// get the min and timestamp values 
 	var minTime = sorted[0].time,
 		maxTime = sorted[sorted.length - 1].time
 
+	// create dates from the min and max timestamps
 	var startDate = new Date(minTime * 1000),
 		endDate = new Date(maxTime * 1000)
 
-	var x = d3.scale.linear().domain([minTime, maxTime]).range([ w - (2 * p), 0 ])
-		t = d3.time.scale().domain([startDate, endDate]).range([ w - (2 * p), 0 ])
+	// set the d3 scale by min and max times
+	var t = d3.time.scale().domain([startDate, endDate]).range([ w - (2 * p), 0 ])
 
-	var action = vis.selectAll(".action")
+	// select the events elements, append legis event data
+	// and translate element based on time
+	var event_ = vis.selectAll(".event_")
 		.data(sorted)
 	  .enter().append('svg:g')
-	  	.attr('class', 'action')
-	  	.attr("transform", function(d) { return "translate(" + x(d.time) + ",75)"; })
+	  	.attr('class', 'event')	
+	  	.attr("transform", function(d) { return "translate(" + t(d.time * 1000) + ",75)"; })
 
+	// create the d3 x axis based on the t scale
 	var xAxis = d3.svg.axis()
             .scale(t)
             .orient('bottom')
@@ -38,11 +42,13 @@ d3.json('../data/john_boehner.json', function(data){
             .tickFormat(d3.time.format('%B %d %Y'))
             .tickSize(5);
 
+    // create the axis g and append it to the vis svg
     vis.append('svg:g')
         .attr('class', 'x axis')
         .attr('transform', 'translate(0, ' + 75 + ')')
         .call(xAxis);
 
+    // select the text of the axis ticks and add styling
     d3.selectAll('.axis').selectAll('text')
     	.attr("transform", "rotate(90)")
     	.attr("x", 10)
@@ -51,7 +57,8 @@ d3.json('../data/john_boehner.json', function(data){
     	.style('fill', 'gray')
     	.attr("text-anchor", "start")
 
-	action.append('line')
+    // append tick line to each event element
+	event_.append('line')
 	  	.attr('class', 'mark')
 	  	.attr('x1', 0)
 	  	.attr('x2', 0)
@@ -59,7 +66,8 @@ d3.json('../data/john_boehner.json', function(data){
 	  	.attr('y2', 0)
 	  	.style('stroke', 'black')
 
-	action.append('text')
+	// append text to each event element
+	event_.append('text')
 		.text( function(d) { 
 			return d.event
 		})
@@ -72,7 +80,7 @@ d3.json('../data/john_boehner.json', function(data){
 		.attr("y", -20)
 		.attr("x", -20)
 
-	// action.append('text')
+	// event_.append('text')
 	// 	.text( function(d) {
 	// 		return d.event
 	// 	})
@@ -82,7 +90,8 @@ d3.json('../data/john_boehner.json', function(data){
 	// 	.attr("transform", "rotate(90)")
 	// 	.attr("x", 30)
 
-	action.on('click', function(d){
+	// on click show event info
+	event_.on('click', function(d){
 		console.log(d)
 		showEventInfo(d)
 	})
