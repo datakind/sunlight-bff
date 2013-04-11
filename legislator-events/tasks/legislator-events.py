@@ -19,6 +19,7 @@ class LegisEvents():
         self.legis_list = []
         self.legis_name = options["legislator"].lower()
         self.legislator = None
+        self.chamber = None
         self.events = [
             self.add_birthday, self.add_terms,
             self.add_sponsored_bills, self.add_parties,
@@ -54,6 +55,7 @@ class LegisEvents():
         for l in legis_yaml:
             if l["name"]["official_full"] == options["legislator"]:
                 self.legislator = l
+                self.chamber = l["terms"][-1]["type"]
 
         try:
             self.legislator["name"]
@@ -133,6 +135,23 @@ class LegisEvents():
             t = str(int(time.mktime(time.strptime(cs["introduced_on"], '%Y-%m-%d'))))
             cosponsorship = { "time" : t , "event" : "bill cosponsorship", "info" : cs }
             self.legis_list.append(cosponsorship)
+
+
+    def add_committee_memberships(self):
+        if self.chamber == "rep":
+            house_committees_url = ('https://gist.github.com/pdarche/5359620/raw'
+                             '/07e27469b1f787ae3ba262b613c6bac4b1ba5fc6/'
+                             'house_committee_assignments_103_112.csv' )
+            
+            r = requests.get(house_committees_url)
+        else:
+            seante_committees_url = ('https://gist.github.com/pdarche/5359620/raw'
+                             '/07e27469b1f787ae3ba262b613c6bac4b1ba5fc6/'
+                             'house_committee_assignments_103_112.csv' )
+
+        # iterate through lines of csv.  if row id equals
+        # legislator id, create committee dict and append it
+        # to legis-dict list
 
 
     def add_sponsored_bill_lobbying(self):
