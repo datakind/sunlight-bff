@@ -7,6 +7,7 @@ import io as IO
 import sys
 import os
 import string
+import csv
 
 from pandas import *
 
@@ -23,7 +24,7 @@ class LegisEvents():
         self.events = [
             self.add_birthday, self.add_terms,
             self.add_sponsored_bills, self.add_parties,
-            self.add_cosponsored_bills
+            self.add_cosponsored_bills, self.add_committee_memberships
         ]
 
         self.legis_name = self.legis_name.translate(string.maketrans("",""), string.punctuation)
@@ -138,16 +139,67 @@ class LegisEvents():
 
 
     def add_committee_memberships(self):
-        if self.chamber == "rep":
-            house_committees_url = ('https://gist.github.com/pdarche/5359620/raw'
-                             '/07e27469b1f787ae3ba262b613c6bac4b1ba5fc6/'
-                             'house_committee_assignments_103_112.csv' )
-            
-            r = requests.get(house_committees_url)
+        # GIST MAPPING CURRENT MEMBERS OF CONGRESS' ICPSR NO'S TO
+        # BIOGUIDE IDS https://gist.github.com/konklone/1642406
+        
+        if not os.path.exists('cached/icpsr_to_bioguide.csv'):
+            #fetch the csv from konklone's gist  THIS BLOCK IS NOT CURRENTLY WORKING!  
+            #THE CSV IS READ IN AS A UNICODE STRING AND THE CSV PARSE IS PARSING IT WIERDLY 
+            icpsr_to_bioguide_url = ('https://gist.github.com/konklone/1642406/raw/'
+                                     'ca9da4f53efb39d35e37cf19a0129ec5eb7b8ff8/'
+                                     'results_plus_hand_entry.csv')
+
+            r = requests.get(icpsr_to_bioguide_url)
+            mappingcsv = csv.reader(r.text, delimiter=',')
+
         else:
-            seante_committees_url = ('https://gist.github.com/pdarche/5359620/raw'
-                             '/07e27469b1f787ae3ba262b613c6bac4b1ba5fc6/'
-                             'house_committee_assignments_103_112.csv' )
+            mappingcsv = csv.reader(open('cached/icpsr_to_bioguide.csv', 'rb'), delimiter=',')
+            for row in mappingcsv:
+                if row[1] == self.legislator["id"]["bioguide"]:
+                    self.legislator["id"]["icpsr"] = row[2]
+
+
+        if not os.path.exists('cached/house_assignments_103-112.csv'):
+            # if self.chamber == "rep":
+            house_committees_url = ('https://gist.github.com/pdarche/5383752/raw/'
+                                    '07e27469b1f787ae3ba262b613c6bac4b1ba5fc6/'
+                                    'house_committee_assignments_103_112.csv')
+    
+            r = requests.get(house_committees_url)
+            housecsv = csv.reader(r.text, delimiter=',')
+
+        else:
+            housecsv = csv.reader(open('cached/house_assignments_103-112.csv', 'rb'), delimiter=',')
+            houserows = [x for x in housecsv]
+            assignments = []
+            assignment_dates = []
+
+            for row in houserows[1:]:
+                if row[2] == str(float(self.legislator["id"]["icpsr"])):
+                # if int(float(row[2])) == int(self.legislator["id"]["icpsr"]):
+                    assignments.append(row)
+                    assignment_dates.append(row[7])
+
+            dates = []
+            for date in assignment_dates:
+                if date not in dates:
+                    dates.append(date)
+            
+            for u_date in dates:
+                assignment_dict = {}
+                u_date_list = []
+                for row in assignments:
+                    if u_date == row[7]:
+                        u_date_list.append(row)
+                t = str(int(time.mktime(time.strptime(u_date, '%Y-%m-%d %H:%M:%S'))))
+                committee_assignment = { "time" : t, "event" : "joined committee", "info" : u_date_list }
+                self.legis_list.append(committee_assignment)
+
+        # if not os.path.exists('cached/senate_assignments_103-112.csv'):
+        # else:
+        #     seante_committees_url = ('https://gist.github.com/pdarche/5383745/raw/'
+        #                              '164ada45a82755e5ced80ff1029c801fd9c79c7d/'
+        #                              'senate_committee_assignments_103_112.csv')
 
         # iterate through lines of csv.  if row id equals
         # legislator id, create committee dict and append it
@@ -202,6 +254,9 @@ def run(options):
 
     legis = LegisEvents(options)
     legis.create_object()
+
+    for ev in legis.legis_list:
+        print ev["time"]
 
     sorted_events = sorted(legis.legis_list, key=lambda k: int(k['time']))
     final_dict = { "data" : sorted_events }
