@@ -22,7 +22,7 @@ class LegisEvents():
         self.legislator = None
         self.chamber = None
         self.events = [
-            self.add_birthday, self.add_terms,
+            self.add_terms,
             self.add_sponsored_bills, self.add_parties,
             self.add_cosponsored_bills, self.add_committee_memberships
         ]
@@ -254,9 +254,6 @@ def run(options):
 
     legis = LegisEvents(options)
     legis.create_object()
-
-    for ev in legis.legis_list:
-        print ev["time"]
 
     sorted_events = sorted(legis.legis_list, key=lambda k: int(k['time']))
     final_dict = { "data" : sorted_events }
