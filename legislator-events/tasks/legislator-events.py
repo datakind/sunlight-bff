@@ -225,7 +225,7 @@ class LegisEvents():
                 housecsv = csv.reader(open('cached/house_assignments_103-112.csv',
                                            'rb'),delimiter=',')
                 houserows = [x for x in housecsv]                                           
-                assignments = []                                                            
+                assignments = []                                               
                 assignment_dates = []                                                       
                 # create two lists: one with all the rows containing
                 # a committee record for the given legislator and
@@ -256,7 +256,8 @@ class LegisEvents():
                         }
                     self.legis_list.append(committee_assignment)
 
-        elif self.chamber = "sen"
+        elif self.chamber == "sen":
+            print "chamber is senate"
             if not os.path.exists('cached/senate_assignments_103-112.csv'):
                 senate_comm_url = ('https://gist.github.com/pdarche/5383745/raw/'
                                          '164ada45a82755e5ced80ff1029c801fd9c79c7d/'
@@ -265,7 +266,7 @@ class LegisEvents():
                 r = requests.get(senate_comm_url)
                 senatecsv = csv.reader(r.text, delimiter=',')
             else:
-                senate = csv.reader(open('cached/senate_assignments_103-112.csv',
+                senatecsv = csv.reader(open('cached/senate_assignments_103-112.csv',
                                            'rb'),delimiter=',')
                 senaterows = [x for x in senatecsv]                                     
                 assignments = []                                                       
@@ -273,7 +274,7 @@ class LegisEvents():
                 # create two lists: one with all the rows containing
                 # a committee record for the given legislator and
                 # another with the assignment dates
-                for row in houserows[1:]:
+                for row in senaterows[1:]:
                     if row[2] == str(float(self.legislator["id"]["icpsr"])):       
                         assignments.append(row)                                             
                         assignment_dates.append(row[7])                                     
@@ -366,10 +367,6 @@ def run(options):
 
             ev_collection = { "time" : obj["time"], "events" : event_list}
             event_list_list.append(ev_collection)
-
-
-    for ev in event_list_list[1:5]:
-        print ev
 
     sorted_events = sorted(event_list_list, key=lambda k: int(k['time']))
     final_dict = { "data" : sorted_events }
