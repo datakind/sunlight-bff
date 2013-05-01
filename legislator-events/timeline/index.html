@@ -2,7 +2,8 @@
 <html>
 	<head>
 		<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
-		<script type="text/javascript" src="js/d3.v2.min.js"></script>
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script src="js/d3.v2.min.js"></script>
 		<script type="text/javascript" src="js/handlebars.js"></script>
 		<style>
 
@@ -120,6 +121,12 @@
 
 			.filter-events-input{
 				display: inline-block;
+			}
+
+			.brush .extent {
+			  stroke: #fff;
+			  fill-opacity: .125;
+			  shape-rendering: crispEdges;
 			}
 
 
