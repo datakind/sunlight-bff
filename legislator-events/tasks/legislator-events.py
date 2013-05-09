@@ -301,6 +301,37 @@ class LegisEvents():
                     self.legis_list.append(committee_assignment)
 
 
+    def add_campaign_contributions(self):
+        """hit the influence explorer api"""
+        #each cycle, 
+        legis_cycles = []
+        for term in self.legislator["terms"]:
+            start_date = term["start"].split("-")
+            cycle = int(start_date[0]) - 1
+            legis_cycles.append(cycle)
+
+        name = self.legis_name.split(" ")[-1]
+
+        for cycle in legis_cycles:
+            contribution_url = ('http://transparencydata.com/api/1.0/contribution'
+                                's.json?apikey=7ed8089422bd4022bb9c236062377c5b&'
+                                'contributor_state=md|va&recipient_ft=%s'
+                                '&cycle=%s') % ( name, cycle )
+
+            res = requests.get(contribution_url)
+            for contribution in res.json():
+                t = str(int(time.mktime(time.strptime(contribution["date"], 
+                            '%Y-%m-%d %H:%M:%S'))))
+
+                contribution_event = {
+                    "time" : t,
+                    "event" : "recieved campaign contribution",
+                    "info" : contribution,
+                    "event_id" : str(uuid.uuid4())
+                }
+                self.legis_list.append(contribution_event)
+
+
     def add_sponsored_bill_lobbying(self):
         issues = read_csv(
             '/Users/pdarche/Downloads/Lobby/lob_issue.txt', 
