@@ -12,7 +12,6 @@ import uuid
 
 from pandas import *
 
-
 class LegisEvents():
     """ a class for building a json object containing events
         and actions associated with a given legislator """
@@ -369,7 +368,11 @@ def run(options):
             event_list_list.append(ev_collection)
 
     sorted_events = sorted(event_list_list, key=lambda k: int(k['time']))
-    final_dict = { "data" : sorted_events }
+    
+    final_dict = { 
+        "data" : sorted_events, 
+        "bio" : legis.legislator
+    }
 
     filename = './data/%s.json' % legis.legis_name.replace(" ", "_")
     

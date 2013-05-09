@@ -38,6 +38,25 @@
 
 d3.json('john_a_boehner.json', function(data){
 
+	var legis_data = { 
+		"name" : data.bio.name.official_full,
+		"osid" : data.bio.id.opensecrets,
+		"type" : data.bio.terms[data.bio.terms.length-1].type,
+		"party" : data.bio.terms[data.bio.terms.length-1].party,
+		"district" : data.bio.terms[data.bio.terms.length-1].district,
+		"state" : data.bio.terms[data.bio.terms.length-1].state,
+		"eventTypes" : [ 
+			"Sponsored Legislation", "Cosponsored Legislation", 
+			"Event or Party", "Joined Committee", "Elected to Office" 
+		]
+	}
+
+    var source = $('#legislator').html()
+    var template = Handlebars.compile( source )
+    $('body').append( template(legis_data) )
+
+	console.log("the data is", data)
+
 	// sort the objects by timestamp
 	var sorted = data.data.sort(compare).reverse()
 		values = sorted
@@ -70,8 +89,8 @@ d3.json('john_a_boehner.json', function(data){
 	var startDate = new Date(minTime * 1000),
 		endDate = new Date(maxTime * 1000)
 
-	// // select the events elements, append legis event data
-	// // and translate element based on time
+	// select the events elements, append legis event data
+	// and translate element based on time
 	var event_ = focus.selectAll(".event")
 		.data(sorted)
 	  .enter().append('svg:g')
@@ -153,6 +172,7 @@ d3.json('john_a_boehner.json', function(data){
 })
 
 $(document).ready(function(){
+
 	$('#filter').click(function(){
 		toggleFilter()
 	})
@@ -363,9 +383,73 @@ function addCircles( data ) {
 				var r = 600 * (1/data.length) 
 				return r
 			})
+		})
+		.on('click', function(d){
+			
+			var el = d3.select(this),
+				r = el.attr('r'),
+				top = $(this).position().top - 50,
+				left = $(this).position().left + 50
 
-		});
+			el.classed('selected', true)
+			  .classed(d.event_id, true)
 
+			console.log(d)
+			var templateData = templateId(d)
+
+			console.log("the template info is", templateData)
+
+			var eventId = '#' + d.event_id,
+				templateSelector = '#' + templateData[0]
+				source = $(templateSelector).html(),
+				template = Handlebars.compile( source )
+
+			$('.event-popup').remove()
+			$('body').append(template(templateData[1]))
+			$(eventId).css({ top : top, left : left })
+
+		})
+
+}
+
+function templateId (d){
+	var data 
+	switch(d.event) {
+		case "sponsored legislation":
+			data = {
+				"title" : d.info.title,
+				"thomas_link" : d.info.thomas_link,
+				"govtrack_link" : d.info.link,
+				"id" : d.event_id
+			}
+
+			return [ "sponsored_legislation", data ] 
+			break;
+		case "event/party":
+			return "red"
+			break;
+		case "bill cosponsorship":
+			data = {
+				"title" : d.info.title,
+				"thomas_link" : d.info.thomas_link,
+				"govtrack_link" : d.info.link,
+				"id" : d.event_id
+			}
+
+			return "blue"
+			break
+		case "start congressional term":
+			return "green"
+			break
+		case "joined committee":
+			data = {
+				"committee" : d.info[0][14],
+				"id" : d.event_id
+			}
+
+			return [ "joined_committee", data ]
+			break
+	}
 }
 
 function addContextCircles( data ) {
@@ -419,3 +503,6 @@ function getTimestamp(str) {
   var d = str.match(/\d+/g); // extract date parts
   return +new Date(d[0], d[1] - 1, d[2], d[3], d[4], d[5]); // build Date object
 }
+
+// http://transparencydata.com/api/1.0/contributions.json?apikey=7ed8089422bd4022bb9c236062377c5b&contributor_state=md|va&recipient_ft=mikulski&cycle=2008
+

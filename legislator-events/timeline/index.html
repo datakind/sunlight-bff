@@ -5,137 +5,14 @@
 		<script src="http://d3js.org/d3.v3.min.js"></script>
 		<script src="js/d3.v2.min.js"></script>
 		<script type="text/javascript" src="js/handlebars.js"></script>
-		<style>
+		<link rel="stylesheet" type="text/css" href="style.css" />
 
-			body {
-				margin: 0px;
-			}
-
-			#vis_container {
-				position: relative;
-			}
-
-			#event_info_container {
-				position: fixed;
-				top: 0px;
-				width: 100%;
-				height: 80px;
-				padding: 0px 20px;
-				background-color: hsl(0, 100%, 67%);							
-			}
-
-			#legis_info {
-				display: inline-block;
-				margin: 10px;
-				border: 1px solid gray;
-				padding: 10px
-			}
-
-			#legis_info img, #info_container{
-				display: inline-block;
-			}
-
-			text:hover {
-				cursor: pointer;
-			}
-
-			#event_info {
-				display: inline-block;
-			}
-
-			.axis path,
-			.axis line {
-			    fill: none;
-			    stroke: black;
-			    shape-rendering: crispEdges;
-			}
-
-			.event-text{
-				/*font-family: helvetica;*/
-				font-size: 14px;
-			}
-
-			.event-info {
-				fill-opacity: 0;
-				stroke-opacity: 0;				
-				box-shadow: 0px 2px 10px gray;
-				-webkit-transform: all 1s linear;
-			}
-
-			.event-date{
-				fill-opacity: 0;
-				font-size: 12px;
-				-webkit-transform: all 1s linear;
-			}
-
-			.shown {
-				fill-opacity: 1;
-				stroke-opacity: 1;
-				stroke-width: 1px;
-			}
-
-			.bold{
-				font-weight: bold;
-			}
-
-			.event-type{
-				fill-color: red;
-				color: white;
-			}
-
-			ul {
-				margin: 0px
-			}
-
-			.nav{
-				display: inline-block;
-				padding: 32px 4px;
-				margin: 0px 5px;
-				/*font-weight: bold;*/
-				color: white;
-				font-family: helvetica; 
-			}
-
-			#filter{
-				padding: 32px 10px;
-			}			
-
-			#filter:hover{
-				background-color: white;
-				color: red;
-				cursor: pointer;
-			}
-
-			#filter_options{
-				display: none;
-				position: fixed;
-				left: 0px;
-				top: 80px;
-				background-color: white;
-				border: 1px solid red;
-				border-top: 0px;
-				width: 422px;
-				padding: 10px;
-				padding-left: 60px
-			}
-
-			.filter-events-input{
-				display: inline-block;
-			}
-
-			.brush .extent {
-			  stroke: #fff;
-			  fill-opacity: .125;
-			  shape-rendering: crispEdges;
-			}
-
-
-		</style>
 	</head>
 	<body>
+
 		<div id="vis_container"></div>
-		<div id="event_info_container">
-<!-- 			<div id="legis_info">
+<!-- 		<div id="event_info_container">
+			<div id="legis_info">
 				<img src="http://www.govtrack.us/data/photos/400036-100px.jpeg"/>
 				<div id="info_container">
 					<div id="name">John Boehner</div>
@@ -143,20 +20,41 @@
 					<div id="representing">8th district</div>
 				</div>
 			</div>
-			<div id="event_info"></div> -->
+			<div id="event_info"></div>
 			<ul>
 				<li class="nav">Representative John Boehner, 8th District of Ohio</li>
 				<li class="nav" id="filter">Filter</li>
 			</ul>
-		</div>
-		<div id="filter_options">
+		</div> -->
+
+<!-- 		<div id="filter_options">
 			<div><input type="checkbox" name="filter-events-input" checked="true" class="filter-events-input sponsor"/> Sponsored Legislation</div>
 			<div><input type="checkbox" name="filter-events-input" checked="true" class="filter-events-input cosponsored"/> Cosponsored Legislation</div>
 			<div><input type="checkbox" name="filter-events-input" checked="true" class="filter-events-input party"/> Parties/Events</div>
 			<div><input type="checkbox" name="filter-events-input" checked="true" class="filter-events-input committee"/> Committee Assignments</div>
 			<div><input type="checkbox" name="filter-events-input" checked="true" class="filter-events-input election"/> Elected to Office</div>
-		</div>
+		</div> -->
+
 		<script type="text/javascript" src="js/timeline.js"></script>
+		<script id="legislator" type="x-handlebars-template">
+			<div id="info">
+				<div id="bio">
+				<div id="legislator_image">
+					<img src="http://assets.opensecrets.org/politicians/img/{{osid}}.jpg" />
+				</div>
+					<div><span>{{type}}</span><span> {{name}}</span></div>
+					<div><span>{{party}} - {{state}}{{district}}</span></div>
+				</div>
+				<div id="key">
+					{{#each eventTypes }}
+						<div>
+							<input type="checkbox" class="filter-input" /> {{ this }}
+						</div>
+					{{/each }}
+				</div>
+			</div>
+		</script>
+
 		<script id="eventOrParty" type="x-handlebars-template">
 			<div>{{event}}</div>
 			<div>beneficiaries: 
@@ -175,5 +73,26 @@
 				{{/each}}
 			</div>
 		</script>
+
+		<script id="sponsored_legislation" type="x-handlebars-template">
+			<div class="event-popup" id="{{id}}">
+				<p>{{title}}</p>
+				<a href="{{thomas_link}}" target="_blank">Thomas</a>
+				<a href="{{govtrack_link}}" target="_blank">Govtrack</a>
+			</div>
+		</script>
+
+		<script id="joined_committee" type="x-handlebars-template">
+			<div class="event-popup" id="{{id}}">
+				<p>Joined the {{committee}} Committee</p>
+			</div>
+		</script>
+
+		<script id="joined_committee" type="x-handlebars-template">
+			<div class="event-popup" id="{{id}}">
+				<p>Joined the {{committee}} Committee</p>
+			</div>
+		</script>
+
 	</body>
 </html>

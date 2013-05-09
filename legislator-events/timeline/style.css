@@ -1,0 +1,148 @@
+
+body {
+	position: relative;
+	margin: 0px;
+}
+
+#vis_container {
+	position: relative;
+}
+
+#event_info_container {
+	position: fixed;
+	top: 0px;
+	width: 100%;
+	height: 80px;
+	padding: 0px 20px;
+	background-color: hsl(0, 100%, 67%);							
+}
+
+#legis_info {
+	display: inline-block;
+	margin: 10px;
+	border: 1px solid gray;
+	padding: 10px
+}
+
+#legis_info img, #info_container{
+	display: inline-block;
+}
+
+text:hover {
+	cursor: pointer;
+}
+
+#event_info {
+	display: inline-block;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.event-text{
+	/*font-family: helvetica;*/
+	font-size: 14px;
+}
+
+.event-info {
+	fill-opacity: 0;
+	stroke-opacity: 0;				
+	box-shadow: 0px 2px 10px gray;
+	-webkit-transform: all 1s linear;
+}
+
+.event-date{
+	fill-opacity: 0;
+	font-size: 12px;
+	-webkit-transform: all 1s linear;
+}
+
+.shown {
+	fill-opacity: 1;
+	stroke-opacity: 1;
+	stroke-width: 1px;
+}
+
+.bold{
+	font-weight: bold;
+}
+
+.event-type{
+	fill-color: red;
+	color: white;
+}
+
+ul {
+	margin: 0px
+}
+
+.nav{
+	display: inline-block;
+	padding: 32px 4px;
+	margin: 0px 5px;
+	/*font-weight: bold;*/
+	color: white;
+	font-family: helvetica; 
+}
+
+#filter{
+	padding: 32px 10px;
+}			
+
+#filter:hover{
+	background-color: white;
+	color: red;
+	cursor: pointer;
+}
+
+#filter_options{
+	display: none;
+	position: fixed;
+	left: 0px;
+	top: 80px;
+	background-color: white;
+	border: 1px solid red;
+	border-top: 0px;
+	width: 422px;
+	padding: 10px;
+	padding-left: 60px
+}
+
+.filter-events-input{
+	display: inline-block;
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+
+#info {
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	border: 1px solid #ccc;
+	padding: 10px;
+}
+
+#bio {
+	display: inline-block;
+}
+
+#key {
+	display: inline-block;
+}
+
+.event-popup {
+	background-color: white;
+	position: absolute;
+	padding: 10px;
+	border: 1px solid #ccc
+
+}
