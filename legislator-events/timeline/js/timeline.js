@@ -100,75 +100,6 @@ d3.json('john_a_boehner.json', function(data){
 	addCircles( values )
 	addContextCircles( values )
 
-    // select the text of the axis ticks and add styling
-	// d3.selectAll('.axis').selectAll('text')
-	// 	.attr("transform", "rotate(90)")
-	// 	.attr("x", 10)
-	// 	.attr("y", -5)
-	// 	.style('font-size', 12)
-	// 	.style('fill', 'gray')
-	// 	.attr("text-anchor", "start");
-
-	// append text to each event element
-	// event_.append('g').append('text')
-	// 	.text( function(d) {
-	// 		var text = eventText(d)
-	// 		return text
-	// 	})
-	// 	.attr('class', 'event-text')
-	// 	.attr("text-anchor", "end")
-	// 	.attr("transform", "rotate(40)")
-	// 	.attr("y", -20)
-	// 	.attr("x", -20)
-	// 	.on('mouseover', function(){
-	// 		d3.select(this.parentNode.parentNode).select('.event-date').classed('shown', true)
-	// 	})
-	// 	.on('mouseout', function(){
-	// 		d3.select(this.parentNode.parentNode).select('.event-date').classed('shown', false)
-	// 	});
-
-	// event_.selectAll('text')
-	// 	.insert("g", ":first-child")
-	// 	.append('tspan')
-	// 	.text(function(d){
-	// 		return eventType(d)
-	// 	})
-	// 	.attr('class', 'event-type')
-
-	// event_.append('g').append('rect')
-	// 	.attr('width', 400)
-	// 	.attr('height', 300)
-	// 	.attr('class', 'event-info')
-	// 	.attr('x', -50)
-	// 	.attr('y', -400)
-	// 	.style('stroke', 'hsl(0, 100%, 67%)')
-	// 	.style('fill', 'white')
-	// 	.attr('rx', 10)
-	// 	.attr('ry', 10)
-	
-	// event_.append('text')
-	// 	.text( function(d) {
-	// 		return format(new Date(d.time * 1000))
-	// 	})
-	// 	.attr('class', 'event-date')
-	// 	.attr("transform", "rotate(90)")
-	// 	.attr("x", 10)
-
-	// on click show event info
-	// event_.select('.event-text').on('click', function(d){
-	// 	console.log(d)
-	// 	var rect = d3.select(this.parentNode.parentNode).select('rect')
-	// 	if ( !rect.classed('shown') ){
-	// 		// showEventInfo(d)
-	// 		d3.select(this).classed('bold', true)
-	// 		console.log("hasn't shown", d3.select(this).classed('shown'))
-	// 		rect.classed('shown', true)
-	// 	} else {
-	// 		d3.select(this).classed('bold', false)
-	// 		console.log("has shown", d3.select(this).classed('shown'))
-	// 		rect.classed('shown', false)
-	// 	}
-	// })
 })
 
 $(document).ready(function(){
@@ -470,7 +401,7 @@ function addContextCircles( data ) {
 		})
 		.enter().append('circle')
 	  	.attr('cy', function(d, i){
-	  		return -40 + (-20 * i)
+	  		return -40 + (-2 * i)
 	  	})
 		.attr('class', function(d) { 
 			return d.event.split(" ")[0]
@@ -505,4 +436,74 @@ function getTimestamp(str) {
 }
 
 // http://transparencydata.com/api/1.0/contributions.json?apikey=7ed8089422bd4022bb9c236062377c5b&contributor_state=md|va&recipient_ft=mikulski&cycle=2008
+
+    // select the text of the axis ticks and add styling
+	// d3.selectAll('.axis').selectAll('text')
+	// 	.attr("transform", "rotate(90)")
+	// 	.attr("x", 10)
+	// 	.attr("y", -5)
+	// 	.style('font-size', 12)
+	// 	.style('fill', 'gray')
+	// 	.attr("text-anchor", "start");
+
+	// append text to each event element
+	// event_.append('g').append('text')
+	// 	.text( function(d) {
+	// 		var text = eventText(d)
+	// 		return text
+	// 	})
+	// 	.attr('class', 'event-text')
+	// 	.attr("text-anchor", "end")
+	// 	.attr("transform", "rotate(40)")
+	// 	.attr("y", -20)
+	// 	.attr("x", -20)
+	// 	.on('mouseover', function(){
+	// 		d3.select(this.parentNode.parentNode).select('.event-date').classed('shown', true)
+	// 	})
+	// 	.on('mouseout', function(){
+	// 		d3.select(this.parentNode.parentNode).select('.event-date').classed('shown', false)
+	// 	});
+
+	// event_.selectAll('text')
+	// 	.insert("g", ":first-child")
+	// 	.append('tspan')
+	// 	.text(function(d){
+	// 		return eventType(d)
+	// 	})
+	// 	.attr('class', 'event-type')
+
+	// event_.append('g').append('rect')
+	// 	.attr('width', 400)
+	// 	.attr('height', 300)
+	// 	.attr('class', 'event-info')
+	// 	.attr('x', -50)
+	// 	.attr('y', -400)
+	// 	.style('stroke', 'hsl(0, 100%, 67%)')
+	// 	.style('fill', 'white')
+	// 	.attr('rx', 10)
+	// 	.attr('ry', 10)
+	
+	// event_.append('text')
+	// 	.text( function(d) {
+	// 		return format(new Date(d.time * 1000))
+	// 	})
+	// 	.attr('class', 'event-date')
+	// 	.attr("transform", "rotate(90)")
+	// 	.attr("x", 10)
+
+	// on click show event info
+	// event_.select('.event-text').on('click', function(d){
+	// 	console.log(d)
+	// 	var rect = d3.select(this.parentNode.parentNode).select('rect')
+	// 	if ( !rect.classed('shown') ){
+	// 		// showEventInfo(d)
+	// 		d3.select(this).classed('bold', true)
+	// 		console.log("hasn't shown", d3.select(this).classed('shown'))
+	// 		rect.classed('shown', true)
+	// 	} else {
+	// 		d3.select(this).classed('bold', false)
+	// 		console.log("has shown", d3.select(this).classed('shown'))
+	// 		rect.classed('shown', false)
+	// 	}
+	// })
 

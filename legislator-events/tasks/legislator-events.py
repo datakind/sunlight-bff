@@ -24,7 +24,8 @@ class LegisEvents():
         self.events = [
             self.add_terms,
             self.add_sponsored_bills, self.add_parties,
-            self.add_cosponsored_bills, self.add_committee_memberships
+            self.add_cosponsored_bills, self.add_committee_memberships,
+            self.add_campaign_contributions
         ]
 
         self.legis_name = self.legis_name.translate(string.maketrans("",""),
@@ -312,15 +313,15 @@ class LegisEvents():
         name = self.legis_name.split(" ")[-1]
 
         for cycle in legis_cycles:
+            print "adding contribution"
             contribution_url = ('http://transparencydata.com/api/1.0/contribution'
-                                's.json?apikey=7ed8089422bd4022bb9c236062377c5b&'
-                                'contributor_state=md|va&recipient_ft=%s'
-                                '&cycle=%s') % ( name, cycle )
+                                's.json?apikey=7ed8089422bd4022bb9c236062377c5b'
+                                '&recipient_ft=%s&cycle=%s') % ( name, cycle )                                
 
             res = requests.get(contribution_url)
             for contribution in res.json():
                 t = str(int(time.mktime(time.strptime(contribution["date"], 
-                            '%Y-%m-%d %H:%M:%S'))))
+                            '%Y-%m-%d'))))
 
                 contribution_event = {
                     "time" : t,
@@ -382,26 +383,20 @@ def run(options):
     legis = LegisEvents(options)
     legis.create_object()
 
-    #compare date and merge events with the same date
-    checked_times = []
-    event_list_list = []
-    for obj in legis.legis_list:
-        event_list = []
-        # if the event time hasn't already been checked
-        if obj["time"] not in checked_times:
-            event_list.append(obj)
+    times = [ obj["time"] for obj in legis.legis_list ]
+    unique_times = list(set(times))
+    events_list = []
 
-            for comparison_obj in legis.legis_list:
-                if obj["event_id"] != comparison_obj["event_id"] and obj["time"] == comparison_obj["time"]:
-                    event_list.append(comparison_obj)
+    for time in unique_times:
+        time_list = []        
+        for event in legis.legis_list:            
+            if event["time"] == time:
+                time_list.append(event)
+        ev_collection = { "time" : time, "events" : time_list}
+        events_list.append(ev_collection)
 
-            ev_collection = { "time" : obj["time"], "events" : event_list}
-            event_list_list.append(ev_collection)
-
-    sorted_events = sorted(event_list_list, key=lambda k: int(k['time']))
-    
-    final_dict = { 
-        "data" : sorted_events, 
+    final_dict = {
+        "data" : events_list, 
         "bio" : legis.legislator
     }
 
