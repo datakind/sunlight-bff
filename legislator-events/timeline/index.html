@@ -75,10 +75,26 @@
 		</script>
 
 		<script id="sponsored_legislation" type="x-handlebars-template">
-			<div class="event-popup" id="{{id}}">
-				<p>{{title}}</p>
-				<a href="{{thomas_link}}" target="_blank">Thomas</a>
-				<a href="{{govtrack_link}}" target="_blank">Govtrack</a>
+			<div class="event-popup" id="{{id}}">								
+				<h3>Sponsored Legislation</h3>
+				<div>
+					<h5>title</h5> 
+					<p>{{title}}</p>
+					<a href="{{thomas_link}}" target="_blank">Thomas</a>
+					<a href="{{govtrack_link}}" target="_blank">Govtrack</a>
+				</div>
+			</div>
+		</script>
+
+		<script id="cosponsored_legislation" type="x-handlebars-template">
+			<div class="event-popup" id="{{id}}">				
+				<h3>Cosponsored Legislation</h3>
+				<div>
+					<h5>title</h5> 
+					<p>{{title}}</p>
+					<a href="{{thomas_link}}" target="_blank">Thomas</a>
+					<a href="{{govtrack_link}}" target="_blank">Govtrack</a>
+				</div>
 			</div>
 		</script>
 
@@ -91,6 +107,30 @@
 		<script id="joined_committee" type="x-handlebars-template">
 			<div class="event-popup" id="{{id}}">
 				<p>Joined the {{committee}} Committee</p>
+			</div>
+		</script>
+
+		<script id="campaign_contribution" type="x-handlebars-template">
+			<div class="event-popup" id="{{id}}">
+				<h5>{{date}}</h5>
+				<h3>Recieved Campaign Contribution</h3>
+				<div>
+					<h5>donor</h5> 
+					<a href="#" class="contributor-name {{contributor_string}}">{{contributor_name}}</a>
+				</div>
+				<!-- <p>contriutor occupation {{contributor_occupation}}</p> -->
+				<div>
+					<h5>amount</h5>
+					<p>${{amount}}</p>
+				</div>
+				<div class="hidden-content">
+					<h5>cycle</h5>
+					<p>{{cycle}}</p>
+				</div>
+				<div class="hidden-content contributor-location">
+					{{contributor_city}}, {{contributor_state}} {{contributor_zipcode}} 
+				</div>
+				
 			</div>
 		</script>
 

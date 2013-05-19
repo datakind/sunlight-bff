@@ -104,8 +104,48 @@ d3.json('john_a_boehner.json', function(data){
 
 $(document).ready(function(){
 
+	window.removePopup = true
+	window.hoverable = true
+
 	$('#filter').click(function(){
 		toggleFilter()
+	})
+
+	$('body').delegate('svg', 'click', function(ev){
+		
+		if ( !($(ev.target).is('circle')) ){
+			
+			hoverable = !hoverable
+			removePopup = !removePopup
+
+			$('.event-popup').remove()
+			d3.select('.selected-event').classed('selected-event', false)
+		}
+
+	})
+
+	$('body').delegate('.contributor-name', 'click', function(ev){
+		
+		ev.preventDefault()
+		console.log("clicking this name", $(ev.target).attr('class').split(" ")[1] )
+
+		var targetName = $(ev.target).attr('class').split(" ")[1]
+
+		d3.selectAll('.recieved').attr('r', function(d, i){		
+
+				var stripped = d.info.contributor_name.replace(" ", ""),
+					el = d3.select(this)	
+
+				if ( stripped !== targetName ){
+					el.attr('fill-opacity', 0)
+					return 3
+				} else {
+					console.log("yerp")
+					el.attr('fill-opacity', 1)
+					return 10
+				}
+		})
+
 	})
 
 	$('.filter-events-input').click(function(){
@@ -273,8 +313,15 @@ function addCircles( data ) {
 		.attr('class', function(d) { 
 			return d.event.split(" ")[0]
 		})
-		.attr('r', function(){
-			var r = 600 * (1/data.length) 
+		.attr('r', function(d){
+			// if ( d.event_type === "recieved_campaign_contribution" ){				
+			// 	var r = (1/data.length) * Number( d.info.amount )
+			// 	console.log("amount", r)
+			// } else {
+			// 	var r = 600 * (1/data.length)
+			// 	// return r				
+			// }
+			var r = 600 * ( 1/data.length )
 			return r
 		})
 		.attr('cx', 0)
@@ -298,47 +345,72 @@ function addCircles( data ) {
 			}
 		})
 		.style('fill-opacity', .5)
-		.on('mouseover', function(){
-			// console.log(d3.select(this).data())			
-			var self = this
-			d3.select(this.parentNode.parentNode).select('.event-date').classed('shown', true)
-			d3.select(this).transition().attr('r', function(){
-				return d3.select(self).attr('r') * 2
-			})
+		.on('mouseover', function(d){
+			
+			if ( hoverable ){		
+				var self = this
+				d3.select(this.parentNode.parentNode).select('.event-date').classed('shown', true)
+				d3.select(this).transition().attr('r', function(){
+					return d3.select(self).attr('r') * 2
+				})
+
+				var el = d3.select(this),
+					r = el.attr('r'),
+					top = $(this).position().top - 50,
+					left = $(this).position().left + 50
+
+				el.classed('selected', true)
+				  .classed(d.event_id, true)
+
+				console.log(d)
+				var templateData = templateId(d)
+
+				console.log("the template info is", templateData)
+
+				var eventId = '#' + d.event_id,
+					templateSelector = '#' + templateData[0]
+					source = $(templateSelector).html(),
+					template = Handlebars.compile( source )
+				
+				$('.event-popup').remove()
+				$('body').append(template(templateData[1]))
+				$(eventId).css({ top : top, left : left })
+			}
+
 		})
 		.on('mouseout', function(){
+			
 			var self = this
+			
+			removePopup ? $('.event-popup').remove() : null
+
 			d3.select(this.parentNode.parentNode).select('.event-date').classed('shown', false)
-		
-			d3.select(this).transition().attr('r', function(d){
-				var r = 600 * (1/data.length) 
-				return r
-			})
+			
+			if (!(d3.select(this).classed('selected-event'))){
+				d3.select(this).transition().attr('r', function(d){
+					var r = 600 * (1/data.length) 
+					return r
+				})
+				.style('stroke', 'none')
+				// .style('stroke-width', '2px')
+				.style('fill-opacity', .4)
+			}
+
 		})
 		.on('click', function(d){
-			
-			var el = d3.select(this),
-				r = el.attr('r'),
-				top = $(this).position().top - 50,
-				left = $(this).position().left + 50
+			d3.select(this)
+				.style('stroke', 'red')
+				.style('stroke-width', '2px')
+				.style('stroke-opacity', .4)
+				.style('fill-opacity', .8)
+				.classed('selected-event', true)
 
-			el.classed('selected', true)
-			  .classed(d.event_id, true)
+			hoverable = false
+			removePopup = false
+			console.log(removePopup)
 
-			console.log(d)
-			var templateData = templateId(d)
-
-			console.log("the template info is", templateData)
-
-			var eventId = '#' + d.event_id,
-				templateSelector = '#' + templateData[0]
-				source = $(templateSelector).html(),
-				template = Handlebars.compile( source )
-
-			$('.event-popup').remove()
-			$('body').append(template(templateData[1]))
-			$(eventId).css({ top : top, left : left })
-
+			$('.event-popup').addClass('expanded')
+			$('.hidden-content').removeClass('hidden-content')
 		})
 
 }
@@ -361,13 +433,13 @@ function templateId (d){
 			break;
 		case "bill cosponsorship":
 			data = {
-				"title" : d.info.title,
+				"title" : d.info.official_title,
 				"thomas_link" : d.info.thomas_link,
 				"govtrack_link" : d.info.link,
 				"id" : d.event_id
 			}
 
-			return "blue"
+			return [ "cosponsored_legislation", data ]
 			break
 		case "start congressional term":
 			return "green"
@@ -380,7 +452,41 @@ function templateId (d){
 
 			return [ "joined_committee", data ]
 			break
+		case "recieved campaign contribution":
+			var contributor_name
+			if ( d.info.contributor_type == "I" ) {
+				var contributor_name = fixContributorName( d.info.contributor_name )
+			} else {
+				contributor_name = d.info.contributor_name
+			}
+
+			data = {
+				"date" : new Date( Number(d.time) * 1000),
+				"contributor_name" : contributor_name,
+				"contributor_string" : d.info.contributor_name.replace(" ", ""),
+				"contributor_occupation" : d.info.contributor_occupation,
+				"contributor_city" : d.info.contributor_city,
+				"contributor_state" : d.info.contributor_state,
+				"conributor_zipcode" : d.info.contributor_zipcode,
+				"cycle" : d.info.cycle,
+				"amount" : d.info.amount,
+				"id" : d.event_id
+			}
+
+			return [ "campaign_contribution", data ]
+			break
 	}
+}
+
+function fixContributorName( name ){
+	var split = name.toLowerCase().split(" "),
+		first, last
+
+	first = split[1].charAt(0).toUpperCase() + split[1].slice(1);
+	last = split[0].charAt(0).toUpperCase() + split[0].slice(1);
+	last.replace(",", "")
+
+	return first + ' ' + last
 }
 
 function addContextCircles( data ) {
@@ -404,9 +510,9 @@ function addContextCircles( data ) {
 	  		return -40 + (-2 * i)
 	  	})
 		.attr('class', function(d) { 
-			return d.event.split(" ")[0]
+			return d.event.split(" ")[0] + ' ' + d.event_id
 		})
-		.attr('r', 3 )
+		.attr('r', 2 )
 		.attr('cx', 0)
 		.style('fill', function(d){
 			switch(d.event) {
@@ -427,6 +533,7 @@ function addContextCircles( data ) {
 					break
 			}
 		})
+		// .style('fill-opacity', .3)
 
 }
 

@@ -122,6 +122,31 @@ ul {
   shape-rendering: crispEdges;
 }
 
+.event-popup div {
+	margin: 0px 10px 0px 0px;
+	display: inline-block;
+}
+
+h3, h5, a {
+	font-family: helvetica;
+}
+
+h3 {
+	margin: 5px 0px;
+}
+
+h5, .event-popup p {
+	margin: 0px;
+	font-family: helvetica;
+	/*color: #ccc*/
+}
+
+a {
+	text-decoration: none;
+	color: purple;
+	font-weight: bold;
+}
+
 
 #info {
 	position: absolute;
@@ -142,7 +167,17 @@ ul {
 .event-popup {
 	background-color: white;
 	position: absolute;
-	padding: 10px;
-	border: 1px solid #ccc
+	padding: 15px;
+	border: 1px solid #333;
+	width: 350px;
+	box-shadow: 0px 2px 10px #ccc;
+	-webkit-transition: all 100ms linear;
+}
 
+.event-popup .hidden-content{
+	display: none;
+}
+
+.expanded {
+	width: 500px;
 }

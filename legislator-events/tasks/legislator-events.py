@@ -75,7 +75,8 @@ class LegisEvents():
         self.legislator["bio"].update(self.legislator["name"])
         birth = { 
             "time" : t , 
-            "event" : "born" , 
+            "event" : "born",
+            "event_type" : "life_event", 
             "info" : self.legislator["bio"], 
             "event_id" : str(uuid.uuid4()) 
         }
@@ -88,7 +89,8 @@ class LegisEvents():
                 time.strptime(term["start"], '%Y-%m-%d'))))
             cong_sess = { 
                 "time" : t, 
-                "event" : "start congressional term", 
+                "event" : "start congressional term",
+                "event_type" : "start_congressional_term",
                 "info" : term, 
                 "event_id" : str(uuid.uuid4()) 
             }
@@ -108,7 +110,8 @@ class LegisEvents():
                     '%Y-%m-%d'))))
             sponsored_bill = { 
                 "time" : t, 
-                "event" : "sponsored legislation", 
+                "event" : "sponsored legislation",
+                "event_type" : "sponsored_legislation",
                 "info" : bill, 
                 "event_id" : str(uuid.uuid4()) 
             }
@@ -130,7 +133,8 @@ class LegisEvents():
                       '%Y-%m-%d'))))
                 party = { 
                     "time" : t , 
-                    "event" : "event/party", 
+                    "event" : "event/party",
+                    "event_type" : "event_or_party",
                     "info" : party, 
                     "event_id" : str(uuid.uuid4()) 
                 }
@@ -167,7 +171,8 @@ class LegisEvents():
                      '%Y-%m-%d'))))
             cosponsorship = { 
                 "time" : t , 
-                "event" : "bill cosponsorship", 
+                "event" : "bill cosponsorship",
+                "event_type" : "bill_cosponsorship",
                 "info" : cs, 
                 "event_id" : str(uuid.uuid4()) 
             }
@@ -250,7 +255,8 @@ class LegisEvents():
                             '%Y-%m-%d %H:%M:%S')))) 
                     committee_assignment = { 
                             "time" : t, 
-                            "event" : "joined committee", 
+                            "event" : "joined committee",
+                            "event_type" : "joined_committee",
                             "info" : u_date_list, 
                             "event_id" : str(uuid.uuid4()) 
                         }
@@ -294,7 +300,8 @@ class LegisEvents():
                             '%Y-%m-%d %H:%M:%S')))) 
                     committee_assignment = { 
                             "time" : t, 
-                            "event" : "joined committee", 
+                            "event" : "joined committee",
+                            "event_type" : "joined_committee",
                             "info" : u_date_list, 
                             "event_id" : str(uuid.uuid4()) 
                         }
@@ -326,6 +333,7 @@ class LegisEvents():
                 contribution_event = {
                     "time" : t,
                     "event" : "recieved campaign contribution",
+                    "event_type" : "recieved_campaign_contribution",
                     "info" : contribution,
                     "event_id" : str(uuid.uuid4())
                 }
