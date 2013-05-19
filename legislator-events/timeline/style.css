@@ -2,6 +2,7 @@
 body {
 	position: relative;
 	margin: 0px;
+	background-color: rgb(248,245,246);
 }
 
 #vis_container {
@@ -15,6 +16,15 @@ body {
 	height: 80px;
 	padding: 0px 20px;
 	background-color: hsl(0, 100%, 67%);							
+}
+
+#top_bar {
+	width: 100%;
+	height: 30px;
+	position: absolute;
+	top: 0px;
+	background-color: #cf1a0c;
+	opacity: 0.77;
 }
 
 #legis_info {
@@ -43,6 +53,44 @@ text:hover {
     shape-rendering: crispEdges;
 }
 
+.axis {
+	font-family: helvetica;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+.focus-circle{
+	stroke-width: 3px;
+	fill-opacity: 0;
+}
+
+.context-circle {
+	fill-opacity: .4;
+}
+
+.hovered{
+	fill-opacity: 1;
+}
+
+.selected {
+	fill-opacity: 1;
+}
+
+.not-selected {
+	fill-opacity: .1;
+	stroke-opacity: .1;
+	stroke-width: 0px;
+}
+
+.connected {
+	fill-opacity: 1;
+}
+
+.not-connected {
+	fill-opacity: .1;
+	stroke-width: 0px;
+}
+
 .event-text{
 	/*font-family: helvetica;*/
 	font-size: 14px;
@@ -50,7 +98,7 @@ text:hover {
 
 .event-info {
 	fill-opacity: 0;
-	stroke-opacity: 0;				
+	stroke-opacity: 0;		
 	box-shadow: 0px 2px 10px gray;
 	-webkit-transform: all 1s linear;
 }

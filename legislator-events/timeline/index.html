@@ -4,39 +4,17 @@
 		<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
 		<script src="http://d3js.org/d3.v3.min.js"></script>
 		<script src="js/d3.v2.min.js"></script>
+		<script src="js/underscore.js"></script>
+		<script src="js/backbone.js"></script>
 		<script type="text/javascript" src="js/handlebars.js"></script>
 		<link rel="stylesheet" type="text/css" href="style.css" />
 
 	</head>
 	<body>
-
 		<div id="vis_container"></div>
-<!-- 		<div id="event_info_container">
-			<div id="legis_info">
-				<img src="http://www.govtrack.us/data/photos/400036-100px.jpeg"/>
-				<div id="info_container">
-					<div id="name">John Boehner</div>
-					<div id="title">Representative</div>
-					<div id="representing">8th district</div>
-				</div>
-			</div>
-			<div id="event_info"></div>
-			<ul>
-				<li class="nav">Representative John Boehner, 8th District of Ohio</li>
-				<li class="nav" id="filter">Filter</li>
-			</ul>
-		</div> -->
-
-<!-- 		<div id="filter_options">
-			<div><input type="checkbox" name="filter-events-input" checked="true" class="filter-events-input sponsor"/> Sponsored Legislation</div>
-			<div><input type="checkbox" name="filter-events-input" checked="true" class="filter-events-input cosponsored"/> Cosponsored Legislation</div>
-			<div><input type="checkbox" name="filter-events-input" checked="true" class="filter-events-input party"/> Parties/Events</div>
-			<div><input type="checkbox" name="filter-events-input" checked="true" class="filter-events-input committee"/> Committee Assignments</div>
-			<div><input type="checkbox" name="filter-events-input" checked="true" class="filter-events-input election"/> Elected to Office</div>
-		</div> -->
-
 		<script type="text/javascript" src="js/timeline.js"></script>
 		<script id="legislator" type="x-handlebars-template">
+			<div id="top_bar"></div>
 			<div id="info">
 				<div id="bio">
 				<div id="legislator_image">
@@ -45,13 +23,13 @@
 					<div><span>{{type}}</span><span> {{name}}</span></div>
 					<div><span>{{party}} - {{state}}{{district}}</span></div>
 				</div>
-				<div id="key">
+			<!--	<div id="key">
 					{{#each eventTypes }}
 						<div>
 							<input type="checkbox" class="filter-input" /> {{ this }}
 						</div>
 					{{/each }}
-				</div>
+				</div> -->
 			</div>
 		</script>
 
@@ -110,7 +88,7 @@
 			</div>
 		</script>
 
-		<script id="campaign_contribution" type="x-handlebars-template">
+		<!--<script id="campaign_contribution" type="x-handlebars-template">
 			<div class="event-popup" id="{{id}}">
 				<h5>{{date}}</h5>
 				<h3>Recieved Campaign Contribution</h3>
@@ -118,7 +96,7 @@
 					<h5>donor</h5> 
 					<a href="#" class="contributor-name {{contributor_string}}">{{contributor_name}}</a>
 				</div>
-				<!-- <p>contriutor occupation {{contributor_occupation}}</p> -->
+				 <p>contriutor occupation {{contributor_occupation}}</p>
 				<div>
 					<h5>amount</h5>
 					<p>${{amount}}</p>
@@ -130,7 +108,23 @@
 				<div class="hidden-content contributor-location">
 					{{contributor_city}}, {{contributor_state}} {{contributor_zipcode}} 
 				</div>
-				
+			</div>
+		</script>-->
+
+		<script id="campaign_contribution" type="x-handlebars-template">
+			<div class="event-popup" id="{{id}}">
+				<h5>{{date}}</h5>
+				<h3>Recieved Campaign Contribution</h3>
+				<div id="popup_content_container">
+					<div>
+						<h5>donor</h5> 
+						<a href="#" class="contributor-name {{contributor_string}}">{{contributor_name}}</a>
+					</div>
+					<div>
+						<h5>amount</h5>
+						<p>${{amount}}</p>
+					</div>
+				</div>
 			</div>
 		</script>
 

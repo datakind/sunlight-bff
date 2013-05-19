@@ -119,7 +119,19 @@ $(document).ready(function(){
 			removePopup = !removePopup
 
 			$('.event-popup').remove()
-			d3.select('.selected-event').classed('selected-event', false)
+			d3.select('.selected')
+				.classed('selected', false)
+				.transition()
+				.attr('r', function(){
+					return d3.select(this).attr('r') / 2
+				})
+
+			d3.selectAll('.not-connected')
+				.classed('not-connected', false)
+
+			d3.selectAll('.connected')
+				.classed('connected', false)
+
 		}
 
 	})
@@ -131,21 +143,19 @@ $(document).ready(function(){
 
 		var targetName = $(ev.target).attr('class').split(" ")[1]
 
-		d3.selectAll('.recieved').attr('r', function(d, i){		
+		d3.selectAll('.recieved')[0].forEach(function(d, i){
+			var data = d3.select(d)[0][0].__data__
 
-				var stripped = d.info.contributor_name.replace(" ", ""),
-					el = d3.select(this)	
+			var stripped = data.info.contributor_name.replace(/ /g, ""),
+				el = d3.select(d)
 
-				if ( stripped !== targetName ){
-					el.attr('fill-opacity', 0)
-					return 3
-				} else {
-					console.log("yerp")
-					el.attr('fill-opacity', 1)
-					return 10
-				}
+			if ( stripped !== targetName ){
+				el.classed('not-connected', true)
+			} else {		
+				el.classed('connected', true)
+			}
+
 		})
-
 	})
 
 	$('.filter-events-input').click(function(){
@@ -311,40 +321,23 @@ function addCircles( data ) {
 	  		return yVal
 	  	})
 		.attr('class', function(d) { 
-			return d.event.split(" ")[0]
+			return d.event.split(" ")[0] + ' ' + 'focus-circle'
 		})
 		.attr('r', function(d){
-			// if ( d.event_type === "recieved_campaign_contribution" ){				
-			// 	var r = (1/data.length) * Number( d.info.amount )
-			// 	console.log("amount", r)
-			// } else {
-			// 	var r = 600 * (1/data.length)
-			// 	// return r				
-			// }
 			var r = 600 * ( 1/data.length )
 			return r
 		})
 		.attr('cx', 0)
-		.style('fill', function(d){
-			switch(d.event) {
-				case "sponsored legislation":
-					return "yellow"
-					break;
-				case "event/party":
-					return "red"
-					break;
-				case "bill cosponsorship":
-					return "blue"
-					break
-				case "start congressional term":
-					return "green"
-					break
-				case "joined committee":
-					return "purple"
-					break
-			}
+		.style('stroke', function(d){ 
+			var color
+			color = getColor(d)
+			return color
 		})
-		.style('fill-opacity', .5)
+		.style('fill', function(d){ 
+			var color
+			color = getColor(d)
+			return color
+		})
 		.on('mouseover', function(d){
 			
 			if ( hoverable ){		
@@ -357,60 +350,70 @@ function addCircles( data ) {
 				var el = d3.select(this),
 					r = el.attr('r'),
 					top = $(this).position().top - 50,
-					left = $(this).position().left + 50
+					left = $(this).position().left >= 800 ? $(this).position().left - 400 : $(this).position().left + 50
 
-				el.classed('selected', true)
-				  .classed(d.event_id, true)
+				console.log("the position is", $(this).position())
 
-				console.log(d)
+
+				el.classed(d.event_id, true)
+				  .classed('hovered', true)
+
 				var templateData = templateId(d)
-
-				console.log("the template info is", templateData)
+				console.log(d)
+				console.log("the template info is", templateData)				
 
 				var eventId = '#' + d.event_id,
 					templateSelector = '#' + templateData[0]
-					source = $(templateSelector).html(),
-					template = Handlebars.compile( source )
+					// source = $(templateSelector).html(),
+					// template = Handlebars.compile( source )
 				
 				$('.event-popup').remove()
-				$('body').append(template(templateData[1]))
-				$(eventId).css({ top : top, left : left })
+				// $('body').append(template(templateData[1]))
+
+				var popup = new PopupView({
+					el : $('body'),
+					model : templateData[1],
+					tmpl : $(templateSelector),
+					top : top,
+					left : left
+				})
+				
 			}
 
 		})
 		.on('mouseout', function(){
-			
-			var self = this
-			
-			removePopup ? $('.event-popup').remove() : null
 
-			d3.select(this.parentNode.parentNode).select('.event-date').classed('shown', false)
+			removePopup ? $('.event-popup').remove() : null
 			
-			if (!(d3.select(this).classed('selected-event'))){
+			d3.select(this.parentNode.parentNode)
+				.select('.event-date')
+				.classed('shown', false)				
+
+			d3.select(this).classed('hovered', false)				
+
+			if (!(d3.select(this).classed('selected'))){
+
 				d3.select(this).transition().attr('r', function(d){
 					var r = 600 * (1/data.length) 
 					return r
-				})
-				.style('stroke', 'none')
-				// .style('stroke-width', '2px')
-				.style('fill-opacity', .4)
+				})						
 			}
 
 		})
 		.on('click', function(d){
-			d3.select(this)
-				.style('stroke', 'red')
-				.style('stroke-width', '2px')
-				.style('stroke-opacity', .4)
-				.style('fill-opacity', .8)
-				.classed('selected-event', true)
+			
+			d3.select(this).classed('selected', true)
 
 			hoverable = false
 			removePopup = false
-			console.log(removePopup)
 
 			$('.event-popup').addClass('expanded')
 			$('.hidden-content').removeClass('hidden-content')
+
+			var expanded = new ExpandedView({
+				el : '#popup_content_container',
+				model : d
+			})
 		})
 
 }
@@ -461,9 +464,9 @@ function templateId (d){
 			}
 
 			data = {
-				"date" : new Date( Number(d.time) * 1000),
+				"date" : new Date( Number(d.time) * 1000).toString('dddd,MMMM,yyyy'),
 				"contributor_name" : contributor_name,
-				"contributor_string" : d.info.contributor_name.replace(" ", ""),
+				"contributor_string" : d.info.contributor_name.replace(/ /g, ""),
 				"contributor_occupation" : d.info.contributor_occupation,
 				"contributor_city" : d.info.contributor_city,
 				"contributor_state" : d.info.contributor_state,
@@ -510,7 +513,7 @@ function addContextCircles( data ) {
 	  		return -40 + (-2 * i)
 	  	})
 		.attr('class', function(d) { 
-			return d.event.split(" ")[0] + ' ' + d.event_id
+			return d.event.split(" ")[0] + ' ' + d.event_id + ' ' + 'context-circle'
 		})
 		.attr('r', 2 )
 		.attr('cx', 0)
@@ -533,7 +536,6 @@ function addContextCircles( data ) {
 					break
 			}
 		})
-		// .style('fill-opacity', .3)
 
 }
 
@@ -542,75 +544,88 @@ function getTimestamp(str) {
   return +new Date(d[0], d[1] - 1, d[2], d[3], d[4], d[5]); // build Date object
 }
 
-// http://transparencydata.com/api/1.0/contributions.json?apikey=7ed8089422bd4022bb9c236062377c5b&contributor_state=md|va&recipient_ft=mikulski&cycle=2008
+function getColor(d){
 
-    // select the text of the axis ticks and add styling
-	// d3.selectAll('.axis').selectAll('text')
-	// 	.attr("transform", "rotate(90)")
-	// 	.attr("x", 10)
-	// 	.attr("y", -5)
-	// 	.style('font-size', 12)
-	// 	.style('fill', 'gray')
-	// 	.attr("text-anchor", "start");
+	switch(d.event) {
+		case "sponsored legislation":
+			return "yellow"
+			break;
+		case "event/party":
+			return "red"
+			break;
+		case "bill cosponsorship":
+			return "blue"
+			break
+		case "start congressional term":
+			return "green"
+			break
+		case "joined committee":
+			return "purple"
+			break
+		case "recieved campaign contribution":
+			return "#333"
+			break
+	}
+}
 
-	// append text to each event element
-	// event_.append('g').append('text')
-	// 	.text( function(d) {
-	// 		var text = eventText(d)
-	// 		return text
-	// 	})
-	// 	.attr('class', 'event-text')
-	// 	.attr("text-anchor", "end")
-	// 	.attr("transform", "rotate(40)")
-	// 	.attr("y", -20)
-	// 	.attr("x", -20)
-	// 	.on('mouseover', function(){
-	// 		d3.select(this.parentNode.parentNode).select('.event-date').classed('shown', true)
-	// 	})
-	// 	.on('mouseout', function(){
-	// 		d3.select(this.parentNode.parentNode).select('.event-date').classed('shown', false)
-	// 	});
-
-	// event_.selectAll('text')
-	// 	.insert("g", ":first-child")
-	// 	.append('tspan')
-	// 	.text(function(d){
-	// 		return eventType(d)
-	// 	})
-	// 	.attr('class', 'event-type')
-
-	// event_.append('g').append('rect')
-	// 	.attr('width', 400)
-	// 	.attr('height', 300)
-	// 	.attr('class', 'event-info')
-	// 	.attr('x', -50)
-	// 	.attr('y', -400)
-	// 	.style('stroke', 'hsl(0, 100%, 67%)')
-	// 	.style('fill', 'white')
-	// 	.attr('rx', 10)
-	// 	.attr('ry', 10)
+var PopupView = Backbone.View.extend({
 	
-	// event_.append('text')
-	// 	.text( function(d) {
-	// 		return format(new Date(d.time * 1000))
-	// 	})
-	// 	.attr('class', 'event-date')
-	// 	.attr("transform", "rotate(90)")
-	// 	.attr("x", 10)
 
-	// on click show event info
-	// event_.select('.event-text').on('click', function(d){
-	// 	console.log(d)
-	// 	var rect = d3.select(this.parentNode.parentNode).select('rect')
-	// 	if ( !rect.classed('shown') ){
-	// 		// showEventInfo(d)
-	// 		d3.select(this).classed('bold', true)
-	// 		console.log("hasn't shown", d3.select(this).classed('shown'))
-	// 		rect.classed('shown', true)
-	// 	} else {
-	// 		d3.select(this).classed('bold', false)
-	// 		console.log("has shown", d3.select(this).classed('shown'))
-	// 		rect.classed('shown', false)
-	// 	}
-	// })
+	initialize : function(){
 
+		this.render()
+
+	},
+
+	render : function(){
+
+		var source = $(this.options.tmpl).html(),
+			template = Handlebars.compile( source ),
+			eventId = '#' + this.model.id
+
+		$('body').append( template(this.model) )
+		$(eventId).css({ top : this.options.top, left : this.options.left })
+
+	},
+
+	events : {
+
+		"click .received" : "renderExpanded",
+		"click svg" : "renderExpanded"
+
+	},
+
+	renderExpanded : function(){
+
+		console.log("doin dis")
+		
+
+	}
+
+})
+
+var ExpandedView = Backbone.View.extend({
+	
+	initialize : function(){
+		
+		$('#popup_content_container').empty()
+		this.render()
+
+	},
+
+	render : function(){
+
+		console.log("doin dis bitch")
+
+	},
+
+	events : {
+
+	}
+})
+
+Handlebars.registerHelper('formatDate', function(v){
+    console.log("rounding this mother", v)
+    var number = round(v)
+    return number
+})
