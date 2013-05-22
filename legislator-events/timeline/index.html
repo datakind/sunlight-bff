@@ -20,9 +20,11 @@
 				<div id="legislator_image">
 					<img src="http://assets.opensecrets.org/politicians/img/{{osid}}.jpg" />
 				</div>
-					<div><span>{{type}}</span><span> {{name}}</span></div>
-					<div><span>{{party}} - {{state}}{{district}}</span></div>
+				<div id="legislator_name">
+					<span id="role">{{type}}</span> <span>{{name}}</span>
+					<span>[{{state}}{{district}}]</span>
 				</div>
+				
 			<!--	<div id="key">
 					{{#each eventTypes }}
 						<div>
@@ -78,15 +80,20 @@
 
 		<script id="joined_committee" type="x-handlebars-template">
 			<div class="event-popup" id="{{id}}">
-				<p>Joined the {{committee}} Committee</p>
+				<h5>{{date}}</h5>
+				<h3>Joined Committee</h3>
+				<div>
+					<h5>committee/position</h5>
+					<p>{{committee}}</p>
+				</div>
 			</div>
 		</script>
 
-		<script id="joined_committee" type="x-handlebars-template">
+		<!-- <script id="joined_committee" type="x-handlebars-template">
 			<div class="event-popup" id="{{id}}">
 				<p>Joined the {{committee}} Committee</p>
 			</div>
-		</script>
+		</script> -->
 
 		<!--<script id="campaign_contribution" type="x-handlebars-template">
 			<div class="event-popup" id="{{id}}">
@@ -125,6 +132,25 @@
 						<p>${{amount}}</p>
 					</div>
 				</div>
+			</div>
+		</script>
+
+		<script id="campaign_contribution_details" type="x-handlebars-template">
+			<div>
+				<h5>donor</h5> 
+				<a href="#" class="contributor-name {{contributor_string}}">{{contributor_name}}</a>
+			</div>		
+			<div>
+				<h5>amount</h5>
+				<p>${{amount}}</p>
+			</div>
+			<div>
+				<h5>type</h5> 
+				<p>{{contributor_type}}</p>
+			</div>
+			<div>
+				<h5>cycle</h5> 
+				<p>{{cycle}}</p>
 			</div>
 		</script>
 

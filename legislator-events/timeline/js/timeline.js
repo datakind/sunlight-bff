@@ -41,7 +41,7 @@ d3.json('john_a_boehner.json', function(data){
 	var legis_data = { 
 		"name" : data.bio.name.official_full,
 		"osid" : data.bio.id.opensecrets,
-		"type" : data.bio.terms[data.bio.terms.length-1].type,
+		"type" : capitaliseFirstLetter( data.bio.terms[data.bio.terms.length-1].type ),
 		"party" : data.bio.terms[data.bio.terms.length-1].party,
 		"district" : data.bio.terms[data.bio.terms.length-1].district,
 		"state" : data.bio.terms[data.bio.terms.length-1].state,
@@ -449,6 +449,7 @@ function templateId (d){
 			break
 		case "joined committee":
 			data = {
+				"date" : new Date( Number(d.time) * 1000).toString('dddd,MMMM,yyyy'),
 				"committee" : d.info[0][14],
 				"id" : d.event_id
 			}
@@ -487,7 +488,8 @@ function fixContributorName( name ){
 
 	first = split[1].charAt(0).toUpperCase() + split[1].slice(1);
 	last = split[0].charAt(0).toUpperCase() + split[0].slice(1);
-	last.replace(",", "")
+	console.log(last.search(/,/g, ""))
+	last.replace(/,/g, "")
 
 	return first + ' ' + last
 }
@@ -539,6 +541,10 @@ function addContextCircles( data ) {
 
 }
 
+function capitaliseFirstLetter(string){
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function getTimestamp(str) {
   var d = str.match(/\d+/g); // extract date parts
   return +new Date(d[0], d[1] - 1, d[2], d[3], d[4], d[5]); // build Date object
@@ -586,20 +592,6 @@ var PopupView = Backbone.View.extend({
 		$('body').append( template(this.model) )
 		$(eventId).css({ top : this.options.top, left : this.options.left })
 
-	},
-
-	events : {
-
-		"click .received" : "renderExpanded",
-		"click svg" : "renderExpanded"
-
-	},
-
-	renderExpanded : function(){
-
-		console.log("doin dis")
-		
-
 	}
 
 })
@@ -615,7 +607,18 @@ var ExpandedView = Backbone.View.extend({
 
 	render : function(){
 
-		console.log("doin dis bitch")
+		var source = $('#campaign_contribution_details').html(),
+			template = Handlebars.compile( source )
+		
+		if ( this.model.info.contribotor_type === "C" ){
+			this.model.info.contribotor_type = "Corporate"
+		} else {
+			this.model.info.contribotor_type = "Individual"
+			this.model.info.contributor_name = fixContributorName(this.model.info.contributor_name)
+			this.model.info.contributor_string = this.model.info.contributor_name.replace(/ /g, "")
+		}
+
+		this.$el.html( template( this.model.info ))
 
 	},
 

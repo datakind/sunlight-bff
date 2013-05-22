@@ -20,7 +20,7 @@ body {
 
 #top_bar {
 	width: 100%;
-	height: 30px;
+	height: 40px;
 	position: absolute;
 	top: 0px;
 	background-color: #cf1a0c;
@@ -198,10 +198,30 @@ a {
 
 #info {
 	position: absolute;
-	top: 20px;
-	left: 20px;
-	border: 1px solid #ccc;
-	padding: 10px;
+	top: 5px;
+	left: 50px;
+	/*border: 1px solid #ccc;*/
+	/*padding: 10px;*/
+}
+
+#legislator_image img{
+	height: 30px;
+}
+
+#legislator_image {
+	display: inline-block;
+}
+
+#legislator_name {
+	display: inline-block;
+	position: relative;
+	top: -8px;
+	font-size: 14px;
+	font-family: helvetica;
+	font-weight: bold;
+	color: white;
+	margin-left: 5px;
+
 }
 
 #bio {
