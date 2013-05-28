@@ -15,6 +15,12 @@
 		<script type="text/javascript" src="js/timeline.js"></script>
 		<script id="legislator" type="x-handlebars-template">
 			<div id="top_bar"></div>
+			<ul id="options_list">
+				<li id="key_li"><img id="key_img" src="key.svg"/></li>
+				<li id="filter_li"><img id="filter_img" src="filter.svg"/></li>
+			</ul>
+			<div id="options_content"></div>
+
 			<div id="info">
 				<div id="bio">
 				<div id="legislator_image">
@@ -25,7 +31,7 @@
 					<span>[{{state}}{{district}}]</span>
 				</div>
 				
-			<!--	<div id="key">
+				<!--<div id="key">
 					{{#each eventTypes }}
 						<div>
 							<input type="checkbox" class="filter-input" /> {{ this }}
@@ -89,34 +95,25 @@
 			</div>
 		</script>
 
+		<script id="filter_template" type="x-handlebars-template">
+			<h5>Event Type <span id="add_filter">+ add filter</span></h5>
+			<select name="event-type" id="event_type_filter_drop">
+				<option selected="true">Select Event Type</option>
+				<option value="elected">Elected to office</option>
+				<option value="committee">Assigned to Committee</option>				
+				<option value="campaign_contribution">Campaign Contribution</option>
+				<option value="lobbying_contribution">Lobbing Contribution</option>
+				<option value="sponsored_legislation">Sponsored Legislation</option>
+				<option value="cosponsored_legislation">Cosponsored Legislation</option>
+			</select>
+			<button id="filter_button">Filter Events</button>
+		</script>
+
 		<!-- <script id="joined_committee" type="x-handlebars-template">
 			<div class="event-popup" id="{{id}}">
 				<p>Joined the {{committee}} Committee</p>
 			</div>
 		</script> -->
-
-		<!--<script id="campaign_contribution" type="x-handlebars-template">
-			<div class="event-popup" id="{{id}}">
-				<h5>{{date}}</h5>
-				<h3>Recieved Campaign Contribution</h3>
-				<div>
-					<h5>donor</h5> 
-					<a href="#" class="contributor-name {{contributor_string}}">{{contributor_name}}</a>
-				</div>
-				 <p>contriutor occupation {{contributor_occupation}}</p>
-				<div>
-					<h5>amount</h5>
-					<p>${{amount}}</p>
-				</div>
-				<div class="hidden-content">
-					<h5>cycle</h5>
-					<p>{{cycle}}</p>
-				</div>
-				<div class="hidden-content contributor-location">
-					{{contributor_city}}, {{contributor_state}} {{contributor_zipcode}} 
-				</div>
-			</div>
-		</script>-->
 
 		<script id="campaign_contribution" type="x-handlebars-template">
 			<div class="event-popup" id="{{id}}">

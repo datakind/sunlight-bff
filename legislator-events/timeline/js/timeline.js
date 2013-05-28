@@ -32,7 +32,8 @@
 	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 	var context = svg.append("g")
-	    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+	    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
+	    .attr('class', 'context-container');
 
 	var values
 
@@ -111,7 +112,7 @@ $(document).ready(function(){
 		toggleFilter()
 	})
 
-	$('body').delegate('svg', 'click', function(ev){
+	$('body').on('click', 'svg', function(ev){
 		
 		if ( !($(ev.target).is('circle')) ){
 			
@@ -119,6 +120,7 @@ $(document).ready(function(){
 			removePopup = !removePopup
 
 			$('.event-popup').remove()
+
 			d3.select('.selected')
 				.classed('selected', false)
 				.transition()
@@ -130,32 +132,81 @@ $(document).ready(function(){
 				.classed('not-connected', false)
 
 			d3.selectAll('.connected')
+				.attr('r', function(){
+					return d3.select(this).attr('r') / 5
+				})
 				.classed('connected', false)
+
+			$('#options_content').empty().css({ display : "none"})
+			$('.white-bg').removeClass('white-bg')
 
 		}
 
 	})
 
-	$('body').delegate('.contributor-name', 'click', function(ev){
-		
+	$('body').on('click', '.contributor-name', function(ev){		
 		ev.preventDefault()
-		console.log("clicking this name", $(ev.target).attr('class').split(" ")[1] )
-
 		var targetName = $(ev.target).attr('class').split(" ")[1]
 
-		d3.selectAll('.recieved')[0].forEach(function(d, i){
-			var data = d3.select(d)[0][0].__data__
+		d3.selectAll('.context-container .recieved')[0].forEach(function(circle, i){
+			
+			if ( i < 10 ) console.log("this is it", circle)
 
-			var stripped = data.info.contributor_name.replace(/ /g, ""),
-				el = d3.select(d)
+			var data = d3.select(circle)[0][0].__data__,
+				stripped = data.info.contributor_name.replace(/ /g, ""),
+				el = d3.select(circle)
 
 			if ( stripped !== targetName ){
 				el.classed('not-connected', true)
-			} else {		
+			} else {
+				console.log("the stripped name is", stripped)
+				console.log("the target name is", targetName)
 				el.classed('connected', true)
+				el.attr('r', function(){
+					return d3.select(this).attr('r') * 5
+				})
+				console.log(data)
 			}
 
 		})
+	})
+
+	$('body').on('click', '#key_li, #filter_li', function(){
+		toggleOption($(this))
+	})
+
+	$('body').on('click', '#add_filter', function(){
+		var eventType = $('#event_type_filter_drop option:selected').val()
+		addAttributeFilter[eventType]()
+
+	})
+
+	$('body').on('click', '#filter_button', function(){
+
+		var attribute = $('#event_type_filter_drop').val(),
+			attributeDrop = $('.attribute-drop').val(),
+			attributeOperator = $('.attribute-operator').val(),
+			attributeOperandVal = $('.attribute-operand-value').val(),
+			elements = $('.context-event')
+			
+		d3.selectAll('.recieved')[0].forEach(function(circle, i){
+		
+			var data = d3.select(circle)[0][0].__data__,
+				amount = Number(data.info.amount),
+				el = d3.select(circle)
+
+			if ( amount < attributeOperandVal ){
+				el.classed('not-connected', true)
+			} else {
+				el.classed('connected', true)
+				el.attr('r', function(){
+					return d3.select(this).attr('r') * 5
+				})
+				console.log(data)
+			}
+
+		})
+
 	})
 
 	$('.filter-events-input').click(function(){
@@ -208,6 +259,16 @@ function toggleFilter(){
 
 	$('#filter_options').hasClass('shown-filter') ? $('#filter_options').slideUp().removeClass('shown-filter') :
 													$('#filter_options').slideDown().addClass('shown-filter')
+
+}
+
+function toggleOption( target ){
+
+	$('.white-bg').removeClass('white-bg')
+	$(target).addClass('white-bg')
+	$('#options_content').css({ display : 'block'})
+
+	options[target.attr('id')]()
 
 }
 
@@ -350,10 +411,10 @@ function addCircles( data ) {
 				var el = d3.select(this),
 					r = el.attr('r'),
 					top = $(this).position().top - 50,
-					left = $(this).position().left >= 800 ? $(this).position().left - 400 : $(this).position().left + 50
+					left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
+															$(this).position().left + 50
 
 				console.log("the position is", $(this).position())
-
 
 				el.classed(d.event_id, true)
 				  .classed('hovered', true)
@@ -364,11 +425,8 @@ function addCircles( data ) {
 
 				var eventId = '#' + d.event_id,
 					templateSelector = '#' + templateData[0]
-					// source = $(templateSelector).html(),
-					// template = Handlebars.compile( source )
 				
 				$('.event-popup').remove()
-				// $('body').append(template(templateData[1]))
 
 				var popup = new PopupView({
 					el : $('body'),
@@ -501,7 +559,7 @@ function addContextCircles( data ) {
 	var event_ = context.selectAll(".context-event")
 		.data(data)
 	  .enter().append('svg:g')
-	  	.attr('class', 'context-event')	
+	  	.attr('class', 'context-event')
 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
 
 	// append the shape 
@@ -610,10 +668,10 @@ var ExpandedView = Backbone.View.extend({
 		var source = $('#campaign_contribution_details').html(),
 			template = Handlebars.compile( source )
 		
-		if ( this.model.info.contribotor_type === "C" ){
+		if ( this.model.info.contributor_type === "C" ){
 			this.model.info.contribotor_type = "Corporate"
 		} else {
-			this.model.info.contribotor_type = "Individual"
+			this.model.info.contributor_type = "Individual"
 			this.model.info.contributor_name = fixContributorName(this.model.info.contributor_name)
 			this.model.info.contributor_string = this.model.info.contributor_name.replace(/ /g, "")
 		}
@@ -627,8 +685,104 @@ var ExpandedView = Backbone.View.extend({
 	}
 })
 
+var options = {
+
+	filter_li : function(){
+		console.log("firing")
+
+		var source = $('#filter_template').html(),
+			template = Handlebars.compile( source )
+
+		$('#options_content').html( template )
+
+	},
+
+	key_li : function(){
+
+		var source = $('#key_template').html(),
+			template = Handlebars.compile( source )
+
+		$('#options_content').html( template )
+
+	}
+}
+
+var addAttributeFilter = {
+
+	elected : function(){
+
+	},
+	committee : function() {
+
+	},
+
+	campaign_contribution : function(){
+
+		$('<select class="attribute-drop" id="contribution_attributes_drop"></select>').insertAfter('#event_type_filter_drop')
+
+		_.each(contributionAttributes, function(attr){
+
+			var option = '<option value="' + attr + '"">' + lowerUnderToUpperSpace( attr ) + '</option>';
+			$('#contribution_attributes_drop').append(option);
+
+		})
+
+		$('<select class="attribute-operator" id="contribution_attributes_logic"><option value="gte">greater than or equal to</option></select>').insertAfter('#contribution_attributes_drop')
+		$('<input class="attribute-operand-value" type="text" id="contribution_amount_input"/>').insertAfter('#contribution_attributes_logic')
+
+	}, 
+
+	lobbying_contribution : function(){
+
+	}, 
+
+	sponsored_legislation : function(){
+
+	},
+
+	cosponsored_legislation : function(){
+
+	}
+
+}
+
+function lowerUnderToUpperSpace( string ){
+
+	var pieces = string.split("_"),
+		finStr = ""
+
+	_.each(pieces, function(piece){
+		finStr += capitaliseFirstLetter(piece) + " "
+	})
+
+	return $.trim(finStr)
+}
+
 Handlebars.registerHelper('formatDate', function(v){
     console.log("rounding this mother", v)
     var number = round(v)
     return number
 })
+
+var contributionAttributes = [ 
+		"amount", "candidacy_status", "committee_ext_id",
+		"committee_name", "committee_party", "contributor_address",
+		"contributor_category", "contributor_city",
+		"contributor_employer", "contributor_ext_id",
+		"contributor_gender", "contributor_name",
+		"contributor_occupation", "contributor_state", 
+		"contributor_type", "contributor_zipcode",
+		"cycle", "date", "district", "district_held",
+		"filing_id", "is_amendment", "organization_ext_id",
+		"organization_name", "parent_organization_ext_id",
+		"parent_organization_name", "recipient_category", 
+		"recipient_ext_id", "recipient_name", 
+		"recipient_party", "recipient_state",
+		"recipient_state_held", "recipient_type",
+		"seat", "seat_held", "seat_result", "seat_status", 
+		"transaction_id", "transaction_namespace", 
+		"transaction_type", "transaction_type_description"
+	]
+
+// to get:
+// all the tracontributor categories
