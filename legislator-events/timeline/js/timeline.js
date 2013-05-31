@@ -38,6 +38,7 @@
 	var values
 
 d3.json('john_a_boehner.json', function(data){
+	window.legislatorData = data
 
 	var legis_data = { 
 		"name" : data.bio.name.official_full,
@@ -181,12 +182,32 @@ $(document).ready(function(){
 
 	})
 
+	$('body').on('change', '.attribute-drop', function(){
+		var eventType = $('#event_type_filter_drop option:selected').val(),
+			eventAttribute = $('.attribute-drop option:selected').val(),
+			attrVals = legislatorData["event_attributes"][eventType][eventAttribute],
+			valDrop = '<select class="attribute-value-drop">'
+			valDrop += '<option>Select Value</option></select>'
+		
+		$('.attribute-value-drop').remove()
+		$(valDrop).insertAfter('.attribute-drop')
+
+		// attrVals = _.map(attrVals, function(n){ return Number(n) }).sort(function(a,b){return a-b})
+		eventAttribute === "amount" ? attrVals = attrVals.sort(function(a,b){return a-b}) : attrVals = attrVals.sort()  
+
+		_.each( attrVals, function(val){
+			$('.attribute-value-drop').append('<option value="' + val + '">' + val + '</option>')
+		}) 
+
+	})
+
 	$('body').on('click', '#filter_button', function(){
 
 		var attribute = $('#event_type_filter_drop').val(),
-			attributeDrop = $('.attribute-drop').val(),
-			attributeOperator = $('.attribute-operator').val(),
-			attributeOperandVal = $('.attribute-operand-value').val(),
+			attr = $('.attribute-drop option:selected').val(),
+			// attributeOperator = $('.attribute-operator').val(),
+			// attributeOperandVal = $('.attribute-operand-value').val(),
+			attrVal = $('.attribute-value-drop option:selected').val()
 			elements = $('.context-event')
 			
 		d3.selectAll('.recieved')[0].forEach(function(circle, i){
@@ -195,15 +216,27 @@ $(document).ready(function(){
 				amount = Number(data.info.amount),
 				el = d3.select(circle)
 
-			if ( amount < attributeOperandVal ){
-				el.classed('not-connected', true)
+			if ( data.info.hasOwnProperty(attr) ){
+				if (data.info[attr] === attrVal ){
+					el.classed('connected', true)
+					el.attr('r', function(){
+						return d3.select(this).attr('r') * 5
+					})
+				}
 			} else {
-				el.classed('connected', true)
-				el.attr('r', function(){
-					return d3.select(this).attr('r') * 5
-				})
-				console.log(data)
+				el.classed('not-connected', true)
 			}
+
+			// if ( amount < attributeOperandVal ){
+			// 	el.classed('not-connected', true)
+			// } else {
+			// 	el.classed('connected', true)
+			// 	el.attr('r', function(){
+			// 		return d3.select(this).attr('r') * 5
+			// 	})
+			// 	console.log(data)
+			// }
+
 		})
 	})
 
@@ -716,7 +749,7 @@ var addAttributeFilter = {
 
 	campaign_contribution : function(){
 
-		$('<select class="attribute-drop" id="contribution_attributes_drop"></select>').insertAfter('#event_type_filter_drop')
+		$('<select class="attribute-drop" id="contribution_attributes_drop"><option>Select Attribute</option></select>').insertAfter('#event_type_filter_drop')
 
 		_.each(contributionAttributes, function(attr){
 
@@ -725,8 +758,8 @@ var addAttributeFilter = {
 
 		})
 
-		$('<select class="attribute-operator" id="contribution_attributes_logic"><option value="gte">greater than or equal to</option></select>').insertAfter('#contribution_attributes_drop')
-		$('<input class="attribute-operand-value" type="text" id="contribution_amount_input"/>').insertAfter('#contribution_attributes_logic')
+		// $('<select class="attribute-operator" id="contribution_attributes_logic"><option value="gte">greater than or equal to</option></select>').insertAfter('#contribution_attributes_drop')
+		// $('<input class="attribute-operand-value" type="text" id="contribution_amount_input"/>').insertAfter('#contribution_attributes_logic')
 
 	}, 
 

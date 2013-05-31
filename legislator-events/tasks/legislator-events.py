@@ -31,6 +31,14 @@ class LegisEvents():
         self.legis_name = self.legis_name.translate(string.maketrans("",""),
                                                      string.punctuation)
 
+        self.event_attributes = {
+            "campaign_contributions" : None,
+            "sponsored_bills" : None,
+            "cosponsored_bills" : None,
+            "events_and_parties" : None,
+            "committee_assignment" : None
+        }   
+
         # create data file if it doesn't exist
         if not os.path.exists('data'):
             os.makedirs('data')
@@ -341,7 +349,8 @@ class LegisEvents():
                 self.legis_list.append(contribution_event)
                 contributions.append(contribution)
         
-        filtered = dict( (key, [ contribution[key] for contribution in contributions ]) for key in contributions[0].keys() )
+        filtered = dict( (key, list(set([contribution[key] for contribution in contributions]))) for key in contributions[0].keys() )
+        self.event_attributes["campaign_contribution"] = filtered
 
     def add_sponsored_bill_lobbying(self):
         issues = read_csv(
@@ -408,7 +417,8 @@ def run(options):
 
     final_dict = {
         "data" : events_list, 
-        "bio" : legis.legislator
+        "bio" : legis.legislator,
+        "event_attributes" : legis.event_attributes
     }
 
     filename = './data/%s.json' % legis.legis_name.replace(" ", "_")
