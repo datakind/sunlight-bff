@@ -289,8 +289,8 @@ class LegisEvents():
                 dates = list(set(assignment_dates))
                 
                 # for each unique date, iterate through assignments
-                # and look for assignemtn matches.  add matches 
-                # to unique date list and create an assignment object  
+                # and look for assignemtn matches.  add matches
+                # to unique date list and create an assignment object
                 for u_date in dates:
                     u_date_list = []
                     for row in assignments:
@@ -310,7 +310,8 @@ class LegisEvents():
 
     def add_campaign_contributions(self):
         """hit the influence explorer api"""
-        #each cycle, 
+        
+        contributions = []
         legis_cycles = []
         for term in self.legislator["terms"]:
             start_date = term["start"].split("-")
@@ -338,7 +339,9 @@ class LegisEvents():
                     "event_id" : str(uuid.uuid4())
                 }
                 self.legis_list.append(contribution_event)
-
+                contributions.append(contribution)
+        
+        filtered = dict( (key, [ contribution[key] for contribution in contributions ]) for key in contributions[0].keys() )
 
     def add_sponsored_bill_lobbying(self):
         issues = read_csv(
