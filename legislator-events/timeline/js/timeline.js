@@ -178,8 +178,8 @@ $(document).ready(function(){
 
 	$('body').on('click', '#add_filter', function(){
 		var eventType = $('#event_type_filter_drop option:selected').val()
+		console.log("eventtype is", eventType)
 		addAttributeFilter[eventType]()
-
 	})
 
 	$('body').on('change', '.attribute-drop', function(){
@@ -197,7 +197,7 @@ $(document).ready(function(){
 
 		_.each( attrVals, function(val){
 			$('.attribute-value-drop').append('<option value="' + val + '">' + val + '</option>')
-		}) 
+		})
 
 	})
 
@@ -226,16 +226,6 @@ $(document).ready(function(){
 			} else {
 				el.classed('not-connected', true)
 			}
-
-			// if ( amount < attributeOperandVal ){
-			// 	el.classed('not-connected', true)
-			// } else {
-			// 	el.classed('connected', true)
-			// 	el.attr('r', function(){
-			// 		return d3.select(this).attr('r') * 5
-			// 	})
-			// 	console.log(data)
-			// }
 
 		})
 	})
@@ -752,29 +742,40 @@ var addAttributeFilter = {
 		$('<select class="attribute-drop" id="contribution_attributes_drop"><option>Select Attribute</option></select>').insertAfter('#event_type_filter_drop')
 
 		_.each(contributionAttributes, function(attr){
-
 			var option = '<option value="' + attr + '"">' + lowerUnderToUpperSpace( attr ) + '</option>';
-			$('#contribution_attributes_drop').append(option);
-
+			$('.attribute-drop').append(option);
 		})
-
-		// $('<select class="attribute-operator" id="contribution_attributes_logic"><option value="gte">greater than or equal to</option></select>').insertAfter('#contribution_attributes_drop')
-		// $('<input class="attribute-operand-value" type="text" id="contribution_amount_input"/>').insertAfter('#contribution_attributes_logic')
 
 	}, 
 
 	lobbying_contribution : function(){
 
-	}, 
+		
+
+	},
 
 	sponsored_legislation : function(){
+
+		$('<select class="attribute-drop" id="sponsored_bills_attributes_drop"><option>Select Attribute</option></select>').insertAfter('#event_type_filter_drop')
+
+		_.each(sponsoredAttributes, function(attr){
+			var option = '<option value="' + attr + '"">' + lowerUnderToUpperSpace( attr ) + '</option>';
+			$('.attribute-drop').append(option);
+		})
 
 	},
 
 	cosponsored_legislation : function(){
 
+
+
 	}
 
+}
+
+var eventToSelectorMapping = {
+	"campaign_contribution" : ".recieved",
+	"sponsored_legislation" : ".sponsored"
 }
 
 function lowerUnderToUpperSpace( string ){

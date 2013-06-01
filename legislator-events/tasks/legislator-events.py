@@ -32,9 +32,9 @@ class LegisEvents():
                                                      string.punctuation)
 
         self.event_attributes = {
-            "campaign_contributions" : None,
-            "sponsored_bills" : None,
-            "cosponsored_bills" : None,
+            "campaign_contribution" : None,
+            "sponsored_legislation" : None,
+            "cosponsored_legislation" : None,
             "events_and_parties" : None,
             "committee_assignment" : None
         }   
@@ -106,6 +106,7 @@ class LegisEvents():
 
 
     def add_sponsored_bills(self):
+        bills = []
         #fetch sponosred bills ADD CACHING!
         legis_id = self.legislator["id"]["govtrack"]
         sponsored_url = ('http://www.govtrack.us/api/v2/bill?sponsor=%s'
@@ -124,6 +125,11 @@ class LegisEvents():
                 "event_id" : str(uuid.uuid4()) 
             }
             self.legis_list.append(sponsored_bill)
+            bills.append(bill)
+
+        bills = [ prepBills(bill) for bill in bills]
+        filtered = dict( (key, list(set([bill[key] for bill in bills]))) for key in bills[0].keys() )
+        self.event_attributes["sponsored_legislation"] = filtered
 
 
     def add_parties(self):
@@ -186,6 +192,12 @@ class LegisEvents():
             }
             self.legis_list.append(cosponsorship)
 
+        print json.dumps(cosponsored_bills[0])
+
+        bills = [ prepCosponsored(bill) for bill in cosponsored_bills ]
+        filtered = dict( (key, list(set([bill[key] for bill in bills]))) for key in bills[0].keys() )
+        self.event_attributes["cosponsored_legislation"] = filtered
+
 
     def add_committee_memberships(self):
         # GIST MAPPING CURRENT MEMBERS OF CONGRESS' ICPSR NO'S TO
@@ -200,13 +212,13 @@ class LegisEvents():
                                      'konklone/1642406/raw/'
                                      'ca9da4f53efb39d35e37cf19'
                                      'a0129ec5eb7b8ff8/'
-                                     'results_plus_hand_entry.csv')            
+                                     'results_plus_hand_entry.csv')
 
             r = requests.get(icpsr_to_bioguide_url)
             mappingcsv = csv.reader(r.text, delimiter=',')
             
             legis_and_codes = []
-            rows = r.text.encode('utf-8').split("\n")            
+            rows = r.text.encode('utf-8').split("\n")
             for row in rows:
                 split_row = row.split(",")
                 if split_row[1] == self.legislator["id"]["bioguide"]:
@@ -352,6 +364,7 @@ class LegisEvents():
         filtered = dict( (key, list(set([contribution[key] for contribution in contributions]))) for key in contributions[0].keys() )
         self.event_attributes["campaign_contribution"] = filtered
 
+
     def add_sponsored_bill_lobbying(self):
         issues = read_csv(
             '/Users/pdarche/Downloads/Lobby/lob_issue.txt', 
@@ -425,5 +438,28 @@ def run(options):
     
     with IO.open(filename, 'wb') as outfile:
       json.dump(final_dict, outfile)
+
+
+def prepBills(bill):
+    del bill["major_actions"]
+    del bill["titles"]
+    del bill["sponsor"]
+    del bill["sponsor_role"]
+
+    return bill
+
+def prepCosponsored(bill):
+    bill["xml"] = bill["last_version"]["urls"]["xml"]
+    bill["html"] = bill["last_version"]["urls"]["html"]
+    bill["pdf"] = bill["last_version"]["urls"]["pdf"]
+    bill["version_name"] = bill["last_version"]["version_name"]
+    bill["active"] = bill["history"]["active"]
+    bill["awaiting_signature"] = bill["history"]["awaiting_signature"]
+    bill["enacted"] = bill["history"]["enacted"]
+    bill["vetoed"] = bill["history"]["vetoed"]
+
+    return bill
+
+
 
 
