@@ -135,7 +135,8 @@ class LegisEvents():
 
     def add_parties(self):
         #fetch parties ADD CACHING!
-        if hasattr(self.legislator['id'], 'opensecrets'):        
+        if hasattr(self.legislator['id'], 'opensecrets'):
+            print "fetching parties"
             parties_url = ('http://politicalpartytime.org/api/v1/event/'
                            '?beneficiaries__crp_id=%s&format=json&apikey='
                            '7ed8089422bd4022bb9c236062377'
@@ -153,6 +154,7 @@ class LegisEvents():
                     "info" : party, 
                     "event_id" : str(uuid.uuid4()) 
                 }
+                print "adding party/event"
                 self.legis_list.append(party)
 
 
@@ -281,6 +283,7 @@ class LegisEvents():
                             "info" : u_date_list, 
                             "event_id" : str(uuid.uuid4()) 
                         }
+                    print ("adding committee")
                     self.legis_list.append(committee_assignment)
 
         elif self.chamber == "sen":

@@ -109,8 +109,17 @@ text:hover {
 .axis path,
 .axis line {
     fill: none;
-    stroke: black;
-    shape-rendering: crispEdges;
+    stroke: #ccc;
+    /*shape-rendering: crispEdges;*/
+    stroke: #CBCBCB;
+	stroke-dasharray: 2, 5, 2, 5;
+	stroke-width: 1;
+}
+
+.x.axis path {
+  /*display: none;*/
+  stroke-dasharray: none;
+  stroke: #aaa;
 }
 
 .axis {

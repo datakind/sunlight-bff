@@ -11,7 +11,7 @@
 	    y = d3.scale.linear().range([height, 0]),
 	    y2 = d3.scale.linear().range([height2, 0]);
 
-	var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(10),
+	var xAxis = d3.svg.axis().scale(x).orient("bottom").tickSize(-500),
 	    xAxis2 = d3.svg.axis().scale(x2).orient("bottom")
 
 	var brush = d3.svg.brush()
@@ -35,12 +35,42 @@
 	    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
 	    .attr('class', 'context-container');
 
+	svg.append("rect")
+		.attr("width", 40)
+		.attr("height", 40)
+		.attr("transform", "translate(0, 100)")
+		.style("fill", "steelblue")
+		.style("fill-opacity", .6)
+
+	svg.append("rect")
+		.attr("width", 40)
+		.attr("height", 40)
+		.attr("transform", "translate(0, 200)")
+		.style("fill", "red")
+		.style("fill-opacity", .6)
+
+	svg.append("rect")
+		.attr("width", 40)
+		.attr("height", 40)
+		.attr("transform", "translate(0, 270)")
+		.style("fill", "yellow")
+		.style("fill-opacity", .6)
+
+	svg.append("rect")
+		.attr("width", 40)
+		.attr("height", 40)
+		.attr("transform", "translate(0, 420)")
+		.style("fill", "green")
+		.style("fill-opacity", .6)
+
 	var values
 
 d3.json('john_a_boehner.json', function(data){
 	window.legislatorData = data
 	window.contribs = _.filter(data.data, function(datum){ return datum.events[0].event_type === "recieved_campaign_contributions" })
 		   contribs = _.map(contribs, function(ev){return ev.events[0]})
+	window.committeeAssignments = _.filter(data.data, function(datum){ return datum.events[0].event_type === "joined_committee" })
+		   committeeAssignments = _.map(committeeAssignments, function(ev){ return ev.events[0] })
 
 	var legis_data = { 
 		"name" : data.bio.name.official_full,
@@ -388,6 +418,7 @@ function brushed(){
 	addBills( data )
 	addContributions( data )
 	addCosponsored( data )
+	addCommittees()
 	focus.select(".x.axis").call(xAxis);
 
 }
@@ -440,10 +471,10 @@ function addBills( data ){
 		.data(data)
 	  .enter().append('svg:g')
 	  	.attr('class', 'event')	
-	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + "," + 220 + ")"; })
+	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + "," + 140 + ")"; })
 
 	 event_.append('rect')
-		.attr("width", 180)
+		.attr("width", 80)
 		.attr("height", 20)
 		.style("fill", "steelblue")
 		.style("fill-opacity", .7)
@@ -459,18 +490,18 @@ function addBills( data ){
 		.attr('x1', 0)
 		.attr('x2', 0)
 		.attr('y1', 0)
-		.attr('y2', 320 )
+		.attr('y2', 390 )
 		.style("stroke-opacity", 0)
 		.style("stroke-width", 1)
 		.style("stroke", "steelblue")
 
-	event_.append('text')
-		.text("Sponsored Legislation")
-		.attr("transform", "rotate(-135)")
-		.attr("y", 13)
-		.attr("x", 5)
-		.style("fill", "white")
-		.style("font-family", "helvetica")
+	// event_.append('text')
+	// 	.text("Sponsored Legislation")
+	// 	.attr("transform", "rotate(-135)")
+	// 	.attr("y", 13)
+	// 	.attr("x", 5)
+	// 	.style("fill", "white")
+	// 	.style("font-family", "helvetica")
 
 	event_.on('mouseover', function(d){
 		
@@ -499,10 +530,10 @@ function addCosponsored( data ) {
 		.data(data)
 	  .enter().append('svg:g')
 	  	.attr('class', 'event')	
-	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + "," + 300 + ")"; })
+	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + "," + 240 + ")"; })
 
 	 event_.append('rect')
-		.attr("width", 190)
+		.attr("width", 80)
 		.attr("height", 20)
 		.style("fill", "red")
 		.style("fill-opacity", .7)
@@ -523,13 +554,13 @@ function addCosponsored( data ) {
 		.style("stroke-width", 1)
 		.style("stroke", "red")
 
-	event_.append('text')
-		.text("Cosponsored Legislation")
-		.attr("transform", "rotate(-135)")
-		.attr("y", 13)
-		.attr("x", 5)
-		.style("fill", "white")
-		.style("font-family", "helvetica")
+	// event_.append('text')
+	// 	.text("Cosponsored Legislation")
+	// 	.attr("transform", "rotate(-135)")
+	// 	.attr("y", 13)
+	// 	.attr("x", 5)
+	// 	.style("fill", "white")
+	// 	.style("font-family", "helvetica")
 
 	event_.on('mouseover', function(d){
 		d3.select(this).selectAll('line')
@@ -541,6 +572,31 @@ function addCosponsored( data ) {
 
 	})
 
+}
+
+function addCommittees(){
+
+	var event_ = focus.selectAll(".committees")
+		.data(committeeAssignments)
+	  .enter().append('svg:g')
+	  	.attr('class', 'event')	
+	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + "," + 100 + ")"; })
+
+	event_.append('g').selectAll(".committee")
+		.data(function(d){ return d.info })
+		.enter().append("svg:line")
+		.attr('x1', 0)
+		.attr('x2', function(d){
+			var x1, x2
+			x1 = x(getTimestamp(d[7]))
+			x2 = x(getTimestamp(d[8]))
+			return x2 - x1
+		})
+		.attr('y1', function(d,i){ return 200 - ( i * 30 )})
+		.attr('y2', function(d,i){ return 200 - ( i * 30 )})
+		.style("stroke-opacity", .5)
+		.style("stroke-width", 20)
+		.style("stroke", "yellow")
 }
 
 function addCircles( data ) {
@@ -760,7 +816,7 @@ function addContextCircles( data ) {
 		.style('fill', function(d){
 			switch(d.event) {
 				case "sponsored legislation":
-					return "yellow"
+					return "steelblue"
 					break;
 				case "event/party":
 					return "red"
