@@ -137,7 +137,13 @@ text:hover {
 	fill-opacity: .4;
 }
 
-.hovered{
+
+.node circle, .leaf circle{
+	fill: green;
+	fill-opacity: .2;
+}
+
+.leaf .hovered{
 	fill-opacity: 1;
 }
 

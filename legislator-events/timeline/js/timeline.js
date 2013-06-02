@@ -35,6 +35,7 @@
 	    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
 	    .attr('class', 'context-container');
 
+	// refactor, make these elements data driven
 	svg.append("rect")
 		.attr("width", 40)
 		.attr("height", 40)
@@ -143,10 +144,15 @@ $(document).ready(function(){
 
 	window.removePopup = true
 	window.hoverable = true
+	window.mousePos = undefined
 
 	$('#filter').click(function(){
 		toggleFilter()
 	})
+
+	$(document).mousemove(function(e){
+      mousePos = [e.pageX, e.pageY]
+   	});
 
 	$('body').on('click', 'svg', function(ev){
 		
@@ -450,15 +456,69 @@ function addContributions( data ){
 	node.append("circle")
       .attr("r", function(d) { return d.r; })
       .attr("class", "event")
-      .style("fill", "green")
-      .style("fill-opacity", .2)
       .style("stroke", "green")
-      .on('mouseover', function(d){
-  //     	var self = this
-		// d3.select(this).transition().attr('r', function(){
-		// 	return d3.select(self).attr('r') * 2
-		// })
-      })
+		.on('mouseover', function(d){
+			
+			var el = d3.select(this),
+				templateData = templateId(d),
+				eventId = '#' + d.event_id,
+				templateSelector = '#' + templateData[0],
+				top = $(this).position().top - 50,
+				left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
+														$(this).position().left + 50			
+
+			if ( hoverable ){
+
+				el.classed(d.event_id, true)
+				  .classed('hovered', true)
+				
+				$('.event-popup').remove()
+
+				var popup = new PopupView({
+					el : $('body'),
+					model : templateData[1],
+					tmpl : $(templateSelector),
+					top : top,
+					left : left
+				})
+				
+			}
+
+		})
+		.on('mouseout', function(){
+
+			removePopup ? $('.event-popup').remove() : null
+			
+			d3.select(this.parentNode.parentNode)
+				.select('.event-date')
+				.classed('shown', false)				
+
+			d3.select(this).classed('hovered', false)				
+
+			// if (!(d3.select(this).classed('selected'))){
+
+			// 	d3.select(this).transition().attr('r', function(d){
+			// 		var r = 600 * (1/data.length) 
+			// 		return r
+			// 	})
+			// }
+
+		})
+		.on('click', function(d){
+			
+			d3.select(this).classed('selected', true)
+
+			hoverable = false
+			removePopup = false
+
+			$('.event-popup').addClass('expanded')
+			$('.hidden-content').removeClass('hidden-content')
+
+			var expanded = new ExpandedView({
+				el : '#popup_content_container',
+				model : d
+			})
+		})
 
 }
 
@@ -504,21 +564,60 @@ function addBills( data ){
 	// 	.style("font-family", "helvetica")
 
 	event_.on('mouseover', function(d){
-		
-		var g = d3.select(this)
-		g.select('line').transition().style("stroke-opacity", 1)
-		g.select('rect').transition().style("fill-opacity", 1)
-		g.select('rect').transition().style("stroke-width", 3)
 
+		var el = d3.select(this),
+			templateData = templateId(d),
+			eventId = '#' + d.event_id,
+			templateSelector = '#' + templateData[0],
+			top = $(this).position().top - 50,
+			left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
+													$(this).position().left + 100			
+
+		if ( hoverable ){
+
+			el.select('line').transition().style("stroke-opacity", 1)
+			el.select('rect').transition().style("fill-opacity", 1)
+			el.select('rect').transition().style("stroke-width", 3)
+
+			el.classed(d.event_id, true)
+			  .classed('hovered', true)
+			
+			$('.event-popup').remove()
+
+			var popup = new PopupView({
+				el : $('body'),
+				model : templateData[1],
+				tmpl : $(templateSelector),
+				top : top,
+				left : left
+			})
+			
+		}
 
 	}).on('mouseout', function(d){
 		
 		var g = d3.select(this)
+
 		g.select('line').transition().style("stroke-opacity", 0)
 		g.select('rect').transition().style("stroke-width", 1)
+		g.classed('hovered', false)
+		removePopup ? $('.event-popup').remove() : null
 
-	})		
+	}).on('click', function(d){
+	
+		d3.select(this).classed('selected', true)
+		
+		hoverable = false
+		removePopup = false
 
+		$('.event-popup').addClass('expanded')
+		$('.hidden-content').removeClass('hidden-content')
+
+		var expanded = new ExpandedView({
+			el : '#popup_content_container',
+			model : d
+		})
+	})
 }
 
 function addCosponsored( data ) {
@@ -563,14 +662,75 @@ function addCosponsored( data ) {
 	// 	.style("font-family", "helvetica")
 
 	event_.on('mouseover', function(d){
-		d3.select(this).selectAll('line')
-			.style("stroke-opacity", 1)
+
+		var el = d3.select(this),
+			templateData = templateId(d),
+			eventId = '#' + d.event_id,
+			templateSelector = '#' + templateData[0],
+			top = $(this).position().top - 50,
+			left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
+													$(this).position().left + 100			
+
+		if ( hoverable ){
+
+			el.select('line').transition().style("stroke-opacity", 1)
+			el.select('rect').transition().style("fill-opacity", 1)
+			el.select('rect').transition().style("stroke-width", 3)
+
+			el.classed(d.event_id, true)
+			  .classed('hovered', true)
+			
+			$('.event-popup').remove()
+
+			var popup = new PopupView({
+				el : $('body'),
+				model : templateData[1],
+				tmpl : $(templateSelector),
+				top : top,
+				left : left
+			})
+			
+		}
 
 	}).on('mouseout', function(d){
-		d3.select(this).selectAll('line')
-			.style("stroke-opacity", 0)
+		
+		var g = d3.select(this)
 
+		g.select('line').transition().style("stroke-opacity", 0)
+		g.select('rect').transition().style("stroke-width", 1)
+		g.classed('hovered', false)
+		removePopup ? $('.event-popup').remove() : null
+
+	}).on('click', function(d){
+	
+		d3.select(this).classed('selected', true)
+		
+		hoverable = false
+		removePopup = false
+
+		$('.event-popup').addClass('expanded')
+		$('.hidden-content').removeClass('hidden-content')
+
+		var expanded = new ExpandedView({
+			el : '#popup_content_container',
+			model : d
+		})
 	})
+
+	// event_.on('mouseover', function(d){
+
+	// 	var el = d3.select(this)
+
+	// 	el.select('line').transition().style("stroke-opacity", 1)
+	// 	el.select('rect').transition().style("fill-opacity", 1)
+	// 	el.select('rect').transition().style("stroke-width", 3)			
+
+	// }).on('mouseout', function(d){
+	// 	var g = d3.select(this)
+	// 	g.select('line').transition().style("stroke-opacity", 0)
+	// 	g.select('rect').transition().style("stroke-width", 1)
+
+	// })
 
 }
 
@@ -597,6 +757,47 @@ function addCommittees(){
 		.style("stroke-opacity", .5)
 		.style("stroke-width", 20)
 		.style("stroke", "yellow")
+		.on('mouseover', function(d){
+
+			var el = d3.select(this),
+				el_data = d3.select(this.parentNode).data()[0]
+				el_data = $.extend( true, {}, el_data)
+				el_data.info = d
+
+			var	templateData = templateId(el_data)
+				
+			var eventId = '#' + d.event_id,
+				templateSelector = '#' + templateData[0],
+				left = mousePos[0] + 50,
+				top = mousePos[1]
+
+
+			if ( hoverable ){
+
+				el.classed(el_data.event_id, true)
+				  .classed('hovered', true)
+				
+				$('.event-popup').remove()
+
+				var popup = new PopupView({
+					el : $('body'),
+					model : templateData[1],
+					tmpl : $(templateSelector),
+					top : top,
+					left : left
+				})
+				
+			}
+
+		})
+		.on('mouseout', function(d){
+		
+			var g = d3.select(this)
+			g.classed('hovered', false)
+
+			removePopup ? $('.event-popup').remove() : null
+		})
+
 }
 
 function addCircles( data ) {
@@ -637,7 +838,7 @@ function addCircles( data ) {
 		})
 		.on('mouseover', function(d){
 			
-			if ( hoverable ){		
+			if ( hoverable ){
 				var self = this
 				d3.select(this.parentNode.parentNode).select('.event-date').classed('shown', true)
 				d3.select(this).transition().attr('r', function(){
@@ -657,7 +858,7 @@ function addCircles( data ) {
 
 				var templateData = templateId(d)
 				console.log(d)
-				console.log("the template info is", templateData)				
+				console.log("the template info is", templateData)
 
 				var eventId = '#' + d.event_id,
 					templateSelector = '#' + templateData[0]
@@ -714,6 +915,7 @@ function addCircles( data ) {
 
 function templateId (d){
 	var data 
+	console.log("incoming data is", d)
 	switch(d.event) {
 		case "sponsored legislation":
 			data = {
@@ -744,10 +946,9 @@ function templateId (d){
 		case "joined committee":
 			data = {
 				"date" : new Date( Number(d.time) * 1000).toString('dddd,MMMM,yyyy'),
-				"committee" : d.info[0][14],
+				"committee" : d.info[14],
 				"id" : d.event_id
 			}
-
 			return [ "joined_committee", data ]
 			break
 		case "recieved campaign contribution":
