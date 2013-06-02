@@ -9,6 +9,7 @@ import os
 import string
 import csv
 import uuid
+import datetime as dt
 
 from pandas import *
 
@@ -192,11 +193,11 @@ class LegisEvents():
             }
             self.legis_list.append(cosponsorship)
 
-        print json.dumps(cosponsored_bills[0])
+        # print json.dumps(cosponsored_bills[0])
 
-        bills = [ prepCosponsored(bill) for bill in cosponsored_bills ]
-        filtered = dict( (key, list(set([bill[key] for bill in bills]))) for key in bills[0].keys() )
-        self.event_attributes["cosponsored_legislation"] = filtered
+        # bills = [ prepCosponsored(bill) for bill in cosponsored_bills ]
+        # filtered = dict( (key, list(set([bill[key] for bill in bills]))) for key in bills[0].keys() )
+        # self.event_attributes["cosponsored_legislation"] = filtered
 
 
     def add_committee_memberships(self):
@@ -332,6 +333,7 @@ class LegisEvents():
         """hit the influence explorer api"""
         
         contributions = []
+        contribution_events = []
         legis_cycles = []
         for term in self.legislator["terms"]:
             start_date = term["start"].split("-")
@@ -356,14 +358,50 @@ class LegisEvents():
                     "event" : "recieved campaign contribution",
                     "event_type" : "recieved_campaign_contribution",
                     "info" : contribution,
-                    "event_id" : str(uuid.uuid4())
+                    "event_id" : str(uuid.uuid4()),
+                    "amount" : contribution["amount"]
                 }
-                self.legis_list.append(contribution_event)
+                # self.legis_list.append(contribution_event)
+                contribution_events.append(contribution_event)
                 contributions.append(contribution)
         
+        my_string = [ str(dt.datetime.fromtimestamp(int(c["time"])).month) + "_" + str(dt.datetime.fromtimestamp(int(c["time"])).year) for c in contribution_events ]
+        unique_month_year_string = list(set(my_string))
+
+        for myt in unique_month_year_string:
+            month = []
+            for event in contribution_events:
+                event_dt = dt.datetime.fromtimestamp(int(event["time"]))
+                event_my = str(event_dt.month) + "_" + str(event_dt.year)  
+                if myt == event_my:                    
+                    month.append(event)
+
+            my_split = myt.split("_")
+            t = dt.datetime(year=int(my_split[1]), month=int(my_split[0]), day=1)
+            t = int(time.mktime(t.timetuple()))
+            c_sum = 0
+            for c in month:
+                try:
+                    c_sum += int(float(c["amount"]))
+                except ValueError:
+                    pass
+            
+            # sum event amounts
+            # count total events
+
+            contributions_month = {
+                "time" : t,
+                "event" : "month of campaign contributions",
+                "event_type" : "recieved_campaign_contributions",
+                "children" : month,
+                "event_id" : str(uuid.uuid4()),
+                "amount" : c_sum
+            }
+
+            self.legis_list.append(contributions_month)
+
         filtered = dict( (key, list(set([contribution[key] for contribution in contributions]))) for key in contributions[0].keys() )
         self.event_attributes["campaign_contribution"] = filtered
-
 
     def add_sponsored_bill_lobbying(self):
         issues = read_csv(

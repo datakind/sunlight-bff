@@ -11,7 +11,7 @@
 	    y = d3.scale.linear().range([height, 0]),
 	    y2 = d3.scale.linear().range([height2, 0]);
 
-	var xAxis = d3.svg.axis().scale(x).orient("bottom"),
+	var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(10),
 	    xAxis2 = d3.svg.axis().scale(x2).orient("bottom")
 
 	var brush = d3.svg.brush()
@@ -39,6 +39,8 @@
 
 d3.json('john_a_boehner.json', function(data){
 	window.legislatorData = data
+	window.contribs = _.filter(data.data, function(datum){ return datum.events[0].event_type === "recieved_campaign_contributions" })
+		   contribs = _.map(contribs, function(ev){return ev.events[0]})
 
 	var legis_data = { 
 		"name" : data.bio.name.official_full,
@@ -68,8 +70,11 @@ d3.json('john_a_boehner.json', function(data){
 
 	focus.append("g")
 	  .attr("class", "x axis")
-	  .attr("transform", "translate(0," + ( height - 50 ) + ")")
+	  .attr("transform", "translate(0," + ( height - 50 ) + ")")	  
 	  .call(xAxis);
+
+	// d3.select('.x').selectAll('text')		
+	// 	.attr("transform", "rotate(90)")
 
 	context.append("g")
 	  .attr("class", "x axis")
@@ -379,8 +384,162 @@ function brushed(){
 		}
 	})
 
-	addCircles( data )
+	// addCircles( data )
+	addBills( data )
+	addContributions( data )
+	addCosponsored( data )
 	focus.select(".x.axis").call(xAxis);
+
+}
+
+function addContributions( data ){
+
+	data = _.filter(data, function(datum){ return datum.events[0].event_type === "recieved_campaign_contributions" })
+	data = _.map(data, function(ev){return ev.events[0]})
+
+	var diameter = 200,
+    	format = d3.format(",d");
+
+	var pack = d3.layout.pack()
+	    .size([diameter - 4, diameter - 4])
+	    .value(function(d) { return Number(d.amount); });
+
+	var event_ = focus.selectAll(".contrib")
+		.data(data)
+	  .enter().append('svg:g')
+	  	.attr('class', 'event')	
+	  	.attr("transform", function(d) { return "translate(" + ( x(d.time * 1000) - 100 ) + "," + 330 + ")"; })
+
+	var node = event_.selectAll(".node")
+		  .data(pack.nodes)
+		.enter().append("g")		  
+		  .attr("class", function(d) { return d.children ? "node" : "leaf node"; })
+		  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+	node.append("circle")
+      .attr("r", function(d) { return d.r; })
+      .attr("class", "event")
+      .style("fill", "green")
+      .style("fill-opacity", .2)
+      .style("stroke", "green")
+      .on('mouseover', function(d){
+  //     	var self = this
+		// d3.select(this).transition().attr('r', function(){
+		// 	return d3.select(self).attr('r') * 2
+		// })
+      })
+
+}
+
+function addBills( data ){
+
+	data = _.filter(data, function(datum){ return datum.events[0].event_type === "sponsored_legislation" })
+	data = _.map(data, function(ev){return ev.events[0]})	
+
+	var event_ = focus.selectAll(".sponsored")
+		.data(data)
+	  .enter().append('svg:g')
+	  	.attr('class', 'event')	
+	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + "," + 220 + ")"; })
+
+	 event_.append('rect')
+		.attr("width", 180)
+		.attr("height", 20)
+		.style("fill", "steelblue")
+		.style("fill-opacity", .7)
+		.style("stroke", "steelblue")
+		.attr("transform", function(d) {
+	         return "rotate(-135)" 
+	     })
+		.on('mouseover', function(d){
+			console.log("the d is d", d)
+		})
+
+	event_.append('svg:line')
+		.attr('x1', 0)
+		.attr('x2', 0)
+		.attr('y1', 0)
+		.attr('y2', 320 )
+		.style("stroke-opacity", 0)
+		.style("stroke-width", 1)
+		.style("stroke", "steelblue")
+
+	event_.append('text')
+		.text("Sponsored Legislation")
+		.attr("transform", "rotate(-135)")
+		.attr("y", 13)
+		.attr("x", 5)
+		.style("fill", "white")
+		.style("font-family", "helvetica")
+
+	event_.on('mouseover', function(d){
+		
+		var g = d3.select(this)
+		g.select('line').transition().style("stroke-opacity", 1)
+		g.select('rect').transition().style("fill-opacity", 1)
+		g.select('rect').transition().style("stroke-width", 3)
+
+
+	}).on('mouseout', function(d){
+		
+		var g = d3.select(this)
+		g.select('line').transition().style("stroke-opacity", 0)
+		g.select('rect').transition().style("stroke-width", 1)
+
+	})		
+
+}
+
+function addCosponsored( data ) {
+
+	data = _.filter(data, function(datum){ return datum.events[0].event_type === "bill_cosponsorship" })
+	data = _.map(data, function(ev){return ev.events[0]})
+
+	var event_ = focus.selectAll(".sponsored")
+		.data(data)
+	  .enter().append('svg:g')
+	  	.attr('class', 'event')	
+	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + "," + 300 + ")"; })
+
+	 event_.append('rect')
+		.attr("width", 190)
+		.attr("height", 20)
+		.style("fill", "red")
+		.style("fill-opacity", .7)
+		.style("stroke", "red")
+		.attr("transform", function(d) {
+	         return "rotate(-135)" 
+	     })
+		.on('mouseover', function(d){
+			console.log("the d is d", d)
+		})
+
+	event_.append('svg:line')
+		.attr('x1', 0)
+		.attr('x2', 0)
+		.attr('y1', 0)
+		.attr('y2', 240)
+		.style("stroke-opacity", 0)
+		.style("stroke-width", 1)
+		.style("stroke", "red")
+
+	event_.append('text')
+		.text("Cosponsored Legislation")
+		.attr("transform", "rotate(-135)")
+		.attr("y", 13)
+		.attr("x", 5)
+		.style("fill", "white")
+		.style("font-family", "helvetica")
+
+	event_.on('mouseover', function(d){
+		d3.select(this).selectAll('line')
+			.style("stroke-opacity", 1)
+
+	}).on('mouseout', function(d){
+		d3.select(this).selectAll('line')
+			.style("stroke-opacity", 0)
+
+	})
 
 }
 
@@ -400,7 +559,7 @@ function addCircles( data ) {
 		.enter().append('circle')
 	  	.attr('cy', function(d, i){
 	  		var yVal = 460 -  ( ( (i + 1) * 20 ) + ( (831 * (1/data.length)) / 2 ) ) 
-	  		return yVal
+	  		return yVal - 100	  		
 	  	})
 		.attr('class', function(d) { 
 			return d.event.split(" ")[0] + ' ' + 'focus-circle'
@@ -647,7 +806,7 @@ function getColor(d){
 		case "joined committee":
 			return "purple"
 			break
-		case "recieved campaign contribution":
+		case "month of campaign contributions":
 			return "#333"
 			break
 	}
