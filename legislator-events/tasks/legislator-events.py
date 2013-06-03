@@ -344,6 +344,9 @@ class LegisEvents():
             legis_cycles.append(cycle)
 
         name = self.legis_name.split(" ")[-1]
+        codes = csv.reader(open('cached/catcodes.csv', 'rb'))
+        rows = [ row for row in codes ]
+        d = dict(  ( v[1], [ v[2], v[3], v[4] ] ) for v in rows )
 
         for cycle in legis_cycles:
             print "adding contribution"
@@ -355,6 +358,16 @@ class LegisEvents():
             for contribution in res.json():
                 t = str(int(time.mktime(time.strptime(contribution["date"], 
                             '%Y-%m-%d'))))
+
+                catcode = contribution["contributor_category"].encode('utf-8')                
+                try: 
+                    contribution["contributor_category_name"] = d[catcode][0]
+                    contribution["contributor_category_industry"] = d[catcode][1]
+                    contribution["contributor_category_order"] = d[catcode][2]
+                except:
+                    contribution["contributor_category_name"] = ""
+                    contribution["contributor_category_industry"] = ""
+                    contribution["contributor_category_order"] = ""
 
                 contribution_event = {
                     "time" : t,

@@ -37,32 +37,74 @@
 
 	// refactor, make these elements data driven
 	svg.append("rect")
-		.attr("width", 40)
+		.attr("width", 80)
 		.attr("height", 40)
-		.attr("transform", "translate(0, 100)")
+		.attr("transform", "translate(-60, 100)")
 		.style("fill", "steelblue")
 		.style("fill-opacity", .6)
+		.on('mouseover', function(d){
+			d3.select(this).transition()
+				.attr("transform", "translate(0, 100)")
+		})
+		.on('mouseout', function(d){
+			d3.select(this).transition()
+				.attr("transform", "translate(-60, 100)")
+		})
+		.on('click', function(d){
+			var sponsored = d3.selectAll('.sponsored')
+			sponsored.classed("shown") ? sponsored.classed("shown", false).classed("hidden", true) : 
+				 						 sponsored.classed("shown", true).classed("hidden", false)
+		})
 
 	svg.append("rect")
-		.attr("width", 40)
+		.attr("width", 80)
 		.attr("height", 40)
-		.attr("transform", "translate(0, 200)")
+		.attr("transform", "translate(-60, 200)")
 		.style("fill", "red")
 		.style("fill-opacity", .6)
+		.on('mouseover', function(d){
+			d3.select(this).transition()
+				.attr("transform", "translate(0, 200)")
+		})
+		.on('mouseout', function(d){
+			d3.select(this).transition()
+				.attr("transform", "translate(-60, 200)")
+		})
+		.on('click', function(d){
+			console.log( "testing", d3.selectAll('.sponsored').classed("shown") )
+		})
+		// .append("text").text("sponsored legislation")
+		// .style("fill", "white")
 
 	svg.append("rect")
-		.attr("width", 40)
+		.attr("width", 80)
 		.attr("height", 40)
-		.attr("transform", "translate(0, 270)")
+		.attr("transform", "translate(-60, 270)")
 		.style("fill", "yellow")
 		.style("fill-opacity", .6)
+		.on('mouseover', function(d){
+			d3.select(this).transition()
+				.attr("transform", "translate(0, 270)")
+		})
+		.on('mouseout', function(d){
+			d3.select(this).transition()
+				.attr("transform", "translate(-60, 270)")
+		})
 
 	svg.append("rect")
-		.attr("width", 40)
+		.attr("width", 80)
 		.attr("height", 40)
-		.attr("transform", "translate(0, 420)")
+		.attr("transform", "translate(-60, 420)")
 		.style("fill", "green")
 		.style("fill-opacity", .6)
+		.on('mouseover', function(d){
+			d3.select(this).transition()
+				.attr("transform", "translate(0, 420)")
+		})
+		.on('mouseout', function(d){
+			d3.select(this).transition()
+				.attr("transform", "translate(-60, 420)")
+		})
 
 	var values
 
@@ -146,6 +188,19 @@ $(document).ready(function(){
 	window.hoverable = true
 	window.mousePos = undefined
 
+	$('body').on('click', '#filter_img', function(){
+		var filter = $(this).parent()
+
+		if ( filter.hasClass('expanded-filter') ){
+			filter.removeClass('expanded-filter')
+			$('#options_content').empty()
+		} else {
+			filter.addClass('expanded-filter')
+			options.filter_li()
+		}
+	
+	})
+
 	$('#filter').click(function(){
 		toggleFilter()
 	})
@@ -165,22 +220,14 @@ $(document).ready(function(){
 
 			d3.select('.selected')
 				.classed('selected', false)
-				.transition()
-				.attr('r', function(){
-					return d3.select(this).attr('r') / 2
-				})
 
 			d3.selectAll('.not-connected')
 				.classed('not-connected', false)
 
 			d3.selectAll('.connected')
-				.attr('r', function(){
-					return d3.select(this).attr('r') / 5
-				})
 				.classed('connected', false)
 
-			$('#options_content').empty().css({ display : "none"})
-			$('.white-bg').removeClass('white-bg')
+			filterActive = false
 
 		}
 
@@ -190,9 +237,8 @@ $(document).ready(function(){
 		ev.preventDefault()
 		var targetName = $(ev.target).attr('class').split(" ")[1]
 
-		d3.selectAll('.context-container .recieved')[0].forEach(function(circle, i){
-			
-			if ( i < 10 ) console.log("this is it", circle)
+		// REFACTOR
+		d3.selectAll('.context-container .recieved')[0].forEach(function(circle, i){		
 
 			var data = d3.select(circle)[0][0].__data__,
 				stripped = data.info.contributor_name.replace(/ /g, ""),
@@ -217,7 +263,7 @@ $(document).ready(function(){
 		toggleOption($(this))
 	})
 
-	$('body').on('click', '#add_filter', function(){
+	$('body').on('change', '#event_type_filter_drop', function(){
 		var eventType = $('#event_type_filter_drop option:selected').val()
 		console.log("eventtype is", eventType)
 		addAttributeFilter[eventType]()
@@ -244,77 +290,36 @@ $(document).ready(function(){
 
 	$('body').on('click', '#filter_button', function(){
 
-		var attribute = $('#event_type_filter_drop').val(),
-			attr = $('.attribute-drop option:selected').val(),
-			// attributeOperator = $('.attribute-operator').val(),
-			// attributeOperandVal = $('.attribute-operand-value').val(),
-			attrVal = $('.attribute-value-drop option:selected').val()
-			elements = $('.context-event')
+		window.attribute = $('#event_type_filter_drop').val(),
+		window.attr = $('.attribute-drop option:selected').val(),
+		window.attrVal = $('.attribute-value-drop option:selected').val()
+		window.elements = $('.context-event')
+		window.filterSelector = eventToSelectorMapping[attribute]
 			
-		d3.selectAll('.recieved')[0].forEach(function(circle, i){
+		d3.selectAll(filterSelector)[0].forEach(function(element, i){
 		
-			var data = d3.select(circle)[0][0].__data__,
+			console.log("the element is", d3.select(element).data()[0] )
+
+			var data = d3.select(element)[0][0].__data__,
 				amount = Number(data.info.amount),
-				el = d3.select(circle)
+				el = d3.select(element)
 
 			if ( data.info.hasOwnProperty(attr) ){
 				if (data.info[attr] === attrVal ){
+					console.log("got something connected")
 					el.classed('connected', true)
-					el.attr('r', function(){
-						return d3.select(this).attr('r') * 5
-					})
+				} else {
+					el.classed('not-connected', true)
 				}
 			} else {
 				el.classed('not-connected', true)
 			}
 
 		})
+
+		filterActive = true
 	})
 
-	$('.filter-events-input').click(function(){
-
-		if ( !$(this).is(':checked') ){
-			
-			var clas = $(this).attr('class').split(" ")[1]
-			switch(clas){
-				case "sponsor":
-					$('.sponsored').hide()
-					break
-				case "cosponsored":
-					$('.bill').hide()
-					break
-				case "party":
-					$('.party/event').hide()
-				case "committee":
-					$('.joined').hide()
-					break
-				case "election":
-					$('.start').hide()
-
-			}
-
-		} else {
-			
-			var clas = $(this).attr('class').split(" ")[1]
-			switch(clas){
-				case "sponsor":
-					$('.sponsored').fadeIn()
-					break
-				case "cosponsored":
-					$('.bill').fadeIn()
-					break
-				case "party":
-					$('.party/event').fadeIn()
-				case "committee":
-					$('.joined').fadeIn()
-					break
-				case "election":
-					$('.start').fadeIn()
-
-			}
-
-		}
-	})
 })
 
 function toggleFilter(){
@@ -348,54 +353,54 @@ function showEventInfo( eventObj ){
     }
 }
 
-function eventText( eventObj ){
-	var eventType = eventObj.event,
-		text;
+// function eventText( eventObj ){
+// 	var eventType = eventObj.event,
+// 		text;
 	
-	switch(eventType){
-		case "event/party":
-			break
-		case "sponsored legislation":
-			text = eventObj.info.titles[0][2]
-			break
-		case "bill cosponsorship":
-			text = eventObj.info.official_title
-			break
-		case "start congressional term":
-			text = eventObj.info.party + " " + eventObj.info.type + " from District " + eventObj.info.district + " of " + eventObj.info.state 
-			break
-		case "joined committee":
-			text = "JC"
-			break
-	}
+// 	switch(eventType){
+// 		case "event/party":
+// 			break
+// 		case "sponsored legislation":
+// 			text = eventObj.info.titles[0][2]
+// 			break
+// 		case "bill cosponsorship":
+// 			text = eventObj.info.official_title
+// 			break
+// 		case "start congressional term":
+// 			text = eventObj.info.party + " " + eventObj.info.type + " from District " + eventObj.info.district + " of " + eventObj.info.state 
+// 			break
+// 		case "joined committee":
+// 			text = "JC"
+// 			break
+// 	}
 
-	return text
-}
+// 	return text
+// }
 
-function eventType( eventObj ){
-	var eventType = eventObj.event,
-		text;
+// function eventType( eventObj ){
+// 	var eventType = eventObj.event,
+// 		text;
 	
-	switch(eventType){
-		case "event/party":
-			text = " P"
-			break
-		case "sponsored legislation":
-			text = " SL"
-			break
-		case "bill cosponsorship":
-			text = " CSL"
-			break
-		case "start congressional term":
-			text = " BCT"
-			break
-		case "joined committee":
-			text = " JC"
-			break
-	}
+// 	switch(eventType){
+// 		case "event/party":
+// 			text = " P"
+// 			break
+// 		case "sponsored legislation":
+// 			text = " SL"
+// 			break
+// 		case "bill cosponsorship":
+// 			text = " CSL"
+// 			break
+// 		case "start congressional term":
+// 			text = " BCT"
+// 			break
+// 		case "joined committee":
+// 			text = " JC"
+// 			break
+// 	}
 
-	return text
-}
+// 	return text
+// }
 
 function compare(a,b) {
   if ( Number(a.time) < Number(b.time))
@@ -427,6 +432,29 @@ function brushed(){
 	addCommittees()
 	focus.select(".x.axis").call(xAxis);
 
+	if ( filterActive ){
+
+		d3.selectAll(filterSelector)[0].forEach(function(element, i){
+		
+			var data = d3.select(element)[0][0].__data__,
+				amount = Number(data.info.amount),
+				el = d3.select(element)
+
+			if ( data.info.hasOwnProperty(attr) ){
+				if (data.info[attr] === attrVal ){
+					el.classed('connected', true)
+				} else {
+					el.classed('not-connected', true)	
+				}
+			} else {
+				el.classed('not-connected', true)
+			}
+
+		})
+
+	}
+
+
 }
 
 function addContributions( data ){
@@ -455,7 +483,11 @@ function addContributions( data ){
 
 	node.append("circle")
       .attr("r", function(d) { return d.r; })
-      .attr("class", "event")
+      .attr("class", function(d){
+      		var class_ = "event"
+      		d.depth !== 0 ? class_ += " recieved" : null
+      		return class_
+      })
       .style("stroke", "green")
 		.on('mouseover', function(d){
 			
@@ -530,14 +562,15 @@ function addBills( data ){
 	var event_ = focus.selectAll(".sponsored")
 		.data(data)
 	  .enter().append('svg:g')
-	  	.attr('class', 'event')	
+	  	.attr('class', 'event shown')
 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + "," + 140 + ")"; })
 
 	 event_.append('rect')
 		.attr("width", 80)
 		.attr("height", 20)
+		.attr("class", "sponsored")
 		.style("fill", "steelblue")
-		.style("fill-opacity", .7)
+		.style("fill-opacity", .5)
 		.style("stroke", "steelblue")
 		.attr("transform", function(d) {
 	         return "rotate(-135)" 
@@ -550,7 +583,7 @@ function addBills( data ){
 		.attr('x1', 0)
 		.attr('x2', 0)
 		.attr('y1', 0)
-		.attr('y2', 390 )
+		.attr('y2', 400 )
 		.style("stroke-opacity", 0)
 		.style("stroke-width", 1)
 		.style("stroke", "steelblue")
@@ -625,17 +658,17 @@ function addCosponsored( data ) {
 	data = _.filter(data, function(datum){ return datum.events[0].event_type === "bill_cosponsorship" })
 	data = _.map(data, function(ev){return ev.events[0]})
 
-	var event_ = focus.selectAll(".sponsored")
+	var event_ = focus.selectAll(".cosponsored")
 		.data(data)
 	  .enter().append('svg:g')
-	  	.attr('class', 'event')	
+	  	.attr('class', 'event cosponsored')	
 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + "," + 240 + ")"; })
 
 	 event_.append('rect')
 		.attr("width", 80)
 		.attr("height", 20)
 		.style("fill", "red")
-		.style("fill-opacity", .7)
+		.style("fill-opacity", .5)
 		.style("stroke", "red")
 		.attr("transform", function(d) {
 	         return "rotate(-135)" 
@@ -648,7 +681,7 @@ function addCosponsored( data ) {
 		.attr('x1', 0)
 		.attr('x2', 0)
 		.attr('y1', 0)
-		.attr('y2', 240)
+		.attr('y2', 300)
 		.style("stroke-opacity", 0)
 		.style("stroke-width", 1)
 		.style("stroke", "red")
@@ -891,7 +924,7 @@ function addCircles( data ) {
 				d3.select(this).transition().attr('r', function(d){
 					var r = 600 * (1/data.length) 
 					return r
-				})						
+				})
 			}
 
 		})
@@ -1191,7 +1224,9 @@ var addAttributeFilter = {
 
 var eventToSelectorMapping = {
 	"campaign_contribution" : ".recieved",
-	"sponsored_legislation" : ".sponsored"
+	"sponsored_legislation" : ".sponsored",
+	"cosponsored_legislation" : ".cosponsored",
+	"committee" : ".committee"
 }
 
 function lowerUnderToUpperSpace( string ){
@@ -1234,7 +1269,8 @@ var sponsoredAttributes = [
 var contributionAttributes = [ 
 		"amount", "candidacy_status", "committee_ext_id",
 		"committee_name", "committee_party", "contributor_address",
-		"contributor_category", "contributor_city",
+		"contributor_category", "contributor_category_name", "contributor_city",
+		"contributor_category_industry", "contributor_category_order",
 		"contributor_employer", "contributor_ext_id",
 		"contributor_gender", "contributor_name",
 		"contributor_occupation", "contributor_state", 
@@ -1243,8 +1279,6 @@ var contributionAttributes = [
 		"filing_id", "is_amendment", "organization_ext_id",
 		"organization_name", "parent_organization_ext_id",
 		"parent_organization_name", "recipient_category", 
-		"recipient_ext_id", "recipient_name", 
-		"recipient_party", "recipient_state",
 		"recipient_state_held", "recipient_type",
 		"seat", "seat_held", "seat_result", "seat_status", 
 		"transaction_id", "transaction_namespace", 
