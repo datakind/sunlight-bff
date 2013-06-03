@@ -38,7 +38,11 @@ class LegisEvents():
             "cosponsored_legislation" : None,
             "events_and_parties" : None,
             "committee_assignment" : None
-        }   
+        }
+
+        pap_bill_info = csv.reader(open('cached/bills93-111.csv', 'rb'), delimiter="|")
+        pap_bills = [row for row in pap_bill_info]
+        self.bill_topic_dict = dict( ( row[1].encode('utf-8'), [row[10], row[11]] ) for row in pap_bills )
 
         # create data file if it doesn't exist
         if not os.path.exists('data'):
@@ -116,6 +120,17 @@ class LegisEvents():
         self.sponsored_bills = r.json()
 
         for bill in self.sponsored_bills['objects']:
+            if bill["bill_type"] == "house_bill":
+                pap_key = "%s-HR-%s" % (str(bill["congress"]), str(bill["number"]))
+                try:
+                    bill["major_topic"] = self.bill_topic_dict[pap_key][0]
+                    bill["minor_topic"] = self.bill_topic_dict[pap_key][1]
+                    print "got one"
+                except:
+                    bill["major_topic"] = ""
+                    bill["minor_topic"] = ""
+                    print pap_key
+
             t = str(int(time.mktime(time.strptime(bill["introduced_date"], 
                     '%Y-%m-%d'))))
             sponsored_bill = { 
@@ -184,6 +199,17 @@ class LegisEvents():
             page += 1
 
         for cs in cosponsored_bills:
+            if cs["bill_type"] == "hr":
+                pap_key = "%s-HR-%s" % (str(cs["congress"]), str(cs["number"]))
+                try:
+                    cs["major_topic"] = self.bill_topic_dict[pap_key][0]
+                    cs["minor_topic"] = self.bill_topic_dict[pap_key][1]
+                    print "got one"
+                except:
+                    cs["major_topic"] = ""
+                    cs["minor_topic"] = ""
+                    print pap_key                    
+
             t = str(int(time.mktime(time.strptime(cs["introduced_on"],
                      '%Y-%m-%d'))))
             cosponsorship = { 
