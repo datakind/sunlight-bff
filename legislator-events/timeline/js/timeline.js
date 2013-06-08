@@ -177,8 +177,10 @@ d3.json('john_a_boehner.json', function(data){
 	  	.attr('class', 'event')	
 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
 
-	addCircles( values )
-	addContextCircles( values )
+	addContextContribution( values )
+	addContextBills( values )
+	addContextCosponsored( values )
+	addContextCommittee()
 
 })
 
@@ -290,6 +292,7 @@ $(document).ready(function(){
 
 	$('body').on('click', '#filter_button', function(){
 
+		// REFACTOR: WILL NEED TO BE MODIFIED TO HANDLE MULTI QUERY
 		window.attribute = $('#event_type_filter_drop').val(),
 		window.attr = $('.attribute-drop option:selected').val(),
 		window.attrVal = $('.attribute-value-drop option:selected').val()
@@ -324,8 +327,9 @@ $(document).ready(function(){
 
 function toggleFilter(){
 
-	$('#filter_options').hasClass('shown-filter') ? $('#filter_options').slideUp().removeClass('shown-filter') :
-													$('#filter_options').slideDown().addClass('shown-filter')
+	$('#filter_options').hasClass('shown-filter') ? 
+		$('#filter_options').slideUp().removeClass('shown-filter') :
+		$('#filter_options').slideDown().addClass('shown-filter')
 
 }
 
@@ -505,6 +509,39 @@ function addContributions( data ){
 
 }
 
+function addContextContribution( data ){
+	data = _.filter(data, function(datum){ return datum.events[0].event_type === "recieved_campaign_contributions" })
+	data = _.map(data, function(ev){return ev.events[0]})
+
+	var diameter = 10,
+    	format = d3.format(",d");
+
+	var pack = d3.layout.pack()
+	    .size([diameter - 4, diameter - 4])
+	    .value(function(d) { return Number(d.amount); });
+
+	var event_ = context.selectAll(".context-contrib")
+		.data(data)
+	  .enter().append('svg:g')
+	  	.attr('class', 'context-contrib')	
+	  	.attr("transform", function(d) { return "translate(" + ( x(d.time * 1000) - 5 ) + ",35)"; })
+
+	var node = event_.selectAll(".node")
+		  .data(pack.nodes)
+		.enter().append("g")		  
+		  .attr("class", function(d) { return d.children ? "node" : "leaf node"; })
+		  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+	node.append("circle")
+      .attr("r", function(d) { return d.r; })
+      .attr("class", function(d){
+      		var class_ = "context-event"
+      		d.depth !== 0 ? class_ += " recieved" : null
+      		return class_
+      })
+      .style("stroke", "green")
+}
+
 function addBills( data ){
 
 	data = _.filter(data, function(datum){ return datum.events[0].event_type === "sponsored_legislation" })
@@ -595,6 +632,41 @@ function addBills( data ){
 		})
 	})
 }
+
+function addContextBills( data ){
+
+	data = _.filter(data, function(datum){ return datum.events[0].event_type === "sponsored_legislation" })
+	data = _.map(data, function(ev){return ev.events[0]})	
+
+	var event_ = context.selectAll(".context-sponsored")
+		.data(data)
+	  .enter().append('svg:g')
+	  	.attr('class', 'context-event shown')
+	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",-15)"; })
+
+	 event_.append('rect')
+		.attr("width", 8)
+		.attr("height", 2)
+		.attr("class", "context-sponsored")
+		.style("fill", "steelblue")
+		.style("fill-opacity", .5)
+		.style("stroke", "steelblue")
+		.attr("transform", function(d) {
+	         return "rotate(-135)" 
+	     })
+		.on('mouseover', function(d){
+			console.log("the d is d", d)
+		})
+
+	event_.append('svg:line')
+		.attr('x1', 0)
+		.attr('x2', 0)
+		.attr('y1', 0)
+		.attr('y2', 40 )
+		.style("stroke-opacity", 0)
+		.style("stroke-width", 1)
+		.style("stroke", "steelblue")
+} 
 
 function addCosponsored( data ) {
 
@@ -702,6 +774,40 @@ function addCosponsored( data ) {
 
 }
 
+function addContextCosponsored ( data ){
+
+	data = _.filter(data, function(datum){ return datum.events[0].event_type === "bill_cosponsorship" })
+	data = _.map(data, function(ev){return ev.events[0]})
+
+	var event_ = context.selectAll(".context-cosponsored")
+		.data(data)
+	  .enter().append('svg:g')
+	  	.attr('class', 'context-event context-cosponsored')	
+	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",0)"; })
+
+	 event_.append('rect')
+		.attr("width", 8)
+		.attr("height", 2)
+		.style("fill", "red")
+		.style("fill-opacity", .5)
+		.style("stroke", "red")
+		.attr("transform", function(d) {
+	         return "rotate(-135)" 
+	     })
+		.on('mouseover', function(d){
+			console.log("the d is d", d)
+		})
+
+	event_.append('svg:line')
+		.attr('x1', 0)
+		.attr('x2', 0)
+		.attr('y1', 0)
+		.attr('y2', 300)
+		.style("stroke-opacity", 0)
+		.style("stroke-width", 1)
+		.style("stroke", "red")
+} 
+
 function addCommittees(){
 
 	var event_ = focus.selectAll(".committees")
@@ -765,6 +871,32 @@ function addCommittees(){
 
 			removePopup ? $('.event-popup').remove() : null
 		})
+
+}
+
+function addContextCommittee(){
+
+	var event_ = context.selectAll(".context-committees")
+		.data(committeeAssignments)
+	  .enter().append('svg:g')
+	  	.attr('class', 'context-event')	
+	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",10)"; })
+
+	event_.append('g').selectAll(".committee")
+		.data(function(d){ return d.info })
+		.enter().append("svg:line")
+		.attr('x1', 0)
+		.attr('x2', function(d){
+			var x1, x2
+			x1 = x(getTimestamp(d[7]))
+			x2 = x(getTimestamp(d[8]))
+			return x2 - x1
+		})
+		.attr('y1', function(d,i){ return 10 - ( i * 3 )})
+		.attr('y2', function(d,i){ return 10 - ( i * 3 )})
+		.style("stroke-opacity", .5)
+		.style("stroke-width", 2)
+		.style("stroke", "yellow")
 
 }
 
@@ -961,53 +1093,55 @@ function fixContributorName( name ){
 }
 
 
+
+
 // REFACTOR: DEPRECATED
-function addContextCircles( data ) {
+// function addContextCircles( data ) {
 
-	console.log("the data is", data )
+// 	console.log("the data is", data )
 
-	var event_ = context.selectAll(".context-event")
-		.data(data)
-	  .enter().append('svg:g')
-	  	.attr('class', 'context-event')
-	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
+// 	var event_ = context.selectAll(".context-event")
+// 		.data(data)
+// 	  .enter().append('svg:g')
+// 	  	.attr('class', 'context-event')
+// 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
 
-	// append the shape 
-	event_.append('g').selectAll("ev")
-		.data(function(d){
-			console.log("appending")
-			return d.events
-		})
-		.enter().append('circle')
-	  	.attr('cy', function(d, i){
-	  		return -40 + (-2 * i)
-	  	})
-		.attr('class', function(d) { 
-			return d.event.split(" ")[0] + ' ' + d.event_id + ' ' + 'context-circle'
-		})
-		.attr('r', 2 )
-		.attr('cx', 0)
-		.style('fill', function(d){
-			switch(d.event) {
-				case "sponsored legislation":
-					return "steelblue"
-					break;
-				case "event/party":
-					return "red"
-					break;
-				case "bill cosponsorship":
-					return "blue"
-					break
-				case "start congressional term":
-					return "green"
-					break
-				case "joined committee":
-					return "purple"
-					break
-			}
-		})
+// 	// append the shape 
+// 	event_.append('g').selectAll("ev")
+// 		.data(function(d){
+// 			console.log("appending")
+// 			return d.events
+// 		})
+// 		.enter().append('circle')
+// 	  	.attr('cy', function(d, i){
+// 	  		return -40 + (-2 * i)
+// 	  	})
+// 		.attr('class', function(d) { 
+// 			return d.event.split(" ")[0] + ' ' + d.event_id + ' ' + 'context-circle'
+// 		})
+// 		.attr('r', 2 )
+// 		.attr('cx', 0)
+// 		.style('fill', function(d){
+// 			switch(d.event) {
+// 				case "sponsored legislation":
+// 					return "steelblue"
+// 					break;
+// 				case "event/party":
+// 					return "red"
+// 					break;
+// 				case "bill cosponsorship":
+// 					return "blue"
+// 					break
+// 				case "start congressional term":
+// 					return "green"
+// 					break
+// 				case "joined committee":
+// 					return "purple"
+// 					break
+// 			}
+// 		})
 
-}
+// }
 
 function capitaliseFirstLetter(string){
     return string.charAt(0).toUpperCase() + string.slice(1);
