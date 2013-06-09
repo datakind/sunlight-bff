@@ -146,9 +146,6 @@ d3.json('john_a_boehner.json', function(data){
 	  .attr("transform", "translate(0," + ( height - 50 ) + ")")	  
 	  .call(xAxis);
 
-	// d3.select('.x').selectAll('text')		
-	// 	.attr("transform", "rotate(90)")
-
 	context.append("g")
 	  .attr("class", "x axis")
 	  .attr("transform", "translate(0," + height2 + ")")
@@ -177,10 +174,10 @@ d3.json('john_a_boehner.json', function(data){
 	  	.attr('class', 'event')	
 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
 
-	addContextContribution( values )
-	addContextBills( values )
-	addContextCosponsored( values )
-	addContextCommittee()
+	// addContextContribution( values )
+	// addContextBills( values )
+	// addContextCosponsored( values )
+	// addContextCommittee()
 
 })
 
@@ -293,6 +290,20 @@ $(document).ready(function(){
 	$('body').on('click', '#filter_button', function(){
 
 		// REFACTOR: WILL NEED TO BE MODIFIED TO HANDLE MULTI QUERY
+		// event types : array of event types
+		// attributes : array of selected attributes
+		// attribute values : array of attirubte values
+		// operators : array of operators 
+		// operands : array of operands
+		
+		//var toBeFiltered = data
+		//each attribute, filter the resulting by the next filter
+		// _.each(toBeFiltered, function(attr, i){
+		// 		_.filter(toBeFiltered, function(data){
+		// 			return data[attr] 
+		// 		})
+		// }) 
+
 		window.attribute = $('#event_type_filter_drop').val(),
 		window.attr = $('.attribute-drop option:selected').val(),
 		window.attrVal = $('.attribute-value-drop option:selected').val()
