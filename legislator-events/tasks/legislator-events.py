@@ -40,7 +40,11 @@ class LegisEvents():
             "committee_assignment" : None
         }
 
-        pap_bill_info = csv.reader(open('cached/bills93-111.csv', 'rb'), delimiter="|")
+        f = open('cached/crp_pap_crosswalk.csv')
+        self.crp_pap_crosswalk = [row for row in csv.reader(f, delimiter='|')]
+
+        pap_bill_info = csv.reader(open('cached/bills93-111.csv', 'rb'), 
+                                        delimiter="|")
         pap_bills = [row for row in pap_bill_info]
         self.bill_topic_dict = dict( ( row[1].encode('utf-8'), [row[10], row[11]] ) for row in pap_bills )
 
@@ -76,7 +80,6 @@ class LegisEvents():
 
         try:
             self.legislator["name"]
-            print self.legislator["id"]
         except Exception:
             print ('Sorry, not a recognized legislator.  Please'
                     ' try ./run list-legislators to see available legislators')
@@ -112,6 +115,7 @@ class LegisEvents():
 
     def add_sponsored_bills(self):
         bills = []
+        bill_keys = None
         #fetch sponosred bills ADD CACHING!
         legis_id = self.legislator["id"]["govtrack"]
         sponsored_url = ('http://www.govtrack.us/api/v2/bill?sponsor=%s'
@@ -120,16 +124,48 @@ class LegisEvents():
         self.sponsored_bills = r.json()
 
         for bill in self.sponsored_bills['objects']:
+            bill['crp_catcode'] = ""
+            bill['crp_catname'] = ""
+            bill['crp_description'] = ""
+            bill['pap_major_topic'] = ""
+            bill['pap_subtopic_code'] = ""
+            bill['fit'] = ""
+            bill['pap_subtopic_2'] = ""
+            bill['pap_subtopic_3'] = ""
+            bill['pap_subtopic_4'] = ""
+            bill['notes_chad'] = ""
+            bill['pa_subtopic_code'] = ""
+            bill['note'] = ""
+            bill["major_topic"] = ""
+            bill["minor_topic"] = ""
+
             if bill["bill_type"] == "house_bill":
                 pap_key = "%s-HR-%s" % (str(bill["congress"]), str(bill["number"]))
                 try:
                     bill["major_topic"] = self.bill_topic_dict[pap_key][0]
                     bill["minor_topic"] = self.bill_topic_dict[pap_key][1]
-                    print "got one"
                 except:
                     bill["major_topic"] = ""
                     bill["minor_topic"] = ""
-                    print pap_key
+
+                for row in self.crp_pap_crosswalk:
+                    if bill['major_topic'] == row[3] and bill['minor_topic'] == row[4]:                        
+                        if bill_keys == None:
+                            bill_keys = bill.keys()
+                        bill['crp_catcode'] = row[0]
+                        bill['crp_catname'] = row[1]
+                        bill['crp_description'] = row[2]
+                        bill['pap_major_topic'] = row[3]
+                        bill['pap_subtopic_code'] = row[4]
+                        bill['fit'] = row[5]
+                        bill['pap_subtopic_2'] = row[6]
+                        bill['pap_subtopic_3'] = row[7]
+                        bill['pap_subtopic_4'] = row[8]
+                        bill['notes_chad'] = row[9]
+                        bill['pa_subtopic_code'] = row[10]
+                        bill['note'] = row[11]
+
+            print bill["crp_catname"]
 
             t = str(int(time.mktime(time.strptime(bill["introduced_date"], 
                     '%Y-%m-%d'))))
@@ -143,8 +179,9 @@ class LegisEvents():
             self.legis_list.append(sponsored_bill)
             bills.append(bill)
 
+        print "the key are %r" % bill_keys
         bills = [ prepBills(bill) for bill in bills]
-        filtered = dict( (key, list(set([bill[key] for bill in bills]))) for key in bills[0].keys() )
+        filtered = dict( (key, list(set([bill[key] for bill in bills]))) for key in bill_keys )
         self.event_attributes["sponsored_legislation"] = filtered
 
 
@@ -204,11 +241,25 @@ class LegisEvents():
                 try:
                     cs["major_topic"] = self.bill_topic_dict[pap_key][0]
                     cs["minor_topic"] = self.bill_topic_dict[pap_key][1]
-                    print "got one"
                 except:
                     cs["major_topic"] = ""
                     cs["minor_topic"] = ""
-                    print pap_key                    
+
+                for row in self.crp_pap_crosswalk:
+                    if cs['major_topic'] == row[3] and cs['minor_topic'] == row[4]:
+                        print "got a cosponsored topic match"
+                        cs['crp_catcode'] = row[0]
+                        cs['crp_catname'] = row[1]
+                        cs['crp_description'] = row[2]
+                        cs['pap_major_topic'] = row[3]
+                        cs['pap_subtopic_code'] = row[4]
+                        cs['fit'] = row[5]
+                        cs['pap_subtopic_2'] = row[6]
+                        cs['pap_subtopic_3'] = row[7]
+                        cs['pap_subtopic_4'] = row[8]
+                        cs['notes_chad'] = row[9]
+                        cs['pa_subtopic_code'] = row[10]
+                        cs['note'] = row[11]                
 
             t = str(int(time.mktime(time.strptime(cs["introduced_on"],
                      '%Y-%m-%d'))))

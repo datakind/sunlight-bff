@@ -278,6 +278,8 @@ $(document).ready(function(){
 		$('.attribute-value-drop').remove()
 		$(valDrop).insertAfter('.attribute-drop')
 
+		console.log("the attribute values are", attrVals)
+
 		// attrVals = _.map(attrVals, function(n){ return Number(n) }).sort(function(a,b){return a-b})
 		eventAttribute === "amount" ? attrVals = attrVals.sort(function(a,b){return a-b}) : attrVals = attrVals.sort()  
 
@@ -1356,7 +1358,8 @@ var sponsoredAttributes = [
 		"number", "senate_floor_schedule_postdate",
 		"sliplawnum", "sliplawpubpriv", "sponsor",
 		"sponsor_role", "title",
-		"title_without_number", "time"
+		"title_without_number", "time",
+		"crp_catname"
 	]
 
 var contributionAttributes = [ 
