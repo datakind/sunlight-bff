@@ -253,7 +253,7 @@ class LegisEvents():
                 try:
                     cs["major_topic"] = self.bill_topic_dict[pap_key][0]
                     cs["minor_topic"] = self.bill_topic_dict[pap_key][1]
-                    print "got one"
+                    print "got cosponsored topic one"
                 except:
                     cs["major_topic"] = ""
                     cs["minor_topic"] = ""
@@ -285,10 +285,8 @@ class LegisEvents():
             }
             self.legis_list.append(cosponsorship)
 
-        # print json.dumps(cosponsored_bills[0])
-
-        bills = [ prepCosponsored(cs) for cs in cosponsored_bills ]
-        filtered = dict( (key, list(set([bill[key] for bill in bills]))) for key in bills[0].keys() )
+        cs_bills = [ prepCosponsored(cs) for cs in cosponsored_bills ]
+        filtered = dict( (key, list(set([bill[key] for bill in cs_bills]))) for key in cs_bills[0].keys() )
         self.event_attributes["cosponsored_legislation"] = filtered
 
 
@@ -593,14 +591,38 @@ def prepBills(bill):
     return bill
 
 def prepCosponsored(bill):
-    bill["xml"] = bill["last_version"]["urls"]["xml"]
-    bill["html"] = bill["last_version"]["urls"]["html"]
-    bill["pdf"] = bill["last_version"]["urls"]["pdf"]
-    bill["version_name"] = bill["last_version"]["version_name"]
-    bill["active"] = bill["history"]["active"]
-    bill["awaiting_signature"] = bill["history"]["awaiting_signature"]
-    bill["enacted"] = bill["history"]["enacted"]
-    bill["vetoed"] = bill["history"]["vetoed"]
+
+    del bill["last_version"]
+    del bill["history"]
+    del bill["related_bill_ids"]
+    del bill["urls"]
+    del bill["committee_ids"]
+    del bill["enacted_as"]
+
+    # if hasattr(bill, "last_version"):
+    #     bill["xml"] = bill["last_version"]["urls"]["xml"]
+    #     bill["html"] = bill["last_version"]["urls"]["html"]
+    #     bill["pdf"] = bill["last_version"]["urls"]["pdf"]
+    #     bill["version_name"] = bill["last_version"]["version_name"]
+    #     del bill["last_version"]
+
+    # if hasattr(bill, "history"):    
+    #     bill["active"] = bill["history"]["active"]
+    #     bill["awaiting_signature"] = bill["history"]["awaiting_signature"]
+    #     bill["enacted"] = bill["history"]["enacted"]
+    #     bill["vetoed"] = bill["history"]["vetoed"]
+    #     del bill["history"]
+
+    # if hasattr(bill, "related_bill_ids"):
+    #     del bill["related_bill_ids"]
+
+    # if hasattr(bill, "urls"):
+    #     bill["xml"] = bill["last_version"]["urls"]["xml"]
+    #     bill["html"] = bill["last_version"]["urls"]["html"]
+    #     bill["pdf"] = bill["last_version"]["urls"]["pdf"]
+    #     del bill["urls"]
+
+    # del bill["committee_ids"]
 
     return bill
 

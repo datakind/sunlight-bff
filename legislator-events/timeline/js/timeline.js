@@ -174,10 +174,10 @@ d3.json('john_a_boehner.json', function(data){
 	  	.attr('class', 'event')	
 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
 
-	// addContextContribution( values )
-	// addContextBills( values )
-	// addContextCosponsored( values )
-	// addContextCommittee()
+	addContextContribution( values )
+	addContextBills( values )
+	addContextCosponsored( values )
+	addContextCommittee()
 
 })
 
@@ -1310,8 +1310,16 @@ var addAttributeFilter = {
 	},
 
 	cosponsored_legislation : function(){
+		var select = '<select class="attribute-drop"' 
+			select += ' id="contribution_attributes_drop"><option>'
+			select += 'Select Attribute</option></select>'
 
+		$(select).insertAfter('#event_type_filter_drop')
 
+		_.each(sponsoredAttributes, function(attr){
+			var option = '<option value="' + attr + '"">' + lowerUnderToUpperSpace( attr ) + '</option>';
+			$('.attribute-drop').append(option);
+		})
 
 	}
 
