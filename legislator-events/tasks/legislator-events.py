@@ -249,6 +249,7 @@ class LegisEvents():
             cs["minor_topic"] = ""
 
             if cs["bill_type"] == "hr":
+                print "got a cs hr"
                 pap_key = "%s-HR-%s" % (str(cs["congress"]), str(cs["number"]))
                 try:
                     cs["major_topic"] = self.bill_topic_dict[pap_key][0]
@@ -258,21 +259,21 @@ class LegisEvents():
                     cs["major_topic"] = ""
                     cs["minor_topic"] = ""
 
-            for row in self.crp_pap_crosswalk:
-                if cs['major_topic'] == row[3] and cs['minor_topic'] == row[4]:
-                    print "gots a cs topic"
-                    cs['crp_catcode'] = row[0]
-                    cs['crp_catname'] = row[1]
-                    cs['crp_description'] = row[2]
-                    cs['pap_major_topic'] = row[3]
-                    cs['pap_subtopic_code'] = row[4]
-                    cs['fit'] = row[5]
-                    cs['pap_subtopic_2'] = row[6]
-                    cs['pap_subtopic_3'] = row[7]
-                    cs['pap_subtopic_4'] = row[8]
-                    cs['notes_chad'] = row[9]
-                    cs['pa_subtopic_code'] = row[10]
-                    cs['note'] = row[11]
+            # for row in self.crp_pap_crosswalk[]:            
+            #     if cs['major_topic'] == row[3] and cs['minor_topic'] == row[4]:
+            #         print "gots a cs topic"
+            #         cs['crp_catcode'] = row[0]
+            #         cs['crp_catname'] = row[1]
+            #         cs['crp_description'] = row[2]
+            #         cs['pap_major_topic'] = row[3]
+            #         cs['pap_subtopic_code'] = row[4]
+            #         cs['fit'] = row[5]
+            #         cs['pap_subtopic_2'] = row[6]
+            #         cs['pap_subtopic_3'] = row[7]
+            #         cs['pap_subtopic_4'] = row[8]
+            #         cs['notes_chad'] = row[9]
+            #         cs['pa_subtopic_code'] = row[10]
+            #         cs['note'] = row[11]
       
             t = str(int(time.mktime(time.strptime(cs["introduced_on"],
                      '%Y-%m-%d'))))
@@ -284,6 +285,8 @@ class LegisEvents():
                 "event_id" : str(uuid.uuid4()) 
             }
             self.legis_list.append(cosponsorship)
+
+        print "the cwalk is %r" % self.crp_pap_crosswalk[1]    
 
         cs_bills = [ prepCosponsored(cs) for cs in cosponsored_bills ]
         filtered = dict( (key, list(set([bill[key] for bill in cs_bills]))) for key in cs_bills[0].keys() )
