@@ -6,15 +6,19 @@
 		<script src="js/d3.v2.min.js"></script>
 		<script src="js/underscore.js"></script>
 		<script src="js/backbone.js"></script>
+		<script src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="js/handlebars.js"></script>
 		<link rel="stylesheet" type="text/css" href="style.css" />
+		<link rel="stylesheet" type="text/css" href="css/jquery-ui.css" />
 
 	</head>
 	<body>
 		<div id="vis_container"></div>
 		<script type="text/javascript" src="js/timeline.js"></script>
 		<script id="legislator" type="x-handlebars-template">
-			<div id="top_bar"></div>
+			<div id="top_bar">
+				<input id="legislator_input" type="text" placeholder="select a legislator">
+			</div>
 			<div id="options_list">
 				<!-- <li id="key_li"><img id="key_img" src="key.svg"/></li> -->
 				<img id="filter_img" src="filter.svg"/>
@@ -30,14 +34,7 @@
 					<span id="role">{{type}}</span> <span>{{name}}</span>
 					<span>[{{state}}{{district}}]</span>
 				</div>
-				
-				<!--<div id="key">
-					{{#each eventTypes }}
-						<div>
-							<input type="checkbox" class="filter-input" /> {{ this }}
-						</div>
-					{{/each }}
-				</div> -->
+				<a id="change_legislator" href="#">change legislator</a>
 			</div>
 		</script>
 

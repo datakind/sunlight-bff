@@ -30,6 +30,21 @@ body {
 	background-color: #cf1a0c;
 	opacity: 0.77;
 	box-shadow: 0px 2px 10px gray;
+	-webkit-transition: all .25s ease-out;
+}
+
+#legislator_input {
+	display: none;
+	position: relative;
+	width: 540px;
+	height: 90px;
+	font-size: 50px;
+	margin: 300px auto;
+	border: 0px;
+	padding: 10px;
+	border-radius: 5px;
+	box-shadow: 0px 2px 10px gray;
+	-webkit-transition: all .25s ease-out;
 }
 
 #key_img {
@@ -155,7 +170,7 @@ text:hover {
 }
 
 .leaf .hovered{
-	fill-opacity: 1;
+	fill-opacity: 1 !important;
 }
 
 .hidden {

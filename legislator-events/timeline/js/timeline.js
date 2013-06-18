@@ -108,78 +108,86 @@
 
 	var values
 
-d3.json('john_a_boehner.json', function(data){
-	window.legislatorData = data
-	window.contribs = _.filter(data.data, function(datum){ return datum.events[0].event_type === "recieved_campaign_contributions" })
-		   contribs = _.map(contribs, function(ev){return ev.events[0]})
-	window.committeeAssignments = _.filter(data.data, function(datum){ return datum.events[0].event_type === "joined_committee" })
-		   committeeAssignments = _.map(committeeAssignments, function(ev){ return ev.events[0] })
+	update( 'john_a_boehner.json', function(){console.log("doin dis")} )
 
-	var legis_data = { 
-		"name" : data.bio.name.official_full,
-		"osid" : data.bio.id.opensecrets,
-		"type" : capitaliseFirstLetter( data.bio.terms[data.bio.terms.length-1].type ),
-		"party" : data.bio.terms[data.bio.terms.length-1].party,
-		"district" : data.bio.terms[data.bio.terms.length-1].district,
-		"state" : data.bio.terms[data.bio.terms.length-1].state,
-		"eventTypes" : [ 
-			"Sponsored Legislation", "Cosponsored Legislation", 
-			"Event or Party", "Joined Committee", "Elected to Office" 
-		]
-	}
+function update( legisJson, callback ){
 
-    var source = $('#legislator').html()
-    var template = Handlebars.compile( source )
-    $('body').append( template(legis_data) )
+	callback()
 
-	console.log("the data is", data)
+	d3.json( legisJson, function(data){
+		window.legislatorData = data
+		window.contribs = _.filter(data.data, function(datum){ return datum.events[0].event_type === "recieved_campaign_contributions" })
+			   contribs = _.map(contribs, function(ev){return ev.events[0]})
+		window.committeeAssignments = _.filter(data.data, function(datum){ return datum.events[0].event_type === "joined_committee" })
+			   committeeAssignments = _.map(committeeAssignments, function(ev){ return ev.events[0] })
 
-	// sort the objects by timestamp
-	var sorted = data.data.sort(compare).reverse()
-		values = sorted
+		var legis_data = { 
+			"name" : data.bio.name.official_full,
+			"osid" : data.bio.id.opensecrets,
+			"type" : capitaliseFirstLetter( data.bio.terms[data.bio.terms.length-1].type ),
+			"party" : data.bio.terms[data.bio.terms.length-1].party,
+			"district" : data.bio.terms[data.bio.terms.length-1].district,
+			"state" : data.bio.terms[data.bio.terms.length-1].state,
+			"eventTypes" : [ 
+				"Sponsored Legislation", "Cosponsored Legislation", 
+				"Event or Party", "Joined Committee", "Elected to Office" 
+			]
+		}
 
-	x.domain(d3.extent(sorted.map(function(d) { return d.time * 1000; })));	 
-	x2.domain(x.domain());
+	    var source = $('#legislator').html()
+	    var template = Handlebars.compile( source )
+	    $('body').append( template(legis_data) )
 
-	focus.append("g")
-	  .attr("class", "x axis")
-	  .attr("transform", "translate(0," + ( height - 50 ) + ")")	  
-	  .call(xAxis);
+		console.log("the data is", data)
 
-	context.append("g")
-	  .attr("class", "x axis")
-	  .attr("transform", "translate(0," + height2 + ")")
-	  .call(xAxis2);
+		// sort the objects by timestamp
+		var sorted = data.data.sort(compare).reverse()
+			values = sorted
 
-	context.append("g")
-	  .attr("class", "x brush")
-	  .call(brush)
-	.selectAll("rect")
-	  .attr("y", -6)
-	  .attr("height", height2 + 7);
+		x.domain(d3.extent(sorted.map(function(d) { return d.time * 1000; })));	 
+		x2.domain(x.domain());
 
-	// get the min and timestamp values 
-	var minTime = sorted[0].time,
-		maxTime = sorted[sorted.length - 1].time
+		focus.append("g")
+		  .attr("class", "x axis")
+		  .attr("transform", "translate(0," + ( height - 50 ) + ")")	  
+		  .call(xAxis);
 
-	// create dates from the min and max timestamps
-	var startDate = new Date(minTime * 1000),
-		endDate = new Date(maxTime * 1000)
+		context.append("g")
+		  .attr("class", "x axis")
+		  .attr("transform", "translate(0," + height2 + ")")
+		  .call(xAxis2);
 
-	// select the events elements, append legis event data
-	// and translate element based on time
-	var event_ = focus.selectAll(".event")
-		.data(sorted)
-	  .enter().append('svg:g')
-	  	.attr('class', 'event')	
-	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
+		context.append("g")
+		  .attr("class", "x brush")
+		  .call(brush)
+		.selectAll("rect")
+		  .attr("y", -6)
+		  .attr("height", height2 + 7);
 
-	addContextContribution( values )
-	addContextBills( values )
-	addContextCosponsored( values )
-	addContextCommittee()
+		// get the min and timestamp values 
+		var minTime = sorted[0].time,
+			maxTime = sorted[sorted.length - 1].time
 
-})
+		// create dates from the min and max timestamps
+		var startDate = new Date(minTime * 1000),
+			endDate = new Date(maxTime * 1000)
+
+		// select the events elements, append legis event data
+		// and translate element based on time
+		var event_ = focus.selectAll(".event")
+			.data(sorted)
+		  .enter().append('svg:g')
+		  	.attr('class', 'event')	
+		  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
+
+		// addContextContribution( values )
+		addContextBills( values )
+		addContextCosponsored( values )
+		addContextCommittee()
+
+	})
+
+}
 
 $(document).ready(function(){
 
@@ -334,6 +342,32 @@ $(document).ready(function(){
 		})
 
 		filterActive = true
+	})
+
+	$('body').on('click', '#change_legislator', function( ev ){
+		ev.preventDefault()
+
+
+		var test = [
+			{ label : "Chuck Grassley", value : "chuck_grassley.json" },
+			{ label : "John Boehner", value : "john_a_boehner.json" }
+		]
+
+		$('#top_bar').css({ height : '100%' })
+		$('#bio, #options_list').remove()
+		$('#legislator_input').css({ display : 'block'}).autocomplete({
+			source : test,
+			select : function( ev, ui ){
+				focus.selectAll('g').remove()
+				context.selectAll('g').remove()
+				update( ui.item.value, function(){ 		
+					$('#top_bar').css({ height : '40px' })
+					$('#legislator_input').hide()
+				})
+			}
+		})
+
+
 	})
 
 })
@@ -576,9 +610,6 @@ function addBills( data ){
 		.attr("transform", function(d) {
 	         return "rotate(-135)" 
 	     })
-		.on('mouseover', function(d){
-			console.log("the d is d", d)
-		})
 
 	event_.append('svg:line')
 		.attr('x1', 0)
@@ -599,7 +630,7 @@ function addBills( data ){
 			left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
 													$(this).position().left + 100			
 
-		if ( hoverable ){
+		if ( hoverable && !(filterActive)){
 
 			el.select('line').transition().style("stroke-opacity", 1)
 			el.select('rect').transition().style("fill-opacity", 1)
@@ -702,9 +733,6 @@ function addCosponsored( data ) {
 		.attr("transform", function(d) {
 	         return "rotate(-135)" 
 	     })
-		.on('mouseover', function(d){
-			console.log("the d is d", d)
-		})
 
 	event_.append('svg:line')
 		.attr('x1', 0)
@@ -717,15 +745,17 @@ function addCosponsored( data ) {
 
 	event_.on('mouseover', function(d){
 
-		var el = d3.select(this),
-			templateData = templateId(d),
-			eventId = '#' + d.event_id,
-			templateSelector = '#' + templateData[0],
-			top = $(this).position().top - 50,
-			left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
-													$(this).position().left + 100			
+		var el = d3.select(this)
+			, templateData = templateId(d)
+			, eventId = '#' + d.event_id
+			, templateSelector = '#' + templateData[0]
+			, top = $(this).position().top - 50
+			, left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
+													$(this).position().left + 100;	
 
-		if ( hoverable ){
+		if ( hoverable && !(filterActive) ){
+
+			console.log("filteractive is", filterActive)
 
 			el.select('line').transition().style("stroke-opacity", 1)
 			el.select('rect').transition().style("fill-opacity", 1)
@@ -744,6 +774,10 @@ function addCosponsored( data ) {
 				left : left
 			})
 			
+		} else {
+
+			console.log("filteractive is", filterActive)
+
 		}
 
 	}).on('mouseout', function(d){
@@ -1031,7 +1065,7 @@ function addCircles( data ) {
 // REFACTOR: CHANGE SWITCH TO OBJECT 
 function templateId (d){
 	var data 
-	console.log("incoming data is", d)
+	// console.log("incoming data is", d)
 	switch(d.event) {
 		case "sponsored legislation":
 			data = {
