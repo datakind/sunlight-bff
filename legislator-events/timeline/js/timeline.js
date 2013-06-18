@@ -311,7 +311,7 @@ $(document).ready(function(){
 		window.attrVal = $('.attribute-value-drop option:selected').val()
 		window.elements = $('.context-event')
 		window.filterSelector = eventToSelectorMapping[attribute]
-			
+
 		d3.selectAll(filterSelector)[0].forEach(function(element, i){
 		
 			console.log("the element is", d3.select(element).data()[0] )
@@ -695,6 +695,7 @@ function addCosponsored( data ) {
 	 event_.append('rect')
 		.attr("width", 80)
 		.attr("height", 20)
+		.attr("class", "cosponsored")
 		.style("fill", "red")
 		.style("fill-opacity", .5)
 		.style("stroke", "red")
@@ -1327,8 +1328,8 @@ var addAttributeFilter = {
 
 var eventToSelectorMapping = {
 	"campaign_contribution" : ".recieved",
-	"sponsored_legislation" : ".sponsored",
-	"cosponsored_legislation" : ".cosponsored",
+	"sponsored_legislation" : ".sponsored, .context-sponsored",
+	"cosponsored_legislation" : ".cosponsored, .context-cosponsored",
 	"committee" : ".committee"
 }
 

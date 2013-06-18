@@ -46,7 +46,9 @@ class LegisEvents():
         pap_bill_info = csv.reader(open('cached/bills93-111.csv', 'rb'), 
                                         delimiter="|")
         pap_bills = [row for row in pap_bill_info]
-        self.bill_topic_dict = dict( ( row[1].encode('utf-8'), [row[10], row[11]] ) for row in pap_bills )
+        self.bill_topic_dict = dict( ( "%s-%s-%s" % (row[7].encode('utf-8'), 
+                                    row[3].encode('utf-8'), row[2].encode('utf-8')),
+                                    [row[10], row[11]] ) for row in pap_bills )
 
         # create data file if it doesn't exist
         if not os.path.exists('data'):
@@ -249,31 +251,31 @@ class LegisEvents():
             cs["minor_topic"] = ""
 
             if cs["bill_type"] == "hr":
-                print "got a cs hr"
                 pap_key = "%s-HR-%s" % (str(cs["congress"]), str(cs["number"]))
+                # print "pap key is %r" % pap_key
                 try:
                     cs["major_topic"] = self.bill_topic_dict[pap_key][0]
                     cs["minor_topic"] = self.bill_topic_dict[pap_key][1]
-                    print "got cosponsored topic one"
+                    # print "got cosponsored topic one %r" % pap_key
                 except:
                     cs["major_topic"] = ""
                     cs["minor_topic"] = ""
 
-            # for row in self.crp_pap_crosswalk[]:            
-            #     if cs['major_topic'] == row[3] and cs['minor_topic'] == row[4]:
-            #         print "gots a cs topic"
-            #         cs['crp_catcode'] = row[0]
-            #         cs['crp_catname'] = row[1]
-            #         cs['crp_description'] = row[2]
-            #         cs['pap_major_topic'] = row[3]
-            #         cs['pap_subtopic_code'] = row[4]
-            #         cs['fit'] = row[5]
-            #         cs['pap_subtopic_2'] = row[6]
-            #         cs['pap_subtopic_3'] = row[7]
-            #         cs['pap_subtopic_4'] = row[8]
-            #         cs['notes_chad'] = row[9]
-            #         cs['pa_subtopic_code'] = row[10]
-            #         cs['note'] = row[11]
+            for row in self.crp_pap_crosswalk:
+                if cs['major_topic'] == row[3] and cs['minor_topic'] == row[4]:
+                    print "gots a cs topic"
+                    cs['crp_catcode'] = row[0]
+                    cs['crp_catname'] = row[1]
+                    cs['crp_description'] = row[2]
+                    cs['pap_major_topic'] = row[3]
+                    cs['pap_subtopic_code'] = row[4]
+                    cs['fit'] = row[5]
+                    cs['pap_subtopic_2'] = row[6]
+                    cs['pap_subtopic_3'] = row[7]
+                    cs['pap_subtopic_4'] = row[8]
+                    cs['notes_chad'] = row[9]
+                    cs['pa_subtopic_code'] = row[10]
+                    cs['note'] = row[11]
       
             t = str(int(time.mktime(time.strptime(cs["introduced_on"],
                      '%Y-%m-%d'))))
@@ -286,7 +288,7 @@ class LegisEvents():
             }
             self.legis_list.append(cosponsorship)
 
-        print "the cwalk is %r" % self.crp_pap_crosswalk[1]    
+        # print "the cwalk is %r" % self.crp_pap_crosswalk[1]    
 
         cs_bills = [ prepCosponsored(cs) for cs in cosponsored_bills ]
         filtered = dict( (key, list(set([bill[key] for bill in cs_bills]))) for key in cs_bills[0].keys() )
