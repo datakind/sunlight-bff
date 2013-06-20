@@ -108,13 +108,94 @@
 
 	var values
 
-	update( 'john_a_boehner.json', function(){console.log("doin dis")} )
 
-function update( legisJson, callback ){
+var Heading = Backbone.Model.extend({
+	
+	defaults : {
+		"name" : undefined
+	},
+	initialize: function(){
+		console.log('initialized!')
+		this.on('change', function(){
+			console.log('SOME SHIT CHANGED')
+		})
+	}
+})
 
-	callback()
+var LegisInfoView = Backbone.View.extend({
+
+	initialize : function(){
+
+	},
+
+	render : function() {
+
+	}
+
+})
+
+var HeadingView = Backbone.View.extend({ 
+
+	legislators : [
+		{ label : "Chuck Grassley", value : "chuck_grassley.json" },
+		{ label : "John Boehner", value : "john_a_boehner.json" }
+	],
+
+	initialize : function() {
+
+		this.render()
+		this.$el.find('input').autocomplete({
+			source : this.legislators,
+			select : function( ev, ui ) {
+				focus.selectAll('g').remove()
+				context.selectAll('g').remove()
+				update( ui.item.value, this.toggleExpansion, this.model)
+			}
+		})
+
+	}, 
+
+	render : function() {
+
+		var source = $('#legislator').html()
+	    	, template = Handlebars.compile( source )
+	    	, model = this.model;
+
+	    this.$el.html( template );
+
+	    if ( model.get('name') === undefined ){	    	
+	    	this.toggleExpansion();
+	    }
+
+	},
+
+	events : {
+
+		"click #change_legislator" : "changeLegislator"
+
+	},
+
+	toggleExpansion : function() {
+
+		var expanded = this.$el.hasClass('expandido')
+
+		if ( expanded ) { 
+			this.$el.removeClass('expandido')
+			this.$el.find('input').hide()
+		} else {
+			this.$el.addClass('expandido')
+			this.$el.find('input').show()
+		}
+
+	}
+
+})
+
+
+function update( legisJson, callback, headingModel ){
 
 	d3.json( legisJson, function(data){
+		callback()
 		window.legislatorData = data
 		window.contribs = _.filter(data.data, function(datum){ return datum.events[0].event_type === "recieved_campaign_contributions" })
 			   contribs = _.map(contribs, function(ev){return ev.events[0]})
@@ -134,11 +215,7 @@ function update( legisJson, callback ){
 			]
 		}
 
-	    var source = $('#legislator').html()
-	    var template = Handlebars.compile( source )
-	    $('body').append( template(legis_data) )
-
-		console.log("the data is", data)
+		headingModel.set(legis_data)
 
 		// sort the objects by timestamp
 		var sorted = data.data.sort(compare).reverse()
@@ -189,7 +266,16 @@ function update( legisJson, callback ){
 
 }
 
+// events
 $(document).ready(function(){
+
+	var head = new Heading()
+		, headingView = new HeadingView({
+			el : '#top_bar',
+			model : head
+		})
+
+	// update( 'john_a_boehner.json', function(){ console.log("doin dis") }, head )
 
 	window.removePopup = true
 	window.hoverable = true
@@ -355,6 +441,7 @@ $(document).ready(function(){
 
 		$('#top_bar').css({ height : '100%' })
 		$('#bio, #options_list').remove()
+
 		$('#legislator_input').css({ display : 'block'}).autocomplete({
 			source : test,
 			select : function( ev, ui ){

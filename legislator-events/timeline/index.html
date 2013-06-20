@@ -13,29 +13,32 @@
 
 	</head>
 	<body>
+		<div id="top_bar"></div>
 		<div id="vis_container"></div>
 		<script type="text/javascript" src="js/timeline.js"></script>
-		<script id="legislator" type="x-handlebars-template">
-			<div id="top_bar">
-				<input id="legislator_input" type="text" placeholder="select a legislator">
-			</div>
+		
+		<script id="filter" type="x-handlebars-template">
 			<div id="options_list">
-				<!-- <li id="key_li"><img id="key_img" src="key.svg"/></li> -->
 				<img id="filter_img" src="filter.svg"/>
 				<div id="options_content"></div>	
 			</div>
+		</script>
 
-			<div id="info">
-				<div id="bio">
-				<div id="legislator_image">
-					<img src="http://assets.opensecrets.org/politicians/img/{{osid}}.jpg" />
-				</div>
-				<div id="legislator_name">
-					<span id="role">{{type}}</span> <span>{{name}}</span>
-					<span>[{{state}}{{district}}]</span>
-				</div>
-				<a id="change_legislator" href="#">change legislator</a>
+		<script id="legislator" type="x-handlebars-template">
+			<input id="legislator_input" type="text" placeholder="select a legislator">
+			<div id="info"></div>
+		</script>
+
+		<script id="legis_info" type="x-handlebars-template">
+			<div id="bio">
+			<div id="legislator_image">
+				<img src="http://assets.opensecrets.org/politicians/img/{{osid}}.jpg" />
 			</div>
+			<div id="legislator_name">
+				<span id="role">{{type}}</span> <span>{{name}}</span>
+				<span>[{{state}}{{district}}]</span>
+			</div>
+			<a id="change_legislator" href="#">change legislator</a>
 		</script>
 
 		<script id="eventOrParty" type="x-handlebars-template">
@@ -105,12 +108,6 @@
 			</select>
 			<button id="filter_button">Filter Events</button>
 		</script>
-
-		<!-- <script id="joined_committee" type="x-handlebars-template">
-			<div class="event-popup" id="{{id}}">
-				<p>Joined the {{committee}} Committee</p>
-			</div>
-		</script> -->
 
 		<script id="campaign_contribution" type="x-handlebars-template">
 			<div class="event-popup" id="{{id}}">

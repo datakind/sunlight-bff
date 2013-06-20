@@ -75,6 +75,10 @@ body {
 
 }
 
+.expandido {
+	height: 100% !important;
+}
+
 .expanded-filter {
 	width: 500px;
 }
