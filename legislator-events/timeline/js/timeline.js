@@ -1,4 +1,4 @@
-	
+
 	var margin = {top: 10, right: 10, bottom: 100, left: 40},
 	    margin2 = {top: 630, right: 10, bottom: 20, left: 40},
 	    width = 1400 - margin.left - margin.right,
@@ -798,14 +798,6 @@ function addContextBills( data ){
 			console.log("the d is d", d)
 		})
 
-	event_.append('svg:line')
-		.attr('x1', 0)
-		.attr('x2', 0)
-		.attr('y1', 0)
-		.attr('y2', 40 )
-		.style("stroke-opacity", 0)
-		.style("stroke-width", 1)
-		.style("stroke", "steelblue")
 } 
 
 function addCosponsored( data ) {
@@ -941,15 +933,6 @@ function addContextCosponsored ( data ){
 		.on('mouseover', function(d){
 			console.log("the d is d", d)
 		})
-
-	event_.append('svg:line')
-		.attr('x1', 0)
-		.attr('x2', 0)
-		.attr('y1', 0)
-		.attr('y2', 300)
-		.style("stroke-opacity", 0)
-		.style("stroke-width", 1)
-		.style("stroke", "red")
 } 
 
 function addCommittees(){
