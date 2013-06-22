@@ -1,3 +1,4 @@
+	
 	var margin = {top: 10, right: 10, bottom: 100, left: 40},
 	    margin2 = {top: 630, right: 10, bottom: 20, left: 40},
 	    width = 1400 - margin.left - margin.right,
@@ -35,79 +36,71 @@
 	    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
 	    .attr('class', 'context-container');
 
-	// refactor, make these elements data driven
-	svg.append("rect")
-		.attr("width", 80)
-		.attr("height", 40)
-		.attr("transform", "translate(-60, 100)")
-		.style("fill", "steelblue")
+	var labelData = [
+			{
+				y: 100,
+				fill: 'steelblue',
+				text: 'Sponsored Legislation',
+				targetClass: '.sponsored'
+			},
+			{
+				y: 200,
+				fill: 'red',
+				text: 'Cosponsored Legislation',
+				targetClass: '.cosponsored'	
+			},
+			{
+				y: 270,
+				fill: 'yellow',
+				text: 'Committee Membership',
+				targetClass: '.committee'
+			},						
+			{
+				y: 420,
+				fill: 'green',
+				text: 'Campaign Contribution',
+				targetClass: '.recieved'
+			}
+	]
+
+	var labels = svg.append('g').attr('class', 'event-labels')
+		  .selectAll('.event-label')
+		.data(labelData)
+		  .enter().append('g')
+		  .attr('transform', function(d){
+			  return 'translate(-160,' + d.y + ')';
+		  })
+
+	labels.append('rect')
+		.attr('class', 'event-label')
+		.attr('height', 40)
+		.attr('width', 180)
+		.style("fill", function(d){ return d.fill })
 		.style("fill-opacity", .6)
-		.on('mouseover', function(d){
+	  
+	labels.append('text')
+		.text(function(d){ return d.text })
+	  	.attr('y', 25)
+	  	.attr('x', 10)
+	  	.style('fill', 'white')
+	  	.style('font-family', 'helvetica')
+	  	.style('font-size', '14px');
+
+	labels.on('mouseover', function(d){
 			d3.select(this).transition()
-				.attr("transform", "translate(0, 100)")
+				.attr('transform', 'translate(0, ' + d.y + ')');
 		})
 		.on('mouseout', function(d){
 			d3.select(this).transition()
-				.attr("transform", "translate(-60, 100)")
+				.attr('transform', 'translate(-160, ' + d.y + ')');
 		})
 		.on('click', function(d){
-			var sponsored = d3.selectAll('.sponsored')
-			sponsored.classed("shown") ? sponsored.classed("shown", false).classed("hidden", true) : 
-				 						 sponsored.classed("shown", true).classed("hidden", false)
-		})
-
-	svg.append("rect")
-		.attr("width", 80)
-		.attr("height", 40)
-		.attr("transform", "translate(-60, 200)")
-		.style("fill", "red")
-		.style("fill-opacity", .6)
-		.on('mouseover', function(d){
-			d3.select(this).transition()
-				.attr("transform", "translate(0, 200)")
-		})
-		.on('mouseout', function(d){
-			d3.select(this).transition()
-				.attr("transform", "translate(-60, 200)")
-		})
-		.on('click', function(d){
-			console.log( "testing", d3.selectAll('.sponsored').classed("shown") )
-		})
-		// .append("text").text("sponsored legislation")
-		// .style("fill", "white")
-
-	svg.append("rect")
-		.attr("width", 80)
-		.attr("height", 40)
-		.attr("transform", "translate(-60, 270)")
-		.style("fill", "yellow")
-		.style("fill-opacity", .6)
-		.on('mouseover', function(d){
-			d3.select(this).transition()
-				.attr("transform", "translate(0, 270)")
-		})
-		.on('mouseout', function(d){
-			d3.select(this).transition()
-				.attr("transform", "translate(-60, 270)")
-		})
-
-	svg.append("rect")
-		.attr("width", 80)
-		.attr("height", 40)
-		.attr("transform", "translate(-60, 420)")
-		.style("fill", "green")
-		.style("fill-opacity", .6)
-		.on('mouseover', function(d){
-			d3.select(this).transition()
-				.attr("transform", "translate(0, 420)")
-		})
-		.on('mouseout', function(d){
-			d3.select(this).transition()
-				.attr("transform", "translate(-60, 420)")
+			var sponsored = d3.selectAll(d.targetClass)
+			sponsored.classed('shown') ? sponsored.classed('shown', false).classed('hidden', true) : 
+				 						 sponsored.classed('shown', true).classed('hidden', false)
 		})
 
 	var values
-
 
 var Heading = Backbone.Model.extend({
 	
@@ -472,32 +465,6 @@ $(document).ready(function(){
 
 		filterActive = true
 	})
-
-	// $('body').on('click', '#change_legislator', function( ev ){
-
-	// 	ev.preventDefault();
-
-	// 	var test = [
-	// 		{ label : "Chuck Grassley", value : "chuck_grassley.json" },
-	// 		{ label : "John Boehner", value : "john_a_boehner.json" }
-	// 	];
-
-	// 	$('#top_bar').css({ height : '100%' });
-	// 	$('#bio, #options_list').remove();
-
-	// 	$('#legislator_input').css({ display : 'block'}).autocomplete({
-	// 		source : test,
-	// 		select : function( ev, ui ){
-	// 			focus.selectAll('g').remove()
-	// 			context.selectAll('g').remove()
-	// 			update( ui.item.value, function(){ 		
-	// 				$('#top_bar').css({ height : '40px' })
-	// 				$('#legislator_input').hide()
-	// 			});
-	// 		}
-	// 	});
-
-	// });
 
 });
 
@@ -994,8 +961,9 @@ function addCommittees(){
 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + "," + 100 + ")"; })
 
 	event_.append('g').selectAll(".committee")
-		.data(function(d){ return d.info })
+		  .data(function(d){ return d.info })
 		.enter().append("svg:line")
+		.attr('class', 'committee')
 		.attr('x1', 0)
 		.attr('x2', function(d){
 			var x1, x2
