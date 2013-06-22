@@ -35,79 +35,71 @@
 	    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
 	    .attr('class', 'context-container');
 
-	// refactor, make these elements data driven
-	svg.append("rect")
-		.attr("width", 80)
-		.attr("height", 40)
-		.attr("transform", "translate(-60, 100)")
-		.style("fill", "steelblue")
+	var labelData = [
+			{
+				y: 100,
+				fill: 'steelblue',
+				text: 'Sponsored Legislation',
+				targetClass: '.events'
+			},
+			{
+				y: 200,
+				fill: 'red',
+				text: 'Cosponsored Legislation',
+				targetClass: '.coevents'	
+			},
+			{
+				y: 270,
+				fill: 'yellow',
+				text: 'Committee Membership',
+				targetClass: '.committee'
+			},						
+			{
+				y: 420,
+				fill: 'green',
+				text: 'Campaign Contribution',
+				targetClass: '.recieved'
+			}
+	]
+
+	var labels = svg.append('g').attr('class', 'event-labels')
+		  .selectAll('.event-label')
+		.data(labelData)
+		  .enter().append('g')
+		  .attr('transform', function(d){
+			  return 'translate(-160,' + d.y + ')';
+		  })
+
+	labels.append('rect')
+		.attr('class', 'event-label')
+		.attr('height', 40)
+		.attr('width', 180)
+		.style("fill", function(d){ return d.fill })
 		.style("fill-opacity", .6)
-		.on('mouseover', function(d){
+	  
+	labels.append('text')
+		.text(function(d){ return d.text })
+	  	.attr('y', 25)
+	  	.attr('x', 10)
+	  	.style('fill', 'white')
+	  	.style('font-family', 'helvetica')
+	  	.style('font-size', '14px');
+
+	labels.on('mouseover', function(d){
 			d3.select(this).transition()
-				.attr("transform", "translate(0, 100)")
+				.attr('transform', 'translate(0, ' + d.y + ')');
 		})
 		.on('mouseout', function(d){
 			d3.select(this).transition()
-				.attr("transform", "translate(-60, 100)")
+				.attr('transform', 'translate(-160, ' + d.y + ')');
 		})
 		.on('click', function(d){
-			var sponsored = d3.selectAll('.sponsored')
-			sponsored.classed("shown") ? sponsored.classed("shown", false).classed("hidden", true) : 
-				 						 sponsored.classed("shown", true).classed("hidden", false)
-		})
-
-	svg.append("rect")
-		.attr("width", 80)
-		.attr("height", 40)
-		.attr("transform", "translate(-60, 200)")
-		.style("fill", "red")
-		.style("fill-opacity", .6)
-		.on('mouseover', function(d){
-			d3.select(this).transition()
-				.attr("transform", "translate(0, 200)")
-		})
-		.on('mouseout', function(d){
-			d3.select(this).transition()
-				.attr("transform", "translate(-60, 200)")
-		})
-		.on('click', function(d){
-			console.log( "testing", d3.selectAll('.sponsored').classed("shown") )
-		})
-		// .append("text").text("sponsored legislation")
-		// .style("fill", "white")
-
-	svg.append("rect")
-		.attr("width", 80)
-		.attr("height", 40)
-		.attr("transform", "translate(-60, 270)")
-		.style("fill", "yellow")
-		.style("fill-opacity", .6)
-		.on('mouseover', function(d){
-			d3.select(this).transition()
-				.attr("transform", "translate(0, 270)")
-		})
-		.on('mouseout', function(d){
-			d3.select(this).transition()
-				.attr("transform", "translate(-60, 270)")
-		})
-
-	svg.append("rect")
-		.attr("width", 80)
-		.attr("height", 40)
-		.attr("transform", "translate(-60, 420)")
-		.style("fill", "green")
-		.style("fill-opacity", .6)
-		.on('mouseover', function(d){
-			d3.select(this).transition()
-				.attr("transform", "translate(0, 420)")
-		})
-		.on('mouseout', function(d){
-			d3.select(this).transition()
-				.attr("transform", "translate(-60, 420)")
+			var events = d3.selectAll(d.targetClass)
+			events.classed('shown') ? events.classed('shown', false).classed('hidden', true) : 
+				 						 events.classed('shown', true).classed('hidden', false)
 		})
 
 	var values
-
 
 var Heading = Backbone.Model.extend({
 	
@@ -247,7 +239,7 @@ function update( legisJson, view, funcName, headingModel ){
 			"district" : data.bio.terms[data.bio.terms.length-1].district,
 			"state" : data.bio.terms[data.bio.terms.length-1].state,
 			"eventTypes" : [ 
-				"Sponsored Legislation", "Cosponsored Legislation", 
+				"Sponsored Legislation", "Coevents Legislation", 
 				"Event or Party", "Joined Committee", "Elected to Office" 
 			]
 		}
@@ -297,7 +289,7 @@ function update( legisJson, view, funcName, headingModel ){
 
 		// addContextContribution( values )
 		addContextBills( values )
-		addContextCosponsored( values )
+		addContextCoevents( values )
 		addContextCommittee()
 
 	})
@@ -473,32 +465,6 @@ $(document).ready(function(){
 		filterActive = true
 	})
 
-	// $('body').on('click', '#change_legislator', function( ev ){
-
-	// 	ev.preventDefault();
-
-	// 	var test = [
-	// 		{ label : "Chuck Grassley", value : "chuck_grassley.json" },
-	// 		{ label : "John Boehner", value : "john_a_boehner.json" }
-	// 	];
-
-	// 	$('#top_bar').css({ height : '100%' });
-	// 	$('#bio, #options_list').remove();
-
-	// 	$('#legislator_input').css({ display : 'block'}).autocomplete({
-	// 		source : test,
-	// 		select : function( ev, ui ){
-	// 			focus.selectAll('g').remove()
-	// 			context.selectAll('g').remove()
-	// 			update( ui.item.value, function(){ 		
-	// 				$('#top_bar').css({ height : '40px' })
-	// 				$('#legislator_input').hide()
-	// 			});
-	// 		}
-	// 	});
-
-	// });
-
 });
 
 function toggleFilter(){
@@ -559,7 +525,7 @@ function brushed(){
 	// addCircles( data )
 	addBills( data )
 	addContributions( data )
-	addCosponsored( data )
+	addCoevents( data )
 	addCommittees()
 	focus.select(".x.axis").call(xAxis);
 
@@ -720,10 +686,10 @@ function addContextContribution( data ){
 
 function addBills( data ){
 
-	data = _.filter(data, function(datum){ return datum.events[0].event_type === "sponsored_legislation" })
+	data = _.filter(data, function(datum){ return datum.events[0].event_type === "events_legislation" })
 	data = _.map(data, function(ev){return ev.events[0]})	
 
-	var event_ = focus.selectAll(".sponsored")
+	var event_ = focus.selectAll(".events")
 		.data(data)
 	  .enter().append('svg:g')
 	  	.attr('class', 'event shown')
@@ -732,7 +698,7 @@ function addBills( data ){
 	 event_.append('rect')
 		.attr("width", 80)
 		.attr("height", 20)
-		.attr("class", "sponsored")
+		.attr("class", "events")
 		.style("fill", "steelblue")
 		.style("fill-opacity", .5)
 		.style("stroke", "steelblue")
@@ -808,10 +774,10 @@ function addBills( data ){
 
 function addContextBills( data ){
 
-	data = _.filter(data, function(datum){ return datum.events[0].event_type === "sponsored_legislation" })
+	data = _.filter(data, function(datum){ return datum.events[0].event_type === "events_legislation" })
 	data = _.map(data, function(ev){return ev.events[0]})	
 
-	var event_ = context.selectAll(".context-sponsored")
+	var event_ = context.selectAll(".context-events")
 		.data(data)
 	  .enter().append('svg:g')
 	  	.attr('class', 'context-event shown')
@@ -820,7 +786,7 @@ function addContextBills( data ){
 	 event_.append('rect')
 		.attr("width", 8)
 		.attr("height", 2)
-		.attr("class", "context-sponsored")
+		.attr("class", "context-events")
 		.style("fill", "steelblue")
 		.style("fill-opacity", .5)
 		.style("stroke", "steelblue")
@@ -841,21 +807,21 @@ function addContextBills( data ){
 		.style("stroke", "steelblue")
 } 
 
-function addCosponsored( data ) {
+function addCoevents( data ) {
 
 	data = _.filter(data, function(datum){ return datum.events[0].event_type === "bill_cosponsorship" })
 	data = _.map(data, function(ev){return ev.events[0]})
 
-	var event_ = focus.selectAll(".cosponsored")
+	var event_ = focus.selectAll(".coevents")
 		.data(data)
 	  .enter().append('svg:g')
-	  	.attr('class', 'event cosponsored')	
+	  	.attr('class', 'event coevents')	
 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + "," + 240 + ")"; })
 
 	 event_.append('rect')
 		.attr("width", 80)
 		.attr("height", 20)
-		.attr("class", "cosponsored")
+		.attr("class", "coevents")
 		.style("fill", "red")
 		.style("fill-opacity", .5)
 		.style("stroke", "red")
@@ -951,15 +917,15 @@ function addCosponsored( data ) {
 
 }
 
-function addContextCosponsored ( data ){
+function addContextCoevents ( data ){
 
 	data = _.filter(data, function(datum){ return datum.events[0].event_type === "bill_cosponsorship" })
 	data = _.map(data, function(ev){return ev.events[0]})
 
-	var event_ = context.selectAll(".context-cosponsored")
+	var event_ = context.selectAll(".context-coevents")
 		.data(data)
 	  .enter().append('svg:g')
-	  	.attr('class', 'context-event context-cosponsored')	
+	  	.attr('class', 'context-event context-coevents')	
 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",0)"; })
 
 	 event_.append('rect')
@@ -994,8 +960,9 @@ function addCommittees(){
 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + "," + 100 + ")"; })
 
 	event_.append('g').selectAll(".committee")
-		.data(function(d){ return d.info })
+		  .data(function(d){ return d.info })
 		.enter().append("svg:line")
+		.attr('class', 'committee')
 		.attr('x1', 0)
 		.attr('x2', function(d){
 			var x1, x2
@@ -1196,7 +1163,7 @@ function templateId (d){
 	var data 
 	// console.log("incoming data is", d)
 	switch(d.event) {
-		case "sponsored legislation":
+		case "events legislation":
 			data = {
 				"title" : d.info.title,
 				"thomas_link" : d.info.thomas_link,
@@ -1204,7 +1171,7 @@ function templateId (d){
 				"id" : d.event_id
 			}
 
-			return [ "sponsored_legislation", data ] 
+			return [ "events_legislation", data ] 
 			break;
 
 		case "event/party":
@@ -1218,7 +1185,7 @@ function templateId (d){
 				"id" : d.event_id
 			}
 
-			return [ "cosponsored_legislation", data ]
+			return [ "coevents_legislation", data ]
 			break
 		case "start congressional term":
 			return "green"
@@ -1300,7 +1267,7 @@ function fixContributorName( name ){
 // 		.attr('cx', 0)
 // 		.style('fill', function(d){
 // 			switch(d.event) {
-// 				case "sponsored legislation":
+// 				case "events legislation":
 // 					return "steelblue"
 // 					break;
 // 				case "event/party":
@@ -1334,7 +1301,7 @@ function getTimestamp(str) {
 function getColor(d){
 
 	switch(d.event) {
-		case "sponsored legislation":
+		case "events legislation":
 			return "yellow"
 			break;
 		case "event/party":
@@ -1459,28 +1426,28 @@ var addAttributeFilter = {
 
 	},
 
-	sponsored_legislation : function(){
+	events_legislation : function(){
 		var select = '<select class="attribute-drop"' 
 			select += ' id="contribution_attributes_drop"><option>'
 			select += 'Select Attribute</option></select>'
 
 		$(select).insertAfter('#event_type_filter_drop')
 
-		_.each(sponsoredAttributes, function(attr){
+		_.each(eventsAttributes, function(attr){
 			var option = '<option value="' + attr + '"">' + lowerUnderToUpperSpace( attr ) + '</option>';
 			$('.attribute-drop').append(option);
 		})
 
 	},
 
-	cosponsored_legislation : function(){
+	coevents_legislation : function(){
 		var select = '<select class="attribute-drop"' 
 			select += ' id="contribution_attributes_drop"><option>'
 			select += 'Select Attribute</option></select>'
 
 		$(select).insertAfter('#event_type_filter_drop')
 
-		_.each(sponsoredAttributes, function(attr){
+		_.each(eventsAttributes, function(attr){
 			var option = '<option value="' + attr + '"">' + lowerUnderToUpperSpace( attr ) + '</option>';
 			$('.attribute-drop').append(option);
 		})
@@ -1491,8 +1458,8 @@ var addAttributeFilter = {
 
 var eventToSelectorMapping = {
 	"campaign_contribution" : ".recieved",
-	"sponsored_legislation" : ".sponsored, .context-sponsored",
-	"cosponsored_legislation" : ".cosponsored, .context-cosponsored",
+	"events_legislation" : ".events, .context-events",
+	"coevents_legislation" : ".coevents, .context-coevents",
 	"committee" : ".committee"
 }
 
@@ -1518,7 +1485,7 @@ var committeeAttributes = [
 	
 ]
 
-var sponsoredAttributes = [
+var eventsAttributes = [
 		"bill_resolution_type",
 		"bill_type", "bill_type_label",
 		"congress", "contributor_type",
