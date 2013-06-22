@@ -117,12 +117,12 @@ body {
 	margin-top: 10px; 
 }
 
-#legis_info {
+/*#legis_info {
 	display: inline-block;
 	margin: 10px;
 	border: 1px solid gray;
 	padding: 10px
-}
+}*/
 
 #legis_info img, #info_container{
 	display: inline-block;

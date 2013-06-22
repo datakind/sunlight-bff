@@ -114,21 +114,32 @@ var Heading = Backbone.Model.extend({
 	defaults : {
 		"name" : undefined
 	},
+
 	initialize: function(){
-		console.log('initialized!')
+
 		this.on('change', function(){
-			console.log('SOME SHIT CHANGED')
+			console.log('SOME SHIT CHANGED', this.toJSON())
 		})
 	}
+
 })
 
 var LegisInfoView = Backbone.View.extend({
 
 	initialize : function(){
 
+		this.render();
+		this.model.bind('change', this.render, this);
+
 	},
 
 	render : function() {
+
+		var source = $('#legis_info').html()
+			, template = Handlebars.compile( source )
+			, model = this.model.toJSON();
+
+		this.$el.html( template(model) )
 
 	}
 
@@ -143,14 +154,22 @@ var HeadingView = Backbone.View.extend({
 
 	initialize : function() {
 
+		var self = this
+
 		this.render()
 		this.$el.find('input').autocomplete({
 			source : this.legislators,
 			select : function( ev, ui ) {
+				ev.preventDefault()
+				$('#legislator_input').val( ui.item.label )
 				focus.selectAll('g').remove()
 				context.selectAll('g').remove()
-				update( ui.item.value, this.toggleExpansion, this.model)
-			}
+				update( ui.item.value, self, "toggleExpansion", self.model )
+			},
+		    focus: function( ev, ui) {
+		        ev.preventDefault();
+		        $("#legislator_input").val(ui.item.label);
+		    }			
 		})
 
 	}, 
@@ -178,24 +197,42 @@ var HeadingView = Backbone.View.extend({
 	toggleExpansion : function() {
 
 		var expanded = this.$el.hasClass('expandido')
+			, info
+			, model = this.model;
 
 		if ( expanded ) { 
 			this.$el.removeClass('expandido')
-			this.$el.find('input').hide()
+			this.$el.find('input').css('display', 'none')		
+			info = new LegisInfoView({
+				el : '#info',
+				model : model
+			})
+			this.$el.find('#info').show()
 		} else {
+			this.$el.find('#info').hide()
 			this.$el.addClass('expandido')
-			this.$el.find('input').show()
+			focus.selectAll('g').remove()
+			context.selectAll('g').remove()
+			this.$el.find('input')
+				.val('').css('display', 'block')
 		}
+
+	},
+
+	changeLegislator : function( ev ) {
+
+		ev.preventDefault()
+		this.toggleExpansion()
 
 	}
 
 })
 
 
-function update( legisJson, callback, headingModel ){
+function update( legisJson, view, funcName, headingModel ){
 
 	d3.json( legisJson, function(data){
-		callback()
+
 		window.legislatorData = data
 		window.contribs = _.filter(data.data, function(datum){ return datum.events[0].event_type === "recieved_campaign_contributions" })
 			   contribs = _.map(contribs, function(ev){return ev.events[0]})
@@ -216,6 +253,7 @@ function update( legisJson, callback, headingModel ){
 		}
 
 		headingModel.set(legis_data)
+		view[funcName]()
 
 		// sort the objects by timestamp
 		var sorted = data.data.sort(compare).reverse()
@@ -273,62 +311,66 @@ $(document).ready(function(){
 		, headingView = new HeadingView({
 			el : '#top_bar',
 			model : head
-		})
-
-	// update( 'john_a_boehner.json', function(){ console.log("doin dis") }, head )
+		});
 
 	window.removePopup = true
 	window.hoverable = true
 	window.mousePos = undefined
 
 	$('body').on('click', '#filter_img', function(){
-		var filter = $(this).parent()
+		
+		var filter = $(this).parent();
 
 		if ( filter.hasClass('expanded-filter') ){
-			filter.removeClass('expanded-filter')
-			$('#options_content').empty()
+			filter.removeClass('expanded-filter');
+			$('#options_content').empty();
 		} else {
-			filter.addClass('expanded-filter')
-			options.filter_li()
+			filter.addClass('expanded-filter');
+			options.filter_li();
 		}
 	
 	})
 
 	$('#filter').click(function(){
-		toggleFilter()
+		
+		toggleFilter();
+
 	})
 
 	$(document).mousemove(function(e){
+
       mousePos = [e.pageX, e.pageY]
+
    	});
 
 	$('body').on('click', 'svg', function(ev){
 		
 		if ( !($(ev.target).is('circle')) ){
 			
-			hoverable = !hoverable
-			removePopup = !removePopup
+			hoverable = !hoverable;
+			removePopup = !removePopup;
 
-			$('.event-popup').remove()
+			$('.event-popup').remove();
 
 			d3.select('.selected')
-				.classed('selected', false)
+				.classed('selected', false);
 
 			d3.selectAll('.not-connected')
-				.classed('not-connected', false)
+				.classed('not-connected', false);
 
 			d3.selectAll('.connected')
-				.classed('connected', false)
+				.classed('connected', false);
 
-			filterActive = false
+			filterActive = false;
 
 		}
 
-	})
+	});
 
 	$('body').on('click', '.contributor-name', function(ev){		
-		ev.preventDefault()
-		var targetName = $(ev.target).attr('class').split(" ")[1]
+		
+		ev.preventDefault();
+		var targetName = $(ev.target).attr('class').split(" ")[1];
 
 		// REFACTOR
 		d3.selectAll('.context-container .recieved')[0].forEach(function(circle, i){		
@@ -357,31 +399,32 @@ $(document).ready(function(){
 	})
 
 	$('body').on('change', '#event_type_filter_drop', function(){
-		var eventType = $('#event_type_filter_drop option:selected').val()
-		console.log("eventtype is", eventType)
-		addAttributeFilter[eventType]()
+
+		var eventType = $('#event_type_filter_drop option:selected').val();
+		console.log("eventtype is", eventType);
+		addAttributeFilter[eventType]();
+
 	})
 
 	$('body').on('change', '.attribute-drop', function(){
-		var eventType = $('#event_type_filter_drop option:selected').val(),
-			eventAttribute = $('.attribute-drop option:selected').val(),
-			attrVals = legislatorData["event_attributes"][eventType][eventAttribute],
-			valDrop = '<select class="attribute-value-drop">'
-			valDrop += '<option>Select Value</option></select>'
-		
-		$('.attribute-value-drop').remove()
-		$(valDrop).insertAfter('.attribute-drop')
 
-		console.log("the attribute values are", attrVals)
+		var eventType = $('#event_type_filter_drop option:selected').val()
+			, eventAttribute = $('.attribute-drop option:selected').val()
+			, attrVals = legislatorData["event_attributes"][eventType][eventAttribute]
+			, valDrop = '<select class="attribute-value-drop">';
+		valDrop += '<option>Select Value</option></select>';
+		
+		$('.attribute-value-drop').remove();
+		$(valDrop).insertAfter('.attribute-drop');
 
 		// attrVals = _.map(attrVals, function(n){ return Number(n) }).sort(function(a,b){return a-b})
-		eventAttribute === "amount" ? attrVals = attrVals.sort(function(a,b){return a-b}) : attrVals = attrVals.sort()  
+		eventAttribute === "amount" ? attrVals = attrVals.sort(function(a,b){return a-b}) : attrVals = attrVals.sort();
 
 		_.each( attrVals, function(val){
-			$('.attribute-value-drop').append('<option value="' + val + '">' + val + '</option>')
-		})
+			$('.attribute-value-drop').append('<option value="' + val + '">' + val + '</option>');
+		});
 
-	})
+	});
 
 	$('body').on('click', '#filter_button', function(){
 
@@ -430,34 +473,33 @@ $(document).ready(function(){
 		filterActive = true
 	})
 
-	$('body').on('click', '#change_legislator', function( ev ){
-		ev.preventDefault()
+	// $('body').on('click', '#change_legislator', function( ev ){
 
+	// 	ev.preventDefault();
 
-		var test = [
-			{ label : "Chuck Grassley", value : "chuck_grassley.json" },
-			{ label : "John Boehner", value : "john_a_boehner.json" }
-		]
+	// 	var test = [
+	// 		{ label : "Chuck Grassley", value : "chuck_grassley.json" },
+	// 		{ label : "John Boehner", value : "john_a_boehner.json" }
+	// 	];
 
-		$('#top_bar').css({ height : '100%' })
-		$('#bio, #options_list').remove()
+	// 	$('#top_bar').css({ height : '100%' });
+	// 	$('#bio, #options_list').remove();
 
-		$('#legislator_input').css({ display : 'block'}).autocomplete({
-			source : test,
-			select : function( ev, ui ){
-				focus.selectAll('g').remove()
-				context.selectAll('g').remove()
-				update( ui.item.value, function(){ 		
-					$('#top_bar').css({ height : '40px' })
-					$('#legislator_input').hide()
-				})
-			}
-		})
+	// 	$('#legislator_input').css({ display : 'block'}).autocomplete({
+	// 		source : test,
+	// 		select : function( ev, ui ){
+	// 			focus.selectAll('g').remove()
+	// 			context.selectAll('g').remove()
+	// 			update( ui.item.value, function(){ 		
+	// 				$('#top_bar').css({ height : '40px' })
+	// 				$('#legislator_input').hide()
+	// 			});
+	// 		}
+	// 	});
 
+	// });
 
-	})
-
-})
+});
 
 function toggleFilter(){
 
@@ -1333,7 +1375,7 @@ var PopupView = Backbone.View.extend({
 
 	}
 
-})
+});
 
 // REFACTOR: CHANGE TO ALLOW FOR ALL EVENT TYPES
 var ExpandedView = Backbone.View.extend({
