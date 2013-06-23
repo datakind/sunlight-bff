@@ -1,4 +1,5 @@
 
+	// SETUP
 	var margin = {top: 10, right: 10, bottom: 100, left: 40},
 	    margin2 = {top: 630, right: 10, bottom: 20, left: 40},
 	    width = 1400 - margin.left - margin.right,
@@ -35,33 +36,6 @@
 	var context = svg.append("g")
 	    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
 	    .attr('class', 'context-container');
-
-	var labelData = [
-			{
-				y: 100,
-				fill: 'steelblue',
-				text: 'Sponsored Legislation',
-				targetClass: '.sponsored'
-			},
-			{
-				y: 200,
-				fill: 'red',
-				text: 'Cosponsored Legislation',
-				targetClass: '.cosponsored'	
-			},
-			{
-				y: 270,
-				fill: 'yellow',
-				text: 'Committee Membership',
-				targetClass: '.committee'
-			},						
-			{
-				y: 420,
-				fill: 'green',
-				text: 'Campaign Contribution',
-				targetClass: '.recieved'
-			}
-	]
 
 	var labels = svg.append('g').attr('class', 'event-labels')
 		  .selectAll('.event-label')
@@ -116,116 +90,6 @@ var Heading = Backbone.Model.extend({
 	}
 
 })
-
-var LegisInfoView = Backbone.View.extend({
-
-	initialize : function(){
-
-		this.render();
-		this.model.bind('change', this.render, this);
-
-	},
-
-	render : function() {
-
-		var source = $('#legis_info').html()
-			, template = Handlebars.compile( source )
-			, model = this.model.toJSON();
-
-		this.$el.html( template(model) )
-
-	}
-
-})
-
-var HeadingView = Backbone.View.extend({ 
-
-	legislators : [
-		{ label : "Chuck Grassley", value : "chuck_grassley.json" },
-		{ label : "John Boehner", value : "john_a_boehner.json" },
-		{ label : "David Vitter", value : "david_vitter.json" },
-		{ label : "Jeff Sessions", value : "jeff_sessions.json" },
-		{ label : "Jeff Flake", value : "jeff_flake.json" }
-	],
-
-	initialize : function() {
-
-		var self = this
-
-		this.render()
-		this.$el.find('input').autocomplete({
-			source : this.legislators,
-			select : function( ev, ui ) {
-				ev.preventDefault()
-				$('#legislator_input').val( ui.item.label )
-				focus.selectAll('g').remove()
-				context.selectAll('g').remove()
-				update( ui.item.value, self, "toggleExpansion", self.model )
-			},
-		    focus: function( ev, ui) {
-		        ev.preventDefault();
-		        $("#legislator_input").val(ui.item.label);
-		    }			
-		})
-
-	}, 
-
-	render : function() {
-
-		var source = $('#legislator').html()
-	    	, template = Handlebars.compile( source )
-	    	, model = this.model;
-
-	    this.$el.html( template );
-
-	    if ( model.get('name') === undefined ){	    	
-	    	this.toggleExpansion();
-	    }
-
-	},
-
-	events : {
-
-		"click #change_legislator" : "changeLegislator"
-
-	},
-
-	toggleExpansion : function() {
-
-		var expanded = this.$el.hasClass('expandido')
-			, info
-			, model = this.model;
-
-		if ( expanded ) { 
-			this.$el.removeClass('expandido')
-			this.$el.find('input').css('display', 'none')		
-			info = new LegisInfoView({
-				el : '#info',
-				model : model
-			})
-			this.$el.find('#info').show()
-			this.$el.find('#hgroup').hide()
-		} else {
-			this.$el.find('#info').hide()
-			this.$el.find('#hgroup').show()
-			this.$el.addClass('expandido')
-			focus.selectAll('g').remove()
-			context.selectAll('g').remove()
-			this.$el.find('input')
-				.val('').css('display', 'block')
-		}
-
-	},
-
-	changeLegislator : function( ev ) {
-
-		ev.preventDefault()
-		this.toggleExpansion()
-
-	}
-
-})
-
 
 function update( legisJson, view, funcName, headingModel ){
 
@@ -302,176 +166,6 @@ function update( legisJson, view, funcName, headingModel ){
 
 }
 
-// events
-$(document).ready(function(){
-
-	var head = new Heading()
-		, headingView = new HeadingView({
-			el : '#top_bar',
-			model : head
-		});
-
-	window.removePopup = true
-	window.hoverable = true
-	window.mousePos = undefined
-
-	$('body').on('click', '#filter_img', function(){
-		
-		var filter = $(this).parent();
-
-		if ( filter.hasClass('expanded-filter') ){
-			filter.removeClass('expanded-filter');
-			$('#options_content').empty();
-		} else {
-			filter.addClass('expanded-filter');
-			options.filter_li();
-		}
-	
-	})
-
-	$('#filter').click(function(){
-		
-		toggleFilter();
-
-	})
-
-	$(document).mousemove(function(e){
-
-      mousePos = [e.pageX, e.pageY]
-
-   	});
-
-	$('body').on('click', 'svg', function(ev){
-		
-		if ( !($(ev.target).is('circle')) ){
-			
-			hoverable = !hoverable;
-			removePopup = !removePopup;
-
-			$('.event-popup').remove();
-
-			d3.select('.selected')
-				.classed('selected', false);
-
-			d3.selectAll('.not-connected')
-				.classed('not-connected', false);
-
-			d3.selectAll('.connected')
-				.classed('connected', false);
-
-			filterActive = false;
-
-		}
-
-	});
-
-	$('body').on('click', '.contributor-name', function(ev){		
-		
-		ev.preventDefault();
-		var targetName = $(ev.target).attr('class').split(" ")[1];
-
-		// REFACTOR
-		d3.selectAll('.context-container .recieved')[0].forEach(function(circle, i){		
-
-			var data = d3.select(circle)[0][0].__data__,
-				stripped = data.info.contributor_name.replace(/ /g, ""),
-				el = d3.select(circle)
-
-			if ( stripped !== targetName ){
-				el.classed('not-connected', true)
-			} else {
-				console.log("the stripped name is", stripped)
-				console.log("the target name is", targetName)
-				el.classed('connected', true)
-				el.attr('r', function(){
-					return d3.select(this).attr('r') * 5
-				})
-				console.log(data)
-			}
-
-		})
-	})
-
-	$('body').on('click', '#key_li, #filter_li', function(){
-		toggleOption($(this))
-	})
-
-	$('body').on('change', '#event_type_filter_drop', function(){
-
-		var eventType = $('#event_type_filter_drop option:selected').val();
-		console.log("eventtype is", eventType);
-		addAttributeFilter[eventType]();
-
-	})
-
-	$('body').on('change', '.attribute-drop', function(){
-
-		var eventType = $('#event_type_filter_drop option:selected').val()
-			, eventAttribute = $('.attribute-drop option:selected').val()
-			, attrVals = legislatorData["event_attributes"][eventType][eventAttribute]
-			, valDrop = '<select class="attribute-value-drop">';
-		valDrop += '<option>Select Value</option></select>';
-		
-		$('.attribute-value-drop').remove();
-		$(valDrop).insertAfter('.attribute-drop');
-
-		// attrVals = _.map(attrVals, function(n){ return Number(n) }).sort(function(a,b){return a-b})
-		eventAttribute === "amount" ? attrVals = attrVals.sort(function(a,b){return a-b}) : attrVals = attrVals.sort();
-
-		_.each( attrVals, function(val){
-			$('.attribute-value-drop').append('<option value="' + val + '">' + val + '</option>');
-		});
-
-	});
-
-	$('body').on('click', '#filter_button', function(){
-
-		// REFACTOR: WILL NEED TO BE MODIFIED TO HANDLE MULTI QUERY
-		// event types : array of event types
-		// attributes : array of selected attributes
-		// attribute values : array of attirubte values
-		// operators : array of operators 
-		// operands : array of operands
-		
-		//var toBeFiltered = data
-		//each attribute, filter the resulting by the next filter
-		// _.each(toBeFiltered, function(attr, i){
-		// 		_.filter(toBeFiltered, function(data){
-		// 			return data[attr] 
-		// 		})
-		// }) 
-
-		window.attribute = $('#event_type_filter_drop').val(),
-		window.attr = $('.attribute-drop option:selected').val(),
-		window.attrVal = $('.attribute-value-drop option:selected').val()
-		window.elements = $('.context-event')
-		window.filterSelector = eventToSelectorMapping[attribute]
-
-		d3.selectAll(filterSelector)[0].forEach(function(element, i){
-		
-			console.log("the element is", d3.select(element).data()[0] )
-
-			var data = d3.select(element)[0][0].__data__,
-				amount = Number(data.info.amount),
-				el = d3.select(element)
-
-			if ( data.info.hasOwnProperty(attr) ){
-				if (data.info[attr] === attrVal ){
-					console.log("got something connected")
-					el.classed('connected', true)
-				} else {
-					el.classed('not-connected', true)
-				}
-			} else {
-				el.classed('not-connected', true)
-			}
-
-		})
-
-		filterActive = true
-	})
-
-});
 
 function toggleFilter(){
 
@@ -491,11 +185,11 @@ function toggleOption( target ){
 
 }
 
-function showEventInfo( eventObj ){ 
+function showEventInfo( eventObj ){
+
     var eventType = eventObj.event
 
     $('#event_info').empty()
-
     switch(eventType){
         case "event/party":
             var source = $('#eventOrParty').html()
@@ -505,15 +199,14 @@ function showEventInfo( eventObj ){
     }
 }
 
-function compare(a,b) {
-  if ( Number(a.time) < Number(b.time))
-     return -1;
-  if (Number(a.time) > Number(b.time))
-    return 1;
-  return 0;
+function compare( a, b ) {
+
+	if ( Number(a.time) < Number(b.time)) return -1;
+	if (Number(a.time) > Number(b.time)) return 1;
+	return 0;
 }
 
-function brushed(){
+function brushed() {
 
 	d3.selectAll('.event').remove()
 
@@ -658,6 +351,7 @@ function addContributions( data ){
 }
 
 function addContextContribution( data ){
+
 	data = _.filter(data, function(datum){ return datum.events[0].event_type === "recieved_campaign_contributions" })
 	data = _.map(data, function(ev){return ev.events[0]})
 
@@ -1214,77 +908,31 @@ function templateId (d){
 }
 
 function fixContributorName( name ){
-	var split = name.toLowerCase().split(" "),
-		first, last
+
+	var split = name.toLowerCase().split(" ")
+		, first
+		, last;
 
 	first = split[1].charAt(0).toUpperCase() + split[1].slice(1);
 	last = split[0].charAt(0).toUpperCase() + split[0].slice(1);
-	console.log(last.search(/,/g, ""))
-	last.replace(/,/g, "")
+	console.log(last.search(/,/g, ""));
+	last.replace(/,/g, "");
 
-	return first + ' ' + last
+	return first + ' ' + last;
 }
 
-
-
-
-// REFACTOR: DEPRECATED
-// function addContextCircles( data ) {
-
-// 	console.log("the data is", data )
-
-// 	var event_ = context.selectAll(".context-event")
-// 		.data(data)
-// 	  .enter().append('svg:g')
-// 	  	.attr('class', 'context-event')
-// 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
-
-// 	// append the shape 
-// 	event_.append('g').selectAll("ev")
-// 		.data(function(d){
-// 			console.log("appending")
-// 			return d.events
-// 		})
-// 		.enter().append('circle')
-// 	  	.attr('cy', function(d, i){
-// 	  		return -40 + (-2 * i)
-// 	  	})
-// 		.attr('class', function(d) { 
-// 			return d.event.split(" ")[0] + ' ' + d.event_id + ' ' + 'context-circle'
-// 		})
-// 		.attr('r', 2 )
-// 		.attr('cx', 0)
-// 		.style('fill', function(d){
-// 			switch(d.event) {
-// 				case "sponsored legislation":
-// 					return "steelblue"
-// 					break;
-// 				case "event/party":
-// 					return "red"
-// 					break;
-// 				case "bill cosponsorship":
-// 					return "blue"
-// 					break
-// 				case "start congressional term":
-// 					return "green"
-// 					break
-// 				case "joined committee":
-// 					return "purple"
-// 					break
-// 			}
-// 		})
-
-// }
-
 function capitaliseFirstLetter(string){
+
     return string.charAt(0).toUpperCase() + string.slice(1);
+
 }
 
 function getTimestamp(str) {
-  var d = str.match(/\d+/g); // extract date parts
-  return +new Date(d[0], d[1] - 1, d[2], d[3], d[4], d[5]); // build Date object
-}
 
+	var d = str.match(/\d+/g); // extract date parts
+	return +new Date(d[0], d[1] - 1, d[2], d[3], d[4], d[5]); // build Date object
+
+}
 
 // REFACTOR: SHOULD BE OBJECT
 function getColor(d){
@@ -1311,59 +959,6 @@ function getColor(d){
 	}
 }
 
-var PopupView = Backbone.View.extend({
-	
-
-	initialize : function(){
-
-		this.render()
-
-	},
-
-	render : function(){
-
-		var source = $(this.options.tmpl).html(),
-			template = Handlebars.compile( source ),
-			eventId = '#' + this.model.id
-
-		$('body').append( template(this.model) )
-		$(eventId).css({ top : this.options.top, left : this.options.left })
-
-	}
-
-});
-
-// REFACTOR: CHANGE TO ALLOW FOR ALL EVENT TYPES
-var ExpandedView = Backbone.View.extend({
-	
-	initialize : function(){
-		
-		$('#popup_content_container').empty()
-		this.render()
-
-	},
-
-	render : function(){
-
-		var source = $('#campaign_contribution_details').html(),
-			template = Handlebars.compile( source )
-		
-		if ( this.model.info.contributor_type === "C" ){
-			this.model.info.contribotor_type = "Corporate"
-		} else {
-			this.model.info.contributor_type = "Individual"
-			this.model.info.contributor_name = fixContributorName(this.model.info.contributor_name)
-			this.model.info.contributor_string = this.model.info.contributor_name.replace(/ /g, "")
-		}
-
-		this.$el.html( template( this.model.info ))
-
-	},
-
-	events : {
-
-	}
-})
 
 var options = {
 
@@ -1445,13 +1040,6 @@ var addAttributeFilter = {
 
 }
 
-var eventToSelectorMapping = {
-	"campaign_contribution" : ".recieved",
-	"sponsored_legislation" : ".sponsored, .context-sponsored",
-	"cosponsored_legislation" : ".cosponsored, .context-cosponsored",
-	"committee" : ".committee"
-}
-
 function lowerUnderToUpperSpace( string ){
 
 	var pieces = string.split("_"),
@@ -1464,50 +1052,10 @@ function lowerUnderToUpperSpace( string ){
 	return $.trim(finStr)
 }
 
+
 Handlebars.registerHelper('formatDate', function(v){
     console.log("rounding this mother", v)
     var number = round(v)
     return number
 })
 
-var committeeAttributes = [
-	
-]
-
-var sponsoredAttributes = [
-		"bill_resolution_type",
-		"bill_type", "bill_type_label",
-		"congress", "contributor_type",
-		"current_status", "current_status_date",
-		"current_status_description", "current_status_label",
-		"display_number", "docs_house_gov_postdate",
-		"id", "introduced_date",
-		"is_alive", "is_current", "noun",
-		"number", "senate_floor_schedule_postdate",
-		"sliplawnum", "sliplawpubpriv", "sponsor",
-		"sponsor_role", "title",
-		"title_without_number", "time",
-		"crp_catname"
-	]
-
-var contributionAttributes = [ 
-		"amount", "candidacy_status", "committee_ext_id",
-		"committee_name", "committee_party", "contributor_address",
-		"contributor_category", "contributor_category_name", "contributor_city",
-		"contributor_category_industry", "contributor_category_order",
-		"contributor_employer", "contributor_ext_id",
-		"contributor_gender", "contributor_name",
-		"contributor_occupation", "contributor_state", 
-		"contributor_type", "contributor_zipcode",
-		"cycle", "date", "district", "district_held",
-		"filing_id", "is_amendment", "organization_ext_id",
-		"organization_name", "parent_organization_ext_id",
-		"parent_organization_name", "recipient_category", 
-		"recipient_state_held", "recipient_type",
-		"seat", "seat_held", "seat_result", "seat_status", 
-		"transaction_id", "transaction_namespace", 
-		"transaction_type", "transaction_type_description"
-	]
-
-// to get:
-// all the tracontributor categories
