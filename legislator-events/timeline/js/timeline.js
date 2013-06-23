@@ -204,10 +204,10 @@ var HeadingView = Backbone.View.extend({
 				model : model
 			})
 			this.$el.find('#info').show()
-			this.$el.find('#title').hide()
+			this.$el.find('#hgroup').hide()
 		} else {
 			this.$el.find('#info').hide()
-			this.$el.find('#title').show()
+			this.$el.find('#hgroup').show()
 			this.$el.addClass('expandido')
 			focus.selectAll('g').remove()
 			context.selectAll('g').remove()
