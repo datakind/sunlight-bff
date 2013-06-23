@@ -288,8 +288,6 @@ class LegisEvents():
             }
             self.legis_list.append(cosponsorship)
 
-        # print "the cwalk is %r" % self.crp_pap_crosswalk[1]    
-
         cs_bills = [ prepCosponsored(cs) for cs in cosponsored_bills ]
         filtered = dict( (key, list(set([bill[key] for bill in cs_bills]))) for key in cs_bills[0].keys() )
         self.event_attributes["cosponsored_legislation"] = filtered
@@ -449,31 +447,35 @@ class LegisEvents():
 
             res = requests.get(contribution_url)
             for contribution in res.json():
-                t = str(int(time.mktime(time.strptime(contribution["date"], 
-                            '%Y-%m-%d'))))
+                try:
+                    t = str(int(time.mktime(time.strptime(contribution["date"].decode('utf-8'), 
+                                '%Y-%m-%d'))))
 
-                catcode = contribution["contributor_category"].encode('utf-8')                
-                try: 
-                    contribution["contributor_category_name"] = d[catcode][0]
-                    contribution["contributor_category_industry"] = d[catcode][1]
-                    contribution["contributor_category_order"] = d[catcode][2]
+                    catcode = contribution["contributor_category"].encode('utf-8')            
+                    try: 
+                        contribution["contributor_category_name"] = d[catcode][0]
+                        contribution["contributor_category_industry"] = d[catcode][1]
+                        contribution["contributor_category_order"] = d[catcode][2]
+                    except:
+                        contribution["contributor_category_name"] = ""
+                        contribution["contributor_category_industry"] = ""
+                        contribution["contributor_category_order"] = ""
+
+                    contribution_event = {
+                        "time" : t,
+                        "event" : "recieved campaign contribution",
+                        "event_type" : "recieved_campaign_contribution",
+                        "info" : contribution,
+                        "event_id" : str(uuid.uuid4()),
+                        "amount" : contribution["amount"]
+                    }
+
+                    self.legis_list.append(contribution_event)
+                    contribution_events.append(contribution_event)
+                    contributions.append(contribution)
                 except:
-                    contribution["contributor_category_name"] = ""
-                    contribution["contributor_category_industry"] = ""
-                    contribution["contributor_category_order"] = ""
+                    print "somethings wong with this thing"
 
-                contribution_event = {
-                    "time" : t,
-                    "event" : "recieved campaign contribution",
-                    "event_type" : "recieved_campaign_contribution",
-                    "info" : contribution,
-                    "event_id" : str(uuid.uuid4()),
-                    "amount" : contribution["amount"]
-                }
-                # self.legis_list.append(contribution_event)
-                contribution_events.append(contribution_event)
-                contributions.append(contribution)
-        
         my_string = [ str(dt.datetime.fromtimestamp(int(c["time"])).month) + "_" + str(dt.datetime.fromtimestamp(int(c["time"])).year) for c in contribution_events ]
         unique_month_year_string = list(set(my_string))
 
@@ -597,12 +599,26 @@ def prepBills(bill):
 
 def prepCosponsored(bill):
 
-    del bill["last_version"]
+    # del bill["last_version"]
     del bill["history"]
     del bill["related_bill_ids"]
-    del bill["urls"]
     del bill["committee_ids"]
+    del bill["urls"]
     del bill["enacted_as"]
+
+    if hasattr(bill, "last_version"):
+        del bill["last_version"]
+        
+    # if hasattr(bill, "history"):
+    #     del bill["history"]
+    # if hasattr(bill, "related_bill_ids"):        
+    #     del bill["related_bill_ids"]
+    # if hasattr(bill, "urls"):        
+    #     del bill["urls"]
+    # if hasattr(bill, "committee_ids"):
+    #     del bill["committee_ids"]
+    # if hasattr(bill, "enacted_as"):        
+    #     del bill["enacted_as"]
 
     # if hasattr(bill, "last_version"):
     #     bill["xml"] = bill["last_version"]["urls"]["xml"]

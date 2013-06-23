@@ -13,6 +13,14 @@ body {
 	position: relative;
 }
 
+#title {
+	font-family: futura;
+	font-size: 80px;
+	color: white;
+	position: absolute;
+	left: 50px;
+}
+
 #event_info_container {
 	position: fixed;
 	top: 0px;
@@ -45,6 +53,14 @@ body {
 	border-radius: 5px;
 	box-shadow: 0px 2px 10px gray;
 	-webkit-transition: all .25s ease-out;
+}
+
+#change_legislator {
+	font-weight: normal;
+	color: rgb(248,245,246);
+	text-decoration: underline;
+	line-height: 200%;
+	vertical-align: top;
 }
 
 #key_img {

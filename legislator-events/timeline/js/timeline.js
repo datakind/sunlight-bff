@@ -142,7 +142,10 @@ var HeadingView = Backbone.View.extend({
 
 	legislators : [
 		{ label : "Chuck Grassley", value : "chuck_grassley.json" },
-		{ label : "John Boehner", value : "john_a_boehner.json" }
+		{ label : "John Boehner", value : "john_a_boehner.json" },
+		{ label : "David Vitter", value : "david_vitter.json" },
+		{ label : "Jeff Sessions", value : "jeff_sessions.json" },
+		{ label : "Jeff Flake", value : "jeff_flake.json" }
 	],
 
 	initialize : function() {
@@ -201,8 +204,10 @@ var HeadingView = Backbone.View.extend({
 				model : model
 			})
 			this.$el.find('#info').show()
+			this.$el.find('#title').hide()
 		} else {
 			this.$el.find('#info').hide()
+			this.$el.find('#title').show()
 			this.$el.addClass('expandido')
 			focus.selectAll('g').remove()
 			context.selectAll('g').remove()
