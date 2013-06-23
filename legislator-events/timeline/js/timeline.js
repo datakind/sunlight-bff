@@ -157,7 +157,7 @@ function update( legisJson, view, funcName, headingModel ){
 		  	.attr('class', 'event')	
 		  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
 
-		// addContextContribution( values )
+		addContextContribution( values )
 		addContextBills( values )
 		addContextCosponsored( values )
 		addContextCommittee()
