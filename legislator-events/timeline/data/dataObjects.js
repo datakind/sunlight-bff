@@ -1,26 +1,32 @@
 var labelData = [
 		{
-			y: 100,
+			y: 60,
 			fill: 'steelblue',
 			text: 'Sponsored Legislation',
 			targetClass: '.sponsored'
 		},
 		{
-			y: 200,
+			y: 120,
 			fill: 'red',
 			text: 'Cosponsored Legislation',
 			targetClass: '.cosponsored'	
 		},
 		{
+			y: 180,
+			fill: 'orange',
+			text: 'Speeches',
+			targetClass: '.speech'	
+		},
+		{
 			y: 270,
 			fill: 'yellow',
-			text: 'Committee Membership',
+			text: 'Committee Memberships',
 			targetClass: '.committee'
 		},						
 		{
 			y: 420,
 			fill: 'green',
-			text: 'Campaign Contribution',
+			text: 'Campaign Contributions',
 			targetClass: '.recieved'
 		}
 ]

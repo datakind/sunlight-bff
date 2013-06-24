@@ -26,7 +26,7 @@ class LegisEvents():
             self.add_terms,
             self.add_sponsored_bills, self.add_parties,
             self.add_cosponsored_bills, self.add_committee_memberships,
-            self.add_campaign_contributions
+            self.add_campaign_contributions, self.add_speeches
         ]
 
         self.legis_name = self.legis_name.translate(string.maketrans("",""),
@@ -37,7 +37,8 @@ class LegisEvents():
             "sponsored_legislation" : None,
             "cosponsored_legislation" : None,
             "events_and_parties" : None,
-            "committee_assignment" : None
+            "committee_assignment" : None,
+            "speeches" : None
         }
 
         f = open('cached/crp_pap_crosswalk.csv')
@@ -554,6 +555,92 @@ class LegisEvents():
         #open secrets lobbying data
         #http://www.opensecrets.org/MyOS/download.php?f=Lobby.zip
 
+    def add_speeches(self):
+        speeches = []
+        #make initial request to get number of cosponsored bills
+        speeches_url = ('http://capitolwords.org/api/1/text.json?'
+                        'bioguide_id=%s&per_page=50'
+                        '&apikey=7ed8089422bd4022bb9c236062377'
+                        'c5b') % self.legislator['id']['bioguide']
+
+        res = requests.get(speeches_url)
+        total_pages = (res.json()["num_found"]/50) + 1
+        page = 2
+        for result in res.json()["results"]:
+            speeches.append(result)
+        
+        #this should probably use generators
+        while page <= total_pages:
+            print "adding speeches"
+            speeches_url = ('http://capitolwords.org/api/1/text.json?'
+                        'bioguide_id=%s&per_page=50&page=%s'
+                        '&apikey=7ed8089422bd4022bb9c236062377'
+                        'c5b') % (self.legislator['id']['bioguide'], page)
+            res = requests.get(speeches_url)
+            for result in res.json()["results"]:
+                speeches.append(result)
+            page += 1
+
+        for s in speeches:
+            t = str(int(time.mktime(time.strptime(s["date"],
+                     '%Y-%m-%d'))))
+            speech = { 
+                "time" : t , 
+                "event" : "speech",
+                "event_type" : "speech",
+                "info" : s, 
+                "event_id" : str(uuid.uuid4()) 
+            }
+            self.legis_list.append(speech)
+
+        # speeches = [ prep_speech(speech) for speech in speeches ]
+        # filtered = dict( (key, list(set([speech[key] for speech in speeches]))) for key in speeches[0].keys() )
+        # self.event_attributes["speeches"] = filtered
+
+    def add_votes(self):
+        votes = []
+        #make initial request to get number of cosponsored bills
+        votes_url = ('http://congress.api.sunlightfoundation'
+                     '.com/votes?&fields=bill,voters.%s,voted_at'
+                     '&per_page=50&apikey=7ed8089422bd4022bb9c236062'
+                     '377c5b') % self.legislator['id']['bioguide']
+
+        res = requests.get(votes_url)
+        total_pages = (res.json()["count"]/50) + 1
+        page = 2
+        # votes = [ vote for vote in res.json()['results'] ]
+        for result in res.json()["results"]:
+            votes.append(result)
+        
+        #this should probably use generators
+        while page <= total_pages:
+            print "adding votes"
+            votes_url = ('http://congress.api.sunlightfoundation.com'
+                         '/votes?&fields=bill,voters.%s,voted_at&per_page=50'
+                         '&page=%s&apikey=7ed8089422bd4022bb9c2360623'
+                         '77c5b') % (self.legislator['id']['bioguide'], page)
+
+            res = requests.get(votes_url)
+            for result in res.json()["results"]:
+                votes.append(result)
+            page += 1
+
+        for v in votes:
+            t = str(int(time.mktime(time.strptime(v["voted_at"],
+                     '%Y-%m-%d'))))
+            vote = { 
+                "time" : t , 
+                "event" : "vote",
+                "event_type" : "vote",
+                "info" : s, 
+                "event_id" : str(uuid.uuid4()) 
+            }
+            self.legis_list.append(vote)
+
+        # speeches = [ prep_speech(speech) for speech in speeches ]
+        # filtered = dict( (key, list(set([speech[key] for speech in speeches]))) for key in speeches[0].keys() )
+        # self.event_attributes["speeches"] = filtered
+
     def create_object(self):
         for event in self.events:
             event()
@@ -599,7 +686,7 @@ def prepBills(bill):
 
 def prepCosponsored(bill):
 
-    # del bill["last_version"]
+    del bill["last_version"]
     del bill["history"]
     del bill["related_bill_ids"]
     del bill["committee_ids"]
@@ -608,7 +695,7 @@ def prepCosponsored(bill):
 
     if hasattr(bill, "last_version"):
         del bill["last_version"]
-        
+
     # if hasattr(bill, "history"):
     #     del bill["history"]
     # if hasattr(bill, "related_bill_ids"):        
@@ -648,5 +735,9 @@ def prepCosponsored(bill):
     return bill
 
 
+def prep_speech(speech):
+    del speech["speaking"]
+    del speech["bills"]
 
+    return speech
 
