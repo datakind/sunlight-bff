@@ -1,50 +1,35 @@
 var FilterView = Backbone.View.extend({
-
 	initialize : function() {
-		
 		this.render()
 		$('#options_list').hide()
-
 	},
-
 	render : function() {
-
 		var source = $('#filter').html()
 			, template = Handlebars.compile( source )
 
 		$('body').append( template );
 	},
-
 	events : {
 
 
 	}
-
 })
 
 var LegisInfoView = Backbone.View.extend({
-
 	initialize : function(){
-
 		this.render();
 		this.model.bind('change', this.render, this);
-
 	},
-
 	render : function() {
-
 		var source = $('#legis_info').html()
 			, template = Handlebars.compile( source )
 			, model = this.model.toJSON();
 
 		this.$el.html( template(model) )
-
 	}
-
 })
 
 var HeadingView = Backbone.View.extend({ 
-
 	legislators : [
 		{ label : "Chuck Grassley", value : "data/chuck_grassley.json" },
 		{ label : "John Boehner", value : "data/john_a_boehner.json" },
@@ -53,10 +38,9 @@ var HeadingView = Backbone.View.extend({
 		{ label : "Jeff Flake", value : "data/jeff_flake.json" },
 		{ label : "Nancy Pelosi", value : "data/nancy_pelosi.json" },
 		{ label : "John McCain", value : "data/john_mccain.json" },
+		{ label : "Barbara Boxer", value : "data/barbara_boxer.json" },
 	],
-
 	initialize : function() {
-
 		var self = this
 
 		this.render()

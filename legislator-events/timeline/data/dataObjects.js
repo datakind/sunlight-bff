@@ -18,7 +18,13 @@ var labelData = [
 			targetClass: '.speech'	
 		},
 		{
-			y: 270,
+			y: 240,
+			fill: 'indigo',
+			text: 'Votes',
+			targetClass: '.vote'	
+		},		
+		{
+			y: 310,
 			fill: 'yellow',
 			text: 'Committee Memberships',
 			targetClass: '.committee'

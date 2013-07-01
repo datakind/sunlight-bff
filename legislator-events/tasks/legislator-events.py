@@ -10,6 +10,7 @@ import string
 import csv
 import uuid
 import datetime as dt
+import dateutil.parser as dup
 
 from pandas import *
 
@@ -26,7 +27,8 @@ class LegisEvents():
             self.add_terms,
             self.add_sponsored_bills, self.add_parties,
             self.add_cosponsored_bills, self.add_committee_memberships,
-            self.add_campaign_contributions, self.add_speeches
+            self.add_campaign_contributions, self.add_speeches,
+            self.add_votes
         ]
 
         self.legis_name = self.legis_name.translate(string.maketrans("",""),
@@ -147,14 +149,12 @@ class LegisEvents():
                 try:
                     bill["major_topic"] = self.bill_topic_dict[pap_key][0]
                     bill["minor_topic"] = self.bill_topic_dict[pap_key][1]
-                    print "got one"
                 except:
                     bill["major_topic"] = ""
                     bill["minor_topic"] = ""
 
             for row in self.crp_pap_crosswalk:
                 if bill['major_topic'] == row[3] and bill['minor_topic'] == row[4]:
-                    print "gots a topic"
                     bill['crp_catcode'] = row[0]
                     bill['crp_catname'] = row[1]
                     bill['crp_description'] = row[2]
@@ -626,13 +626,13 @@ class LegisEvents():
             page += 1
 
         for v in votes:
-            t = str(int(time.mktime(time.strptime(v["voted_at"],
-                     '%Y-%m-%d'))))
+            dt = dup.parse(v["voted_at"])
+            timestamp = str(int(time.mktime(dt.timetuple())) - 14400) # remove 4 hours to convert from utc to est
             vote = { 
-                "time" : t , 
+                "time" : timestamp, 
                 "event" : "vote",
                 "event_type" : "vote",
-                "info" : s, 
+                "info" : v, 
                 "event_id" : str(uuid.uuid4()) 
             }
             self.legis_list.append(vote)
@@ -686,7 +686,7 @@ def prepBills(bill):
 
 def prepCosponsored(bill):
 
-    del bill["last_version"]
+    # del bill["last_version"]
     del bill["history"]
     del bill["related_bill_ids"]
     del bill["committee_ids"]
