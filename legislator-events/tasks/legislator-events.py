@@ -146,12 +146,17 @@ class LegisEvents():
 
             if bill["bill_type"] == "house_bill":
                 pap_key = "%s-HR-%s" % (str(bill["congress"]), str(bill["number"]))
-                try:
-                    bill["major_topic"] = self.bill_topic_dict[pap_key][0]
-                    bill["minor_topic"] = self.bill_topic_dict[pap_key][1]
-                except:
-                    bill["major_topic"] = ""
-                    bill["minor_topic"] = ""
+                # print "pap key is %r" % pap_key
+            elif bill["bill_type"] == "senate_bill":
+                pap_key = "%s-S-%s" % (str(bill["congress"]), str(bill["number"]))
+         
+            try:
+                bill["major_topic"] = self.bill_topic_dict[pap_key][0]
+                bill["minor_topic"] = self.bill_topic_dict[pap_key][1]
+                # print "got cosponsored topic one %r" % pap_key
+            except:
+                bill["major_topic"] = ""
+                bill["minor_topic"] = ""
 
             for row in self.crp_pap_crosswalk:
                 if bill['major_topic'] == row[3] and bill['minor_topic'] == row[4]:
@@ -212,6 +217,7 @@ class LegisEvents():
 
     def add_cosponsored_bills(self):
         cosponsored_bills = []
+        pap_key = None
         #make initial request to get number of cosponsored bills
         cosponsor_url = ('http://congress.api.sunlightfoundation.com/'
                          'bills?cosponsor_ids__all=%s&per_page=50'
@@ -246,7 +252,7 @@ class LegisEvents():
             cs['pap_subtopic_3'] = ""
             cs['pap_subtopic_4'] = ""
             cs['notes_chad'] = ""
-            cs['pa_subtopic_code'] = ""
+            cs['pap_subtopic_code'] = ""
             cs['note'] = ""
             cs["major_topic"] = ""
             cs["minor_topic"] = ""
@@ -254,13 +260,16 @@ class LegisEvents():
             if cs["bill_type"] == "hr":
                 pap_key = "%s-HR-%s" % (str(cs["congress"]), str(cs["number"]))
                 # print "pap key is %r" % pap_key
-                try:
-                    cs["major_topic"] = self.bill_topic_dict[pap_key][0]
-                    cs["minor_topic"] = self.bill_topic_dict[pap_key][1]
-                    # print "got cosponsored topic one %r" % pap_key
-                except:
-                    cs["major_topic"] = ""
-                    cs["minor_topic"] = ""
+            elif cs["bill_type"] == "s":
+                pap_key = "%s-S-%s" % (str(cs["congress"]), str(cs["number"]))
+
+            try:
+                cs["major_topic"] = self.bill_topic_dict[pap_key][0]
+                cs["minor_topic"] = self.bill_topic_dict[pap_key][1]
+                # print "got cosponsored topic one %r" % pap_key
+            except:
+                cs["major_topic"] = ""
+                cs["minor_topic"] = ""
 
             for row in self.crp_pap_crosswalk:
                 if cs['major_topic'] == row[3] and cs['minor_topic'] == row[4]:

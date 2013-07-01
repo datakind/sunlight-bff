@@ -420,6 +420,7 @@ function addBills( data ){
 		.style("stroke", "steelblue")
 
 	event_.on('mouseover', function(d){
+		console.log(d)
 
 		var el = d3.select(this),
 			templateData = templateId(d),
@@ -545,8 +546,6 @@ function addCosponsored( data ) {
 													$(this).position().left + 100;	
 
 		if ( hoverable && !(filterActive) ){
-
-			console.log("filteractive is", filterActive)
 
 			el.select('line').transition().style("stroke-opacity", 1)
 			el.select('rect').transition().style("fill-opacity", 1)
@@ -724,7 +723,7 @@ function addVotes( data ){
 		.attr('y2', 300)
 		.style("stroke-opacity", 0)
 		.style("stroke-width", 1)
-		.style("stroke", "orange")		
+		.style("stroke", "indigo")
 
 	event_.on('mouseover', function(d){
 

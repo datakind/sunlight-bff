@@ -7,7 +7,7 @@ $(document).ready(function(){
 		})
 		, filter = new FilterView({
 			el : '#options_list'
-		})
+		});
 
 	window.removePopup = true
 	window.hoverable = true
