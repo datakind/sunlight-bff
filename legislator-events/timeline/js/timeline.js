@@ -728,16 +728,13 @@ function addVotes( data ){
 
 	event_.on('mouseover', function(d){
 
-			var el = d3.select(this),
-				el_data = d3.select(this.parentNode).data()[0]
-				el_data = $.extend( true, {}, el_data)
-				el_data.info = d
+			var el = d3.select(this)
 
 			el.select('line').transition().style("stroke-opacity", 1)
 			el.select('rect').transition().style("fill-opacity", 1)
 			el.select('rect').transition().style("stroke-width", 3)
 
-			var	templateData = templateId(d)
+			var	templateData = templateId(d, legislatorData.bio.id.bioguide)
 				
 			var eventId = '#' + d.event_id,
 				templateSelector = '#' + templateData[0],
@@ -752,15 +749,15 @@ function addVotes( data ){
 				
 				$('.event-popup').remove()
 
-				// var popup = new PopupView({
-				// 	el : $('body'),
-				// 	model : templateData[1],
-				// 	tmpl : $(templateSelector),
-				// 	top : top,
-				// 	left : left
-				// })
+				var popup = new PopupView({
+					el : $('body'),
+					model : templateData[1],
+					tmpl : $(templateSelector),
+					top : top,
+					left : left
+				})
 
-				// console.log("the popup is", popup)
+				console.log("the popup is", popup)
 				
 			}
 
@@ -1037,8 +1034,8 @@ function addCircles( data ) {
 }
 
 // REFACTOR: CHANGE SWITCH TO OBJECT 
-function templateId (d){
-	var data 
+function templateId (d, bioguide){
+	var data
 	// console.log("incoming data is", d)
 	switch(d.event) {
 		case "sponsored legislation":
@@ -1100,7 +1097,6 @@ function templateId (d){
 			return [ "campaign_contribution", data ];
 			break
 		case "speech":
-			console.log("got this mother")
 			data = {
 				"title" : d.info.title,
 				"date" : d.info.date,
@@ -1108,6 +1104,16 @@ function templateId (d){
 				"id" : d.event_id
 			}
 			return ["speech", data]
+			break
+		case "vote":
+			console.log("the incoming data is", d)
+			data = {
+				"date" : new Date( Number(d.time) * 1000).toString('dddd,MMMM,yyyy'),
+				"bill_title" : d.info.bill.official_title,
+				"vote" : d.info.voters[bioguide].vote,
+				"id" : d.event_id
+			}
+			return["vote", data]
 			break
 	}
 }

@@ -626,16 +626,17 @@ class LegisEvents():
             page += 1
 
         for v in votes:
-            dt = dup.parse(v["voted_at"])
-            timestamp = str(int(time.mktime(dt.timetuple())) - 14400) # remove 4 hours to convert from utc to est
-            vote = { 
-                "time" : timestamp, 
-                "event" : "vote",
-                "event_type" : "vote",
-                "info" : v, 
-                "event_id" : str(uuid.uuid4()) 
-            }
-            self.legis_list.append(vote)
+            if self.legislator['id']['bioguide'] in v['voters'].keys():
+                dt = dup.parse(v["voted_at"])
+                timestamp = str(int(time.mktime(dt.timetuple())) - 14400) # remove 4 hours to convert from utc to est
+                vote = { 
+                    "time" : timestamp, 
+                    "event" : "vote",
+                    "event_type" : "vote",
+                    "info" : v, 
+                    "event_id" : str(uuid.uuid4()) 
+                }
+                self.legis_list.append(vote)
 
         # speeches = [ prep_speech(speech) for speech in speeches ]
         # filtered = dict( (key, list(set([speech[key] for speech in speeches]))) for key in speeches[0].keys() )

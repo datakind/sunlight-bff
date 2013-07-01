@@ -118,6 +118,19 @@
 			</div>
 		</script>
 
+		<script id="vote" type="x-handlebars-template">
+			<div class="event-popup" id="{{id}}">
+				<h5>{{date}}</h5>
+				<h3>Vote</h3>
+				<div>
+					<h5>Bill Title</h5>
+					<p>{{bill_title}}</p>
+					<h5>Vote</h5>
+					<p>{{vote}}</p>
+				</div>
+			</div>			
+		</script>
+
 		<script id="filter_template" type="x-handlebars-template">
 			<h5>Event Type <span id="add_filter">+ add filter</span></h5>
 			<select name="event-type" id="event_type_filter_drop">
