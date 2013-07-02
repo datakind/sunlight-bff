@@ -1,36 +1,46 @@
+var FilterView = Backbone.View.extend({
+	initialize : function() {
+		this.render()
+		$('#options_list').hide()
+	},
+	render : function() {
+		var source = $('#filter').html()
+			, template = Handlebars.compile( source )
+
+		$('body').append( template );
+	},
+	events : {
+
+
+	}
+})
+
 var LegisInfoView = Backbone.View.extend({
-
 	initialize : function(){
-
 		this.render();
 		this.model.bind('change', this.render, this);
-
 	},
-
 	render : function() {
-
 		var source = $('#legis_info').html()
 			, template = Handlebars.compile( source )
 			, model = this.model.toJSON();
 
 		this.$el.html( template(model) )
-
 	}
-
 })
 
 var HeadingView = Backbone.View.extend({ 
-
 	legislators : [
 		{ label : "Chuck Grassley", value : "data/chuck_grassley.json" },
 		{ label : "John Boehner", value : "data/john_a_boehner.json" },
 		{ label : "David Vitter", value : "data/david_vitter.json" },
 		{ label : "Jeff Sessions", value : "data/jeff_sessions.json" },
-		{ label : "Jeff Flake", value : "data/jeff_flake.json" }
+		{ label : "Jeff Flake", value : "data/jeff_flake.json" },
+		{ label : "Nancy Pelosi", value : "data/nancy_pelosi.json" },
+		{ label : "John McCain", value : "data/john_mccain.json" },
+		{ label : "Barbara Boxer", value : "data/barbara_boxer.json" },
 	],
-
 	initialize : function() {
-
 		var self = this
 
 		this.render()
@@ -84,10 +94,10 @@ var HeadingView = Backbone.View.extend({
 				el : '#info',
 				model : model
 			})
-			this.$el.find('#info').show()
+			$('#info, #options_list, .event-labels').show()
 			this.$el.find('#hgroup').hide()
 		} else {
-			this.$el.find('#info').hide()
+			$('#info, #options_list, .event-labels').hide()
 			this.$el.find('#hgroup').show()
 			this.$el.addClass('expandido')
 			focus.selectAll('g').remove()

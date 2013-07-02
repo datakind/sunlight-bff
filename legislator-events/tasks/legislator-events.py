@@ -10,6 +10,7 @@ import string
 import csv
 import uuid
 import datetime as dt
+import dateutil.parser as dup
 
 from pandas import *
 
@@ -26,7 +27,8 @@ class LegisEvents():
             self.add_terms,
             self.add_sponsored_bills, self.add_parties,
             self.add_cosponsored_bills, self.add_committee_memberships,
-            self.add_campaign_contributions
+            self.add_campaign_contributions, self.add_speeches,
+            self.add_votes
         ]
 
         self.legis_name = self.legis_name.translate(string.maketrans("",""),
@@ -37,7 +39,8 @@ class LegisEvents():
             "sponsored_legislation" : None,
             "cosponsored_legislation" : None,
             "events_and_parties" : None,
-            "committee_assignment" : None
+            "committee_assignment" : None,
+            "speeches" : None
         }
 
         f = open('cached/crp_pap_crosswalk.csv')
@@ -143,17 +146,20 @@ class LegisEvents():
 
             if bill["bill_type"] == "house_bill":
                 pap_key = "%s-HR-%s" % (str(bill["congress"]), str(bill["number"]))
-                try:
-                    bill["major_topic"] = self.bill_topic_dict[pap_key][0]
-                    bill["minor_topic"] = self.bill_topic_dict[pap_key][1]
-                    print "got one"
-                except:
-                    bill["major_topic"] = ""
-                    bill["minor_topic"] = ""
+                # print "pap key is %r" % pap_key
+            elif bill["bill_type"] == "senate_bill":
+                pap_key = "%s-S-%s" % (str(bill["congress"]), str(bill["number"]))
+         
+            try:
+                bill["major_topic"] = self.bill_topic_dict[pap_key][0]
+                bill["minor_topic"] = self.bill_topic_dict[pap_key][1]
+                # print "got cosponsored topic one %r" % pap_key
+            except:
+                bill["major_topic"] = ""
+                bill["minor_topic"] = ""
 
             for row in self.crp_pap_crosswalk:
                 if bill['major_topic'] == row[3] and bill['minor_topic'] == row[4]:
-                    print "gots a topic"
                     bill['crp_catcode'] = row[0]
                     bill['crp_catname'] = row[1]
                     bill['crp_description'] = row[2]
@@ -211,6 +217,7 @@ class LegisEvents():
 
     def add_cosponsored_bills(self):
         cosponsored_bills = []
+        pap_key = None
         #make initial request to get number of cosponsored bills
         cosponsor_url = ('http://congress.api.sunlightfoundation.com/'
                          'bills?cosponsor_ids__all=%s&per_page=50'
@@ -245,7 +252,7 @@ class LegisEvents():
             cs['pap_subtopic_3'] = ""
             cs['pap_subtopic_4'] = ""
             cs['notes_chad'] = ""
-            cs['pa_subtopic_code'] = ""
+            cs['pap_subtopic_code'] = ""
             cs['note'] = ""
             cs["major_topic"] = ""
             cs["minor_topic"] = ""
@@ -253,13 +260,16 @@ class LegisEvents():
             if cs["bill_type"] == "hr":
                 pap_key = "%s-HR-%s" % (str(cs["congress"]), str(cs["number"]))
                 # print "pap key is %r" % pap_key
-                try:
-                    cs["major_topic"] = self.bill_topic_dict[pap_key][0]
-                    cs["minor_topic"] = self.bill_topic_dict[pap_key][1]
-                    # print "got cosponsored topic one %r" % pap_key
-                except:
-                    cs["major_topic"] = ""
-                    cs["minor_topic"] = ""
+            elif cs["bill_type"] == "s":
+                pap_key = "%s-S-%s" % (str(cs["congress"]), str(cs["number"]))
+
+            try:
+                cs["major_topic"] = self.bill_topic_dict[pap_key][0]
+                cs["minor_topic"] = self.bill_topic_dict[pap_key][1]
+                # print "got cosponsored topic one %r" % pap_key
+            except:
+                cs["major_topic"] = ""
+                cs["minor_topic"] = ""
 
             for row in self.crp_pap_crosswalk:
                 if cs['major_topic'] == row[3] and cs['minor_topic'] == row[4]:
@@ -554,6 +564,93 @@ class LegisEvents():
         #open secrets lobbying data
         #http://www.opensecrets.org/MyOS/download.php?f=Lobby.zip
 
+    def add_speeches(self):
+        speeches = []
+        #make initial request to get number of cosponsored bills
+        speeches_url = ('http://capitolwords.org/api/1/text.json?'
+                        'bioguide_id=%s&per_page=50'
+                        '&apikey=7ed8089422bd4022bb9c236062377'
+                        'c5b') % self.legislator['id']['bioguide']
+
+        res = requests.get(speeches_url)
+        total_pages = (res.json()["num_found"]/50) + 1
+        page = 2
+        for result in res.json()["results"]:
+            speeches.append(result)
+        
+        #this should probably use generators
+        while page <= total_pages:
+            print "adding speeches"
+            speeches_url = ('http://capitolwords.org/api/1/text.json?'
+                        'bioguide_id=%s&per_page=50&page=%s'
+                        '&apikey=7ed8089422bd4022bb9c236062377'
+                        'c5b') % (self.legislator['id']['bioguide'], page)
+            res = requests.get(speeches_url)
+            for result in res.json()["results"]:
+                speeches.append(result)
+            page += 1
+
+        for s in speeches:
+            t = str(int(time.mktime(time.strptime(s["date"],
+                     '%Y-%m-%d'))))
+            speech = { 
+                "time" : t , 
+                "event" : "speech",
+                "event_type" : "speech",
+                "info" : s, 
+                "event_id" : str(uuid.uuid4()) 
+            }
+            self.legis_list.append(speech)
+
+        # speeches = [ prep_speech(speech) for speech in speeches ]
+        # filtered = dict( (key, list(set([speech[key] for speech in speeches]))) for key in speeches[0].keys() )
+        # self.event_attributes["speeches"] = filtered
+
+    def add_votes(self):
+        votes = []
+        #make initial request to get number of cosponsored bills
+        votes_url = ('http://congress.api.sunlightfoundation'
+                     '.com/votes?&fields=bill,voters.%s,voted_at'
+                     '&per_page=50&apikey=7ed8089422bd4022bb9c236062'
+                     '377c5b') % self.legislator['id']['bioguide']
+
+        res = requests.get(votes_url)
+        total_pages = (res.json()["count"]/50) + 1
+        page = 2
+        # votes = [ vote for vote in res.json()['results'] ]
+        for result in res.json()["results"]:
+            votes.append(result)
+        
+        #this should probably use generators
+        while page <= total_pages:
+            print "adding votes"
+            votes_url = ('http://congress.api.sunlightfoundation.com'
+                         '/votes?&fields=bill,voters.%s,voted_at&per_page=50'
+                         '&page=%s&apikey=7ed8089422bd4022bb9c2360623'
+                         '77c5b') % (self.legislator['id']['bioguide'], page)
+
+            res = requests.get(votes_url)
+            for result in res.json()["results"]:
+                votes.append(result)
+            page += 1
+
+        for v in votes:
+            if self.legislator['id']['bioguide'] in v['voters'].keys():
+                dt = dup.parse(v["voted_at"])
+                timestamp = str(int(time.mktime(dt.timetuple())) - 14400) # remove 4 hours to convert from utc to est
+                vote = { 
+                    "time" : timestamp, 
+                    "event" : "vote",
+                    "event_type" : "vote",
+                    "info" : v, 
+                    "event_id" : str(uuid.uuid4()) 
+                }
+                self.legis_list.append(vote)
+
+        # speeches = [ prep_speech(speech) for speech in speeches ]
+        # filtered = dict( (key, list(set([speech[key] for speech in speeches]))) for key in speeches[0].keys() )
+        # self.event_attributes["speeches"] = filtered
+
     def create_object(self):
         for event in self.events:
             event()
@@ -608,7 +705,7 @@ def prepCosponsored(bill):
 
     if hasattr(bill, "last_version"):
         del bill["last_version"]
-        
+
     # if hasattr(bill, "history"):
     #     del bill["history"]
     # if hasattr(bill, "related_bill_ids"):        
@@ -648,5 +745,9 @@ def prepCosponsored(bill):
     return bill
 
 
+def prep_speech(speech):
+    del speech["speaking"]
+    del speech["bills"]
 
+    return speech
 

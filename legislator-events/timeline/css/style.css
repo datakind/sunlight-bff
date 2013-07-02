@@ -15,7 +15,7 @@ body {
 
 #hgroup {
 	position: relative;
-	top: 50px;
+	top: 150px;
 	width: 700px;
 	margin: 0px auto;
 	text-align: center;
@@ -66,7 +66,7 @@ h2 {
 	width: 540px;
 	height: 90px;
 	font-size: 50px;
-	margin: 150px auto;
+	margin: 200px auto;
 	border: 0px;
 	padding: 10px;
 	border-radius: 5px;
@@ -78,7 +78,7 @@ h2 {
 	font-weight: normal;
 	color: rgb(248,245,246);
 	text-decoration: underline;
-	line-height: 200%;
+	line-height: 280%;
 	vertical-align: top;
 	font-size: 12px;
 }

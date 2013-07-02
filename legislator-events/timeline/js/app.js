@@ -4,6 +4,9 @@ $(document).ready(function(){
 		, headingView = new HeadingView({
 			el : '#top_bar',
 			model : head
+		})
+		, filter = new FilterView({
+			el : '#options_list'
 		});
 
 	window.removePopup = true
