@@ -338,6 +338,10 @@ class LegisEvents():
                 if row[1] == self.legislator["id"]["bioguide"]:
                     self.legislator["id"]["icpsr"] = row[2]
 
+        #refactor: add fetching if not cached
+        house_assignments_codes = open('cached/charles_stewart_assignment_data.json')
+        house_assignments_codes = json.load(jsondata)
+
         # if the house committee assignment list csv is not cached
         # fetch it from gists.github.com
         if self.chamber == "rep":
@@ -347,7 +351,6 @@ class LegisEvents():
                                         '07e27469b1f787ae3ba262b613c6bac4b1ba5fc6'
                                         '/house_committee_assignments_103_112.csv'
                                         )
-
                 r = requests.get(house_comm_url)
                 housecsv = csv.reader(r.text, delimiter=',')
 
@@ -362,7 +365,28 @@ class LegisEvents():
                 # another with the assignment dates
                 for row in houserows[1:]:
                     if row[2] == str(float(self.legislator["id"]["icpsr"])):       
-                        assignments.append(row)                                             
+                        committe = {
+                            "congress" : "",
+                            "committee_code" : ""
+                            "id_num" : ""
+                            "name" : "",
+                            "party_status_code" : ""
+                            "rank_within_party" : "",
+                            "party" : "",
+                            "date_of_assignment" : "",
+                            "date_of_termination" : "",
+                            "senior_party_member" : ""
+                            "committee_seniority" : str(int(row[10])),
+                            "committee_period_of_service" : "",
+                            "committee_status_at_end_of_congress" : "",
+                            "committee_continuity_of_assignment_next_congress",
+                            "appointment_citation" : str(int(row[14])),
+                            "committee_name" : str(int(row[15])),
+                            "state" : str(int(row[16])),
+                            "notes" : ""
+
+                        }
+                        assignments.append(row)
                         assignment_dates.append(row[7])                                     
 
                 # create list of unique assignment dates
