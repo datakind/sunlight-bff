@@ -101,6 +101,17 @@ function update( legisJson, view, funcName, headingModel ){
 		window.committeeAssignments = _.filter(data.data, function(datum){ return datum.events[0].event_type === "joined_committee" })
 			   committeeAssignments = _.map(committeeAssignments, function(ev){ return ev.events[0] })
 
+		// var evs = d3.selectAll('.event')[0].filter(function(evnt){
+		// 	var data = d3.select(evnt).data()[0]
+		// 	if (data.hasOwnProperty('info')){
+		// 		if ( data.info.hasOwnProperty('crp_catcode') &&
+		// 			 data.event_type !== 'joined_committee' && 
+		// 			 data.event_type !== 'recieved_campaign_contributions') {
+		// 			return data
+		// 		}
+		// 	}
+		// })
+
 		var legis_data = { 
 			"name" : data.bio.name.official_full,
 			"osid" : data.bio.id.opensecrets,
