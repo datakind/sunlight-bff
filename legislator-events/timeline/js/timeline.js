@@ -645,6 +645,8 @@ function addSpeeches( data ){
 
 	event_.on('mouseover', function(d){
 
+			console.log(d);
+
 			var el = d3.select(this),
 				el_data = d3.select(this.parentNode).data()[0]
 				el_data = $.extend( true, {}, el_data)

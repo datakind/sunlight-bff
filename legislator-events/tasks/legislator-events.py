@@ -121,6 +121,7 @@ class LegisEvents():
 
     def add_sponsored_bills(self):
         bills = []
+        pap_key = None
         #fetch sponosred bills ADD CACHING!
         legis_id = self.legislator["id"]["govtrack"]
         sponsored_url = ('http://www.govtrack.us/api/v2/bill?sponsor=%s'
@@ -591,6 +592,55 @@ class LegisEvents():
             page += 1
 
         for s in speeches:
+            # s['crp_catcode'] = ""
+            # s['crp_catname'] = ""
+            # s['crp_description'] = ""
+            # s['pap_major_topic'] = ""
+            # s['pap_subtopic_code'] = ""
+            # s['fit'] = ""
+            # s['pap_subtopic_2'] = ""
+            # s['pap_subtopic_3'] = ""
+            # s['pap_subtopic_4'] = ""
+            # s['notes_chad'] = ""
+            # s['pap_subtopic_code'] = ""
+            # s['note'] = ""
+            # s["major_topic"] = ""
+            # s["minor_topic"] = ""
+
+            if s['bills'] != None:
+                s['bill_codes'] = []
+                for bill in s['bills']:
+                    split = bill.split(' ')
+                    chamber = split[0].upper().replace('.','')
+                    number = split[1]
+                    pap_key = '%s-%s-%s' % (s['congress'], chamber, number)
+                    bill = {}
+
+                    try:
+                        bill["major_topic"] = self.bill_topic_dict[pap_key][0]
+                        bill["minor_topic"] = self.bill_topic_dict[pap_key][1]
+                        # print "got cosponsored topic one %r" % pap_key
+                    except:
+                        bill["major_topic"] = ""
+                        bill["minor_topic"] = ""
+
+                    for row in self.crp_pap_crosswalk:
+                        if bill['major_topic'] == row[3] and bill['minor_topic'] == row[4]:
+                            print "got a speech bill topic for bill %r" % pap_key                     
+                            bill['crp_catcode'] = row[0]
+                            bill['crp_catname'] = row[1]
+                            bill['crp_description'] = row[2]
+                            bill['pap_major_topic'] = row[3]
+                            bill['pap_subtopic_code'] = row[4]
+                            bill['fit'] = row[5]
+                            bill['pap_subtopic_2'] = row[6]
+                            bill['pap_subtopic_3'] = row[7]
+                            bill['pap_subtopic_4'] = row[8]
+                            bill['notes_chad'] = row[9]
+                            bill['pa_subtopic_code'] = row[10]
+                            bill['note'] = row[11]
+                    s['bill_codes'].append(bill)
+
             t = str(int(time.mktime(time.strptime(s["date"],
                      '%Y-%m-%d'))))
             speech = { 
