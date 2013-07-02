@@ -621,7 +621,7 @@ class LegisEvents():
         for result in res.json()["results"]:
             votes.append(result)
         
-        #this should probably use generators
+        # this should probably use generators
         while page <= total_pages:
             print "adding votes"
             votes_url = ('http://congress.api.sunlightfoundation.com'
@@ -635,7 +635,53 @@ class LegisEvents():
             page += 1
 
         for v in votes:
-            if self.legislator['id']['bioguide'] in v['voters'].keys():
+            if (self.legislator['id']['bioguide'] in v['voters'].keys() and 
+                'bill' in v.keys()):
+                v['bill']['crp_catcode'] = ""
+                v['bill']['crp_catname'] = ""
+                v['bill']['crp_description'] = ""
+                v['bill']['pap_major_topic'] = ""
+                v['bill']['pap_subtopic_code'] = ""
+                v['bill']['fit'] = ""
+                v['bill']['pap_subtopic_2'] = ""
+                v['bill']['pap_subtopic_3'] = ""
+                v['bill']['pap_subtopic_4'] = ""
+                v['bill']['notes_chad'] = ""
+                v['bill']['pap_subtopic_code'] = ""
+                v['bill']['note'] = ""
+                v['bill']["major_topic"] = ""
+                v['bill']["minor_topic"] = ""
+
+                if v['bill']["bill_type"] == "hr":
+                    pap_key = "%s-HR-%s" % (str(v['bill']["congress"]), str(v['bill']["number"]))
+                    # print "pap key is %r" % pap_key
+                elif v['bill']["bill_type"] == "s":
+                    pap_key = "%s-S-%s" % (str(v['bill']["congress"]), str(v['bill']["number"]))
+
+                try:
+                    v['bill']["major_topic"] = self.bill_topic_dict[pap_key][0]
+                    v['bill']["minor_topic"] = self.bill_topic_dict[pap_key][1]
+                    # print "got cosponsored topic one %r" % pap_key
+                except:
+                    v['bill']["major_topic"] = ""
+                    v['bill']["minor_topic"] = ""
+
+                for row in self.crp_pap_crosswalk:
+                    if v['bill']['major_topic'] == row[3] and v['bill']['minor_topic'] == row[4]:
+                        print "gots a vote topic"
+                        v['bill']['crp_catcode'] = row[0]
+                        v['bill']['crp_catname'] = row[1]
+                        v['bill']['crp_description'] = row[2]
+                        v['bill']['pap_major_topic'] = row[3]
+                        v['bill']['pap_subtopic_code'] = row[4]
+                        v['bill']['fit'] = row[5]
+                        v['bill']['pap_subtopic_2'] = row[6]
+                        v['bill']['pap_subtopic_3'] = row[7]
+                        v['bill']['pap_subtopic_4'] = row[8]
+                        v['bill']['notes_chad'] = row[9]
+                        v['bill']['pa_subtopic_code'] = row[10]
+                        v['bill']['note'] = row[11]
+
                 dt = dup.parse(v["voted_at"])
                 timestamp = str(int(time.mktime(dt.timetuple())) - 14400) # remove 4 hours to convert from utc to est
                 vote = { 
