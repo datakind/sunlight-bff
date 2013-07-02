@@ -592,21 +592,6 @@ class LegisEvents():
             page += 1
 
         for s in speeches:
-            # s['crp_catcode'] = ""
-            # s['crp_catname'] = ""
-            # s['crp_description'] = ""
-            # s['pap_major_topic'] = ""
-            # s['pap_subtopic_code'] = ""
-            # s['fit'] = ""
-            # s['pap_subtopic_2'] = ""
-            # s['pap_subtopic_3'] = ""
-            # s['pap_subtopic_4'] = ""
-            # s['notes_chad'] = ""
-            # s['pap_subtopic_code'] = ""
-            # s['note'] = ""
-            # s["major_topic"] = ""
-            # s["minor_topic"] = ""
-
             if s['bills'] != None:
                 s['bill_codes'] = []
                 for bill in s['bills']:
@@ -626,7 +611,7 @@ class LegisEvents():
 
                     for row in self.crp_pap_crosswalk:
                         if bill['major_topic'] == row[3] and bill['minor_topic'] == row[4]:
-                            print "got a speech bill topic for bill %r" % pap_key                     
+                            print "got a speech bill topic for bill %r" % pap_key
                             bill['crp_catcode'] = row[0]
                             bill['crp_catname'] = row[1]
                             bill['crp_description'] = row[2]
@@ -718,7 +703,7 @@ class LegisEvents():
 
                 for row in self.crp_pap_crosswalk:
                     if v['bill']['major_topic'] == row[3] and v['bill']['minor_topic'] == row[4]:
-                        print "gots a vote topic"
+                        print "gots a vote topic with pap code %r" % pap_key
                         v['bill']['crp_catcode'] = row[0]
                         v['bill']['crp_catname'] = row[1]
                         v['bill']['crp_description'] = row[2]

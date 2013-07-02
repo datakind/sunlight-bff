@@ -101,16 +101,24 @@ function update( legisJson, view, funcName, headingModel ){
 		window.committeeAssignments = _.filter(data.data, function(datum){ return datum.events[0].event_type === "joined_committee" })
 			   committeeAssignments = _.map(committeeAssignments, function(ev){ return ev.events[0] })
 
-		// var evs = d3.selectAll('.event')[0].filter(function(evnt){
-		// 	var data = d3.select(evnt).data()[0]
-		// 	if (data.hasOwnProperty('info')){
-		// 		if ( data.info.hasOwnProperty('crp_catcode') &&
-		// 			 data.event_type !== 'joined_committee' && 
-		// 			 data.event_type !== 'recieved_campaign_contributions') {
-		// 			return data
-		// 		}
-		// 	}
-		// })
+		d3.selectAll('.event')[0].forEach(function(element, i){
+
+			var data = d3.select(element)[0][0].__data__,
+				amount = Number(data.info.amount),
+				el = d3.select(element)
+
+			if ( data.info.hasOwnProperty('crp_catcode') ){
+				if (data.info[attr] === attrVal ){
+					console.log("got something connected")
+					el.classed('connected', true)
+				} else {
+					el.classed('not-connected', true)
+				}
+			} else {
+				el.classed('not-connected', true)
+			}
+
+		})
 
 		var legis_data = { 
 			"name" : data.bio.name.official_full,
@@ -414,6 +422,7 @@ function addBills( data ){
 		.attr("width", 40)
 		.attr("height", 15)
 		.attr("class", "sponsored")
+		//move to css
 		.style("fill", "steelblue")
 		.style("fill-opacity", .5)
 		.style("stroke", "steelblue")

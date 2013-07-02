@@ -1,0 +1,70 @@
+Documentation
+  Events
+    - Sponsored Bills
+      - api name/documentaion: 
+      - original source: http://www.govtrackus/api/v2/bill?sponsor=%GOVTRACK_ID&limit=1000
+      - current location: http://www.govtrackus/api/v2/bill?sponsor=%GOVTRACK_ID&limit=1000
+      - schema: 
+    - Cosponsored Bills
+      - original source: http://congress.api.sunlightfoundation.com/bills?cosponsor_ids__all=BIOGUIDE_ID&per_page=50&apikey=API_KEY'
+      - current location: http://congress.api.sunlightfoundation.com/bills?cosponsor_ids__all=BIOGUIDE_ID&per_page=50&apikey=API_KEY'
+      - schema: 
+    - Speeches
+      - source:
+      - original source:
+      - current location:
+      - schema
+    - Votes
+      - source:
+      - original source:
+      - current location:
+      - schema       
+    - Committee Assignments
+      - original source: https://gist.github.com/pdarche/5383752/raw/07e27469b1f787ae3ba262b613c6bac4b1ba5fc6/house_committee_assignments_103_112.csv/'https://gist.github.com/pdarche/5383745/raw/164ada45a82755e5ced80ff1029c801fd9c79c7d/senate_committee_assignments_103_112.csv
+      - current location: cached/house_assignments_103-112.csv/cached/senate_assignments_103-112.csv
+      - schema       
+    - Campaign Contributions
+      - source:
+      - original source:
+      - current location:
+      - schema       
+    - Lobbying Contributions
+      - source:
+    - Parties/Fundraising Events
+      - source:
+      - original source: http://politicalpartytime.org/api/v1/event/?beneficiaries__crp_id=OPENSECRETS_ID&format=json&apikey=API_KEY
+      - current location: http://politicalpartytime.org/api/v1/event/?beneficiaries__crp_id=OPENSECRETS_ID&format=json&apikey=API_KEY
+      - schema: 
+
+  Meta Data 
+    - PAP/CRP crosswalk
+      - original source:
+      - current location:
+      - schema:
+    - PAP Bills 
+      - original source:  
+      - current location: cached/bills93-111.csv
+      - schema: 
+    - Legislator Info
+      - original: source: https://raw.github.com/unitedstates/congress-legislators/master/legislators-current.yaml
+      - current: location: cached/legislators-current.yaml
+      - schema: 
+    - CRP catcodes
+      - original source:
+      - current location:
+      - schema:
+    - ICPSR to Bioguide 
+      - original source: https://gist.github.com/konklone/1642406/raw/ca9da4f53efb39d35e37cf19a0129ec5eb7b8ff8/results_plus_hand_entry.csv
+      - current location: cached/icpsr_to_bioguide.csv
+      - schema:
+    - Charles Stewart Committee Codings 
+      - original source:
+      - current location:
+      - schema:
+
+
+  Methodologies
+    - CRP Crosswalk
+    - Lobbying money
+    - event attribute filtering
+    - Charles Stewart Committee Codebook JSON

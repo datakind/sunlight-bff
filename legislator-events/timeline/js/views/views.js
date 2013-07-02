@@ -29,7 +29,7 @@ var LegisInfoView = Backbone.View.extend({
 	}
 })
 
-var HeadingView = Backbone.View.extend({ 
+var HeadingView = Backbone.View.extend({
 	legislators : [
 		{ label : "Chuck Grassley", value : "data/chuck_grassley.json" },
 		{ label : "John Boehner", value : "data/john_a_boehner.json" },
