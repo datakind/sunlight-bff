@@ -25,10 +25,10 @@ class LegisEvents():
         self.chamber = None
         self.events = [
             self.add_terms,
-            self.add_sponsored_bills, self.add_parties,
-            self.add_cosponsored_bills, self.add_committee_memberships,
-            self.add_campaign_contributions, self.add_speeches,
-            self.add_votes
+            #self.add_sponsored_bills , self.add_parties,
+            self.add_cosponsored_bills#, self.add_committee_memberships,
+            # self.add_campaign_contributions, self.add_speeches,
+            # self.add_votes
         ]
 
         self.legis_name = self.legis_name.translate(string.maketrans("",""),
@@ -130,24 +130,10 @@ class LegisEvents():
         self.sponsored_bills = r.json()
 
         for bill in self.sponsored_bills['objects']:
-            bill['crp_catcode'] = ""
-            bill['crp_catname'] = ""
-            bill['crp_description'] = ""
-            bill['pap_major_topic'] = ""
-            bill['pap_subtopic_code'] = ""
-            bill['fit'] = ""
-            bill['pap_subtopic_2'] = ""
-            bill['pap_subtopic_3'] = ""
-            bill['pap_subtopic_4'] = ""
-            bill['notes_chad'] = ""
-            bill['pa_subtopic_code'] = ""
-            bill['note'] = ""
-            bill["major_topic"] = ""
-            bill["minor_topic"] = ""
-
+            #add the crp_apa crosswalk attributes to the bill object
+            bill = dict(crp_dict.items() + bill.items())
             if bill["bill_type"] == "house_bill":
                 pap_key = "%s-HR-%s" % (str(bill["congress"]), str(bill["number"]))
-                # print "pap key is %r" % pap_key
             elif bill["bill_type"] == "senate_bill":
                 pap_key = "%s-S-%s" % (str(bill["congress"]), str(bill["number"]))
          
@@ -243,21 +229,7 @@ class LegisEvents():
             page += 1
 
         for cs in cosponsored_bills:
-            cs['crp_catcode'] = ""
-            cs['crp_catname'] = ""
-            cs['crp_description'] = ""
-            cs['pap_major_topic'] = ""
-            cs['pap_subtopic_code'] = ""
-            cs['fit'] = ""
-            cs['pap_subtopic_2'] = ""
-            cs['pap_subtopic_3'] = ""
-            cs['pap_subtopic_4'] = ""
-            cs['notes_chad'] = ""
-            cs['pap_subtopic_code'] = ""
-            cs['note'] = ""
-            cs["major_topic"] = ""
-            cs["minor_topic"] = ""
-
+            cs = dict(crp_dict.items() + cs.items())
             if cs["bill_type"] == "hr":
                 pap_key = "%s-HR-%s" % (str(cs["congress"]), str(cs["number"]))
                 # print "pap key is %r" % pap_key
@@ -299,15 +271,14 @@ class LegisEvents():
             }
             self.legis_list.append(cosponsorship)
 
-        cs_bills = [ prepCosponsored(cs) for cs in cosponsored_bills ]
-        filtered = dict( (key, list(set([bill[key] for bill in cs_bills]))) for key in cs_bills[0].keys() )
-        self.event_attributes["cosponsored_legislation"] = filtered
+        # cs_bills = [ prepCosponsored(cs) for cs in cosponsored_bills ]
+        # filtered = dict( (key, list(set([bill[key] for bill in cs_bills]))) for key in cs_bills[0].keys() )
+        # self.event_attributes["cosponsored_legislation"] = filtered
 
 
     def add_committee_memberships(self):
         # GIST MAPPING CURRENT MEMBERS OF CONGRESS' ICPSR NO'S TO
-        # BIOGUIDE IDS https://gist.github.com/konklone/1642406
-        
+        # BIOGUIDE IDS https://gist.github.com/konklone/1642406        
         if not os.path.exists('cached/icpsr_to_bioguide.csv'):
             # fetch the csv from konklone's gist  
             # THIS BLOCK IS NOT WORKING PROPERLY!  
@@ -340,7 +311,9 @@ class LegisEvents():
 
         #refactor: add fetching if not cached
         house_assignments_codes = open('cached/charles_stewart_assignment_data.json')
-        house_assignments_codes = json.load(jsondata)
+        house_assignments_codes = json.load(house_assignments_codes)
+        house_member_codes = open('cached/charles_stewart_member_data.json')
+        house_member_codes = json.load(house_member_codes)
 
         # if the house committee assignment list csv is not cached
         # fetch it from gists.github.com
@@ -364,27 +337,33 @@ class LegisEvents():
                 # a committee record for the given legislator and
                 # another with the assignment dates
                 for row in houserows[1:]:
-                    if row[2] == str(float(self.legislator["id"]["icpsr"])):       
+                    if row[2] == str(float(self.legislator["id"]["icpsr"])):
+                        committee_key = str(int(float(row[1]))) 
+                        party_status_code = str(int(float(row[4])))
+                        party_code_key = str(int(float(row[6]))) if len(row[6]) > 0 else "404"
+                        senior_party_member_key = str(int(float(row[9])))
+                        period_of_service_key = str(int(float(row[11])))
+                        csaec_key = str(int(float(row[12]))) if len(row[12]) > 0 else ""
+                        ccanc_key = row[13]
                         committe = {
-                            "congress" : "",
-                            "committee_code" : ""
-                            "id_num" : ""
-                            "name" : "",
-                            "party_status_code" : ""
-                            "rank_within_party" : "",
-                            "party" : "",
-                            "date_of_assignment" : "",
-                            "date_of_termination" : "",
-                            "senior_party_member" : ""
-                            "committee_seniority" : str(int(row[10])),
-                            "committee_period_of_service" : "",
-                            "committee_status_at_end_of_congress" : "",
-                            "committee_continuity_of_assignment_next_congress",
-                            "appointment_citation" : str(int(row[14])),
-                            "committee_name" : str(int(row[15])),
-                            "state" : str(int(row[16])),
+                            "congress" : str(int(float(row[0]))),
+                            "committee_code" : house_assignments_codes["committeeCodes"][committee_key],
+                            "id_num" : str(int(float(row[2]))),
+                            "name" : row[3],
+                            "party_status_code" : house_assignments_codes["partyStatusCode"],
+                            "rank_within_party" : str(int(float(row[5]))),
+                            "party" : house_member_codes["partyCode"][party_code_key],
+                            "date_of_assignment" : row[7],
+                            "date_of_termination" : row[8],
+                            # "senior_party_member" : house_assignments_codes["seniorPartyMember"][senior_party_member_key],
+                            "committee_seniority" : row[10],
+                            # "committee_period_of_service" : house_assignments_codes["committeePeriodOfService"][period_of_service_key],
+                            # "committee_status_at_end_of_congress" : house_member_codes["committeeStatusAtEndOfThisCongress"][csaec_key],
+                            # "committee_continuity_of_assignment_next_congress" : house_member_codes["committeeContinuityOfAssignmentInNextCongress"][ccanc_key],
+                            "appointment_citation" : row[14],
+                            "committee_name" : row[15],
+                            "state" : row[16],
                             "notes" : ""
-
                         }
                         assignments.append(row)
                         assignment_dates.append(row[7])                                     
@@ -634,7 +613,8 @@ class LegisEvents():
                         bill["minor_topic"] = ""
 
                     for row in self.crp_pap_crosswalk:
-                        if bill['major_topic'] == row[3] and bill['minor_topic'] == row[4]:
+                        if (bill['major_topic'] == row[3] and
+                            bill['minor_topic'] == row[4]):
                             print "got a speech bill topic for bill %r" % pap_key
                             bill['crp_catcode'] = row[0]
                             bill['crp_catname'] = row[1]
@@ -711,23 +691,35 @@ class LegisEvents():
                 v['bill']["major_topic"] = ""
                 v['bill']["minor_topic"] = ""
 
+                # if the bill comes from the house
                 if v['bill']["bill_type"] == "hr":
+                    #set the pap key
                     pap_key = "%s-HR-%s" % (str(v['bill']["congress"]), str(v['bill']["number"]))
-                    # print "pap key is %r" % pap_key
                 elif v['bill']["bill_type"] == "s":
                     pap_key = "%s-S-%s" % (str(v['bill']["congress"]), str(v['bill']["number"]))
+                # else set the pap key to None
+                else:
+                    pap_key = None
 
-                try:
-                    v['bill']["major_topic"] = self.bill_topic_dict[pap_key][0]
-                    v['bill']["minor_topic"] = self.bill_topic_dict[pap_key][1]
-                    # print "got cosponsored topic one %r" % pap_key
-                except:
+                # if the pap key is not none
+                if pap_key != None:
+                    # try to get a major topic
+                    try:
+                        v['bill']["major_topic"] = self.bill_topic_dict[pap_key][0]
+                        v['bill']["minor_topic"] = self.bill_topic_dict[pap_key][1]
+                    except:
+                        pass
+                # else set the major topic to nothing
+                else:
                     v['bill']["major_topic"] = ""
                     v['bill']["minor_topic"] = ""
 
+                # iterate through the crosswalk and look for rows that match
+                # bill's majro and minor topic
                 for row in self.crp_pap_crosswalk:
-                    if v['bill']['major_topic'] == row[3] and v['bill']['minor_topic'] == row[4]:
-                        print "gots a vote topic with pap code %r" % pap_key
+                    if (v['bill']['major_topic'] == row[3] and 
+                        v['bill']['minor_topic'] == row[4]):
+                        print "gots a vote topic with pap code %r %r %r" % ( pap_key, row[3], v['bill']['major_topic'])
                         v['bill']['crp_catcode'] = row[0]
                         v['bill']['crp_catname'] = row[1]
                         v['bill']['crp_description'] = row[2]
@@ -856,3 +848,19 @@ def prep_speech(speech):
 
     return speech
 
+crp_dict = {
+    'crp_catcode' : '',
+    'crp_catname' : '',
+    'crp_description' : '',
+    'pap_major_topic' : '',
+    'pap_subtopic_code' : '',
+    'fit' : '',
+    'pap_subtopic_2' : '',
+    'pap_subtopic_3' : '',
+    'pap_subtopic_4' : '',
+    'notes_chad' : '',
+    'pa_subtopic_code' : '',
+    'note' : '',
+    "major_topic" : '',
+    "minor_topic" : '',
+}
