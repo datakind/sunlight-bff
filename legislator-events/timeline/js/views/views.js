@@ -1,7 +1,10 @@
 var FilterView = Backbone.View.extend({
+
 	initialize : function() {
 		this.render()
-		$('#options_list').hide()
+		$('#filter_container').hide()
+		this.$el = $('#filter_container')
+		this.delegateEvents()
 	},
 	render : function() {
 		var source = $('#filter').html()
@@ -10,8 +13,23 @@ var FilterView = Backbone.View.extend({
 		$('body').append( template );
 	},
 	events : {
+		'click #filter_img' : 'toggleFilter'//,
+		// 'click body' : 'testFunction'
+	},
+	toggleFilter : function() {
 
+		var filter = this.$el;
 
+		if ( filter.hasClass('expanded-filter') ){
+			filter.removeClass('expanded-filter');
+			$('#options_content').empty();
+		} else {
+			filter.addClass('expanded-filter');
+			options.filter_li();
+		}
+	},
+	testFunction : function(){
+		alert("testing")
 	}
 })
 
@@ -40,6 +58,7 @@ var HeadingView = Backbone.View.extend({
 		{ label : "John McCain", value : "data/john_mccain.json" },
 		{ label : "Barbara Boxer", value : "data/barbara_boxer.json" },
 	],
+
 	initialize : function() {
 		var self = this
 
@@ -62,7 +81,6 @@ var HeadingView = Backbone.View.extend({
 	}, 
 
 	render : function() {
-
 		var source = $('#legislator').html()
 	    	, template = Handlebars.compile( source )
 	    	, model = this.model;
@@ -72,13 +90,10 @@ var HeadingView = Backbone.View.extend({
 	    if ( model.get('name') === undefined ){	    	
 	    	this.toggleExpansion();
 	    }
-
 	},
 
 	events : {
-
 		"click #change_legislator" : "changeLegislator"
-
 	},
 
 	toggleExpansion : function() {
@@ -94,10 +109,11 @@ var HeadingView = Backbone.View.extend({
 				el : '#info',
 				model : model
 			})
-			$('#info, #options_list, .event-labels').show()
+			$('#info, #filter_container, .event-labels').show()
 			this.$el.find('#hgroup').hide()
+			console.log('SHOWING')
 		} else {
-			$('#info, #options_list, .event-labels').hide()
+			$('#info, #filter_container, .event-labels').hide()
 			this.$el.find('#hgroup').show()
 			this.$el.addClass('expandido')
 			focus.selectAll('g').remove()
@@ -105,14 +121,10 @@ var HeadingView = Backbone.View.extend({
 			this.$el.find('input')
 				.val('').css('display', 'block')
 		}
-
 	},
-
 	changeLegislator : function( ev ) {
-
 		ev.preventDefault()
 		this.toggleExpansion()
-
 	}
 
 })

@@ -97,7 +97,8 @@ h2 {
 	height: 30px;
 }
 
-#options_list {
+#filter_container
+ {
 	background-color: white;
 	position: fixed;
 	right: 0px;
@@ -119,13 +120,13 @@ h2 {
 	width: 500px;
 }
 
-#options_list li {
+#filter_container li {
 	display: inline-block;
 	padding: 10px;
 	margin: 0px
 }
 
-#options_list li:hover {
+#filter_container li:hover {
 	background-color: white;
 }
 

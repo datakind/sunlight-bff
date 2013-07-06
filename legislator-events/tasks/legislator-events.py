@@ -25,10 +25,10 @@ class LegisEvents():
         self.chamber = None
         self.events = [
             self.add_terms,
-            #self.add_sponsored_bills , self.add_parties,
-            self.add_cosponsored_bills#, self.add_committee_memberships,
-            # self.add_campaign_contributions, self.add_speeches,
-            # self.add_votes
+            self.add_sponsored_bills, self.add_parties,
+            self.add_cosponsored_bills, self.add_committee_memberships,
+            self.add_campaign_contributions, self.add_speeches,
+            self.add_votes
         ]
 
         self.legis_name = self.legis_name.translate(string.maketrans("",""),
@@ -321,9 +321,8 @@ class LegisEvents():
             if not os.path.exists('cached/house_assignments_103-112.csv'):
                 
                 house_comm_url = ('https://gist.github.com/pdarche/5383752/raw/'
-                                        '07e27469b1f787ae3ba262b613c6bac4b1ba5fc6'
-                                        '/house_committee_assignments_103_112.csv'
-                                        )
+                                  '07e27469b1f787ae3ba262b613c6bac4b1ba5fc6'
+                                  '/house_committee_assignments_103_112.csv')
                 r = requests.get(house_comm_url)
                 housecsv = csv.reader(r.text, delimiter=',')
 
@@ -462,9 +461,8 @@ class LegisEvents():
             res = requests.get(contribution_url)
             for contribution in res.json():
                 try:
-                    t = str(int(time.mktime(time.strptime(contribution["date"].decode('utf-8'), 
-                                '%Y-%m-%d'))))
-
+                    t = str(int(time.mktime(time.strptime(
+                        contribution["date"].decode('utf-8'), '%Y-%m-%d'))))
                     catcode = contribution["contributor_category"].encode('utf-8')            
                     try: 
                         contribution["contributor_category_name"] = d[catcode][0]
@@ -490,6 +488,7 @@ class LegisEvents():
                 except:
                     print "somethings wong with this thing"
 
+        #REFACTOR!!!!!
         my_string = [ str(dt.datetime.fromtimestamp(int(c["time"])).month) + "_" + str(dt.datetime.fromtimestamp(int(c["time"])).year) for c in contribution_events ]
         unique_month_year_string = list(set(my_string))
 
@@ -510,9 +509,6 @@ class LegisEvents():
                     c_sum += int(float(c["amount"]))
                 except ValueError:
                     pass
-            
-            # sum event amounts
-            # count total events
 
             contributions_month = {
                 "time" : t,
@@ -603,7 +599,7 @@ class LegisEvents():
                     number = split[1]
                     pap_key = '%s-%s-%s' % (s['congress'], chamber, number)
                     bill = {}
-
+                    # REFACTOR: THE BELOW CODE IS DUPLICATED 
                     try:
                         bill["major_topic"] = self.bill_topic_dict[pap_key][0]
                         bill["minor_topic"] = self.bill_topic_dict[pap_key][1]
@@ -674,29 +670,22 @@ class LegisEvents():
             page += 1
 
         for v in votes:
-            if (self.legislator['id']['bioguide'] in v['voters'].keys() and 
+            bioguide = self.legislator['id']['bioguide']
+            if (bioguide in v['voters'].keys() and 
                 'bill' in v.keys()):
-                v['bill']['crp_catcode'] = ""
-                v['bill']['crp_catname'] = ""
-                v['bill']['crp_description'] = ""
-                v['bill']['pap_major_topic'] = ""
-                v['bill']['pap_subtopic_code'] = ""
-                v['bill']['fit'] = ""
-                v['bill']['pap_subtopic_2'] = ""
-                v['bill']['pap_subtopic_3'] = ""
-                v['bill']['pap_subtopic_4'] = ""
-                v['bill']['notes_chad'] = ""
-                v['bill']['pap_subtopic_code'] = ""
-                v['bill']['note'] = ""
-                v['bill']["major_topic"] = ""
-                v['bill']["minor_topic"] = ""
-
+                v['bill']['vote'] = ''
+                v['bill']['vote'] = v['voters'][bioguide]['vote']
+                del v['voters']
+                v = dict(v['bill'].items() + v.items())
+                del v['bill']
+                v = dict(crp_dict.items() + v.items())
+                
                 # if the bill comes from the house
-                if v['bill']["bill_type"] == "hr":
+                if v["bill_type"] == "hr":
                     #set the pap key
-                    pap_key = "%s-HR-%s" % (str(v['bill']["congress"]), str(v['bill']["number"]))
-                elif v['bill']["bill_type"] == "s":
-                    pap_key = "%s-S-%s" % (str(v['bill']["congress"]), str(v['bill']["number"]))
+                    pap_key = "%s-HR-%s" % (str(v["congress"]), str(v["number"]))
+                elif v["bill_type"] == "s":
+                    pap_key = "%s-S-%s" % (str(v["congress"]), str(v["number"]))
                 # else set the pap key to None
                 else:
                     pap_key = None
@@ -705,33 +694,33 @@ class LegisEvents():
                 if pap_key != None:
                     # try to get a major topic
                     try:
-                        v['bill']["major_topic"] = self.bill_topic_dict[pap_key][0]
-                        v['bill']["minor_topic"] = self.bill_topic_dict[pap_key][1]
+                        v["major_topic"] = self.bill_topic_dict[pap_key][0]
+                        v["minor_topic"] = self.bill_topic_dict[pap_key][1]
                     except:
                         pass
                 # else set the major topic to nothing
                 else:
-                    v['bill']["major_topic"] = ""
-                    v['bill']["minor_topic"] = ""
+                    v["major_topic"] = ""
+                    v["minor_topic"] = ""
 
                 # iterate through the crosswalk and look for rows that match
-                # bill's majro and minor topic
+                # bill's major and minor topic
                 for row in self.crp_pap_crosswalk:
-                    if (v['bill']['major_topic'] == row[3] and 
-                        v['bill']['minor_topic'] == row[4]):
-                        print "gots a vote topic with pap code %r %r %r" % ( pap_key, row[3], v['bill']['major_topic'])
-                        v['bill']['crp_catcode'] = row[0]
-                        v['bill']['crp_catname'] = row[1]
-                        v['bill']['crp_description'] = row[2]
-                        v['bill']['pap_major_topic'] = row[3]
-                        v['bill']['pap_subtopic_code'] = row[4]
-                        v['bill']['fit'] = row[5]
-                        v['bill']['pap_subtopic_2'] = row[6]
-                        v['bill']['pap_subtopic_3'] = row[7]
-                        v['bill']['pap_subtopic_4'] = row[8]
-                        v['bill']['notes_chad'] = row[9]
-                        v['bill']['pa_subtopic_code'] = row[10]
-                        v['bill']['note'] = row[11]
+                    if (v['major_topic'] == row[3] and 
+                        v['minor_topic'] == row[4]):
+                        print "gots a vote topic with pap code %r %r %r" % ( pap_key, row[3], v['major_topic'])
+                        v['crp_catcode'] = row[0]
+                        v['crp_catname'] = row[1]
+                        v['crp_description'] = row[2]
+                        v['pap_major_topic'] = row[3]
+                        v['pap_subtopic_code'] = row[4]
+                        v['fit'] = row[5]
+                        v['pap_subtopic_2'] = row[6]
+                        v['pap_subtopic_3'] = row[7]
+                        v['pap_subtopic_4'] = row[8]
+                        v['notes_chad'] = row[9]
+                        v['pa_subtopic_code'] = row[10]
+                        v['note'] = row[11]
 
                 dt = dup.parse(v["voted_at"])
                 timestamp = str(int(time.mktime(dt.timetuple())) - 14400) # remove 4 hours to convert from utc to est
@@ -840,7 +829,6 @@ def prepCosponsored(bill):
     # del bill["committee_ids"]
 
     return bill
-
 
 def prep_speech(speech):
     del speech["speaking"]

@@ -1130,8 +1130,8 @@ function templateId (d, bioguide){
 			console.log("the incoming data is", d)
 			data = {
 				"date" : new Date( Number(d.time) * 1000).toString('dddd,MMMM,yyyy'),
-				"bill_title" : d.info.bill.official_title,
-				"vote" : d.info.voters[bioguide].vote,
+				"bill_title" : d.info.official_title,
+				"vote" : d.info.vote,
 				"id" : d.event_id
 			}
 			return["vote", data]

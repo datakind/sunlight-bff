@@ -5,27 +5,28 @@ $(document).ready(function(){
 			el : '#top_bar',
 			model : head
 		})
-		, filter = new FilterView({
-			el : '#options_list'
+		
+	window.filterView = new FilterView({
+			el : '#filter_container'
 		});
 
 	window.removePopup = true
 	window.hoverable = true
 	window.mousePos = undefined
 
-	$('body').on('click', '#filter_img', function(){
+	// $('body').on('click', '#filter_img', function(){
 		
-		var filter = $(this).parent();
+	// 	var filter = $(this).parent();
 
-		if ( filter.hasClass('expanded-filter') ){
-			filter.removeClass('expanded-filter');
-			$('#options_content').empty();
-		} else {
-			filter.addClass('expanded-filter');
-			options.filter_li();
-		}
+	// 	if ( filter.hasClass('expanded-filter') ){
+	// 		filter.removeClass('expanded-filter');
+	// 		$('#options_content').empty();
+	// 	} else {
+	// 		filter.addClass('expanded-filter');
+	// 		options.filter_li();
+	// 	}
 	
-	})
+	// })
 
 	$('#filter').click(function(){
 		
@@ -90,9 +91,9 @@ $(document).ready(function(){
 		})
 	})
 
-	$('body').on('click', '#key_li, #filter_li', function(){
-		toggleOption($(this))
-	})
+	// $('body').on('click', '#key_li, #filter_li', function(){
+	// 	toggleOption($(this))
+	// })
 
 	$('body').on('change', '#event_type_filter_drop', function(){
 
