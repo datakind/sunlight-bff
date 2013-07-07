@@ -9,6 +9,7 @@
 		<script type="text/javascript" src="js/vendor/handlebars.js"></script>
 		<script type="text/javascript" src="data/dataObjects.js"></script>
 		<script type="text/javascript" src="js/views/views.js"></script>
+		<script type="text/javascript" src="js/models/models.js"></script>
 		<script type="text/javascript" src="js/app.js"></script>
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
 		<link rel="stylesheet" type="text/css" href="css/jquery-ui.css" />
@@ -17,13 +18,22 @@
 	<body>
 		<div id="top_bar"></div>
 		<div id="vis_container"></div>
+		<div id="filter_container"></div>
 		<script type="text/javascript" src="js/timeline.js"></script>
 		
 		<script id="filter" type="x-handlebars-template">
-			<div id="filter_container">
+			
 				<img id="filter_img" src="img/filter.svg"/>
-				<div id="options_content"></div>	
-			</div>
+				<div id="options_content">
+					<h5>Filter Events by Industry</h5>
+					<select name="event-type" id="industry_drop">
+						{{#each industryCode}}
+							<option value="{{this}}">{{this}}</option>
+						{{/each}}
+					</select>
+					<button id="industry_filter_button">Filter Events</button>
+				</div>
+				
 		</script>
 
 		<script id="legislator" type="x-handlebars-template">

@@ -3,41 +3,87 @@ var FilterView = Backbone.View.extend({
 	initialize : function() {
 		this.render()
 		$('#filter_container').hide()
-		this.$el = $('#filter_container')
-		this.delegateEvents()
+		// this.$el = $('#filter_container')
+		// this.delegateEvents()
+		this.model.bind('change', this.render, this);
 	},
+
 	render : function() {
 		var source = $('#filter').html()
 			, template = Handlebars.compile( source )
+			, model = this.model.toJSON();
 
-		$('body').append( template );
+		$('#filter_container').html( template(model) );
 	},
+
 	events : {
-		'click #filter_img' : 'toggleFilter'//,
-		// 'click body' : 'testFunction'
+		'click #filter_img' : 'toggleFilter',
+		'click #industry_filter_button' : 'filterIndustry'
 	},
-	toggleFilter : function() {
 
+	toggleFilter : function() {
+		console.log("toggling")
 		var filter = this.$el;
 
 		if ( filter.hasClass('expanded-filter') ){
 			filter.removeClass('expanded-filter');
-			$('#options_content').empty();
+			$('#options_content').hide();
 		} else {
 			filter.addClass('expanded-filter');
-			options.filter_li();
+			// options.filter_li();
+			$('#options_content').show();
 		}
 	},
-	testFunction : function(){
-		alert("testing")
+
+	filterIndustry : function() {
+
+		var attrVal = $('#industry_drop option:selected').val()
+
+		d3.selectAll('.event')[0].forEach(function(element, i){
+			
+			var el = d3.select(element)
+				, data = el.data()[0];
+
+			if (data.hasOwnProperty('info')){
+			if ( data.info.hasOwnProperty('crp_catcode') ||
+				 data.info.hasOwnProperty('contributor_category') ){
+				if ( data.info["crp_catcode"] === attrVal || 
+					 data.info["contributor_category"] === attrVal ){
+						console.log("got something connected")
+						el.classed('connected', true)
+					} else {
+						el.classed('not-connected', true)
+					}
+				} else {
+					el.classed('not-connected', true)
+				}
+			}
+
+		})
+
+		filterActive = true
+
+	},
+
+	rebind : function() {
+		
+		console.log("rebinding")
+
+		this.$el = $('#filter_container')
+		this.delegateEvents()
+
+		console.log("the el is", this.$el)
 	}
+
 })
 
 var LegisInfoView = Backbone.View.extend({
+
 	initialize : function(){
 		this.render();
 		this.model.bind('change', this.render, this);
 	},
+
 	render : function() {
 		var source = $('#legis_info').html()
 			, template = Handlebars.compile( source )
@@ -77,7 +123,6 @@ var HeadingView = Backbone.View.extend({
 		        $("#legislator_input").val(ui.item.label);
 		    }			
 		})
-
 	}, 
 
 	render : function() {
@@ -97,7 +142,6 @@ var HeadingView = Backbone.View.extend({
 	},
 
 	toggleExpansion : function() {
-
 		var expanded = this.$el.hasClass('expandido')
 			, info
 			, model = this.model;
@@ -122,6 +166,7 @@ var HeadingView = Backbone.View.extend({
 				.val('').css('display', 'block')
 		}
 	},
+
 	changeLegislator : function( ev ) {
 		ev.preventDefault()
 		this.toggleExpansion()
@@ -154,11 +199,9 @@ var PopupView = Backbone.View.extend({
 // REFACTOR: CHANGE TO ALLOW FOR ALL EVENT TYPES
 var ExpandedView = Backbone.View.extend({
 	
-	initialize : function(){
-		
+	initialize : function(){		
 		$('#popup_content_container').empty()
 		this.render()
-
 	},
 
 	render : function(){

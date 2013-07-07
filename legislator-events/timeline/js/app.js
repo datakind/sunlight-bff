@@ -1,18 +1,20 @@
 $(document).ready(function(){
 
-	var head = new Heading()
+	window.removePopup = true;
+	window.hoverable = true;
+	window.mousePos = undefined;
+	window.filterModel = new FilterModel();
+
+	var headingModel = new HeadingModel()
 		, headingView = new HeadingView({
 			el : '#top_bar',
-			model : head
+			model : headingModel
 		})
-		
+	
 	window.filterView = new FilterView({
-			el : '#filter_container'
+			el : '#filter_container',
+			model : filterModel
 		});
-
-	window.removePopup = true
-	window.hoverable = true
-	window.mousePos = undefined
 
 	// $('body').on('click', '#filter_img', function(){
 		
@@ -147,8 +149,6 @@ $(document).ready(function(){
 		window.filterSelector = eventToSelectorMapping[attribute]
 
 		d3.selectAll(filterSelector)[0].forEach(function(element, i){
-		
-			console.log("the element is", d3.select(element).data()[0] )
 
 			var data = d3.select(element)[0][0].__data__,
 				amount = Number(data.info.amount),

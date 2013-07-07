@@ -1,3 +1,4 @@
+	var values
 
 	// SETUP
 	var margin = {top: 10, right: 10, bottom: 100, left: 40},
@@ -74,22 +75,6 @@
 				 						 sponsored.classed('shown', true).classed('hidden', false)
 		})
 
-	var values
-
-var Heading = Backbone.Model.extend({
-	
-	defaults : {
-		"name" : undefined
-	},
-
-	initialize: function(){
-
-		this.on('change', function(){
-			console.log('SOME SHIT CHANGED', this.toJSON())
-		})
-	}
-
-})
 
 function update( legisJson, view, funcName, headingModel ){
 
@@ -101,24 +86,29 @@ function update( legisJson, view, funcName, headingModel ){
 		window.committeeAssignments = _.filter(data.data, function(datum){ return datum.events[0].event_type === "joined_committee" })
 			   committeeAssignments = _.map(committeeAssignments, function(ev){ return ev.events[0] })
 
-		d3.selectAll('.event')[0].forEach(function(element, i){
+		var filterData = {
+			"industryCode" : legislatorData["event_attributes"]["campaign_contribution"]["contributor_category"].sort(),
+			"industryName" : legislatorData["event_attributes"]["campaign_contribution"]["contributor_category_name"].sort()
+		}
 
-			var data = d3.select(element)[0][0].__data__,
-				amount = Number(data.info.amount),
-				el = d3.select(element)
+		// d3.selectAll('.event')[0].forEach(function(element, i){
 
-			if ( data.info.hasOwnProperty('crp_catcode') ){
-				if (data.info[attr] === attrVal ){
-					console.log("got something connected")
-					el.classed('connected', true)
-				} else {
-					el.classed('not-connected', true)
-				}
-			} else {
-				el.classed('not-connected', true)
-			}
+		// 	var data = d3.select(element)[0][0].__data__
+		// 		, amount = Number(data.info.amount)
+		// 		, el = d3.select(element);
 
-		})
+		// 	if ( data.info.hasOwnProperty('crp_catcode') ){
+		// 		if (data.info[attr] === attrVal ){
+		// 			console.log("got something connected")
+		// 			el.classed('connected', true)
+		// 		} else {
+		// 			el.classed('not-connected', true)
+		// 		}
+		// 	} else {
+		// 		el.classed('not-connected', true)
+		// 	}
+
+		// })
 
 		var legis_data = { 
 			"name" : data.bio.name.official_full,
@@ -133,7 +123,10 @@ function update( legisJson, view, funcName, headingModel ){
 			]
 		}
 
+
+
 		headingModel.set(legis_data)
+		filterModel.set(filterData)
 		view[funcName]()
 
 		// sort the objects by timestamp
@@ -309,6 +302,8 @@ function addContributions( data ){
       })
       .style("stroke", "green")
 		.on('mouseover', function(d){
+
+			console.log("the d is", d)
 			
 			var el = d3.select(this),
 				templateData = templateId(d),
@@ -421,7 +416,7 @@ function addBills( data ){
 	 event_.append('rect')
 		.attr("width", 40)
 		.attr("height", 15)
-		.attr("class", "sponsored")
+		.attr("class", "event sponsored")
 		//move to css
 		.style("fill", "steelblue")
 		.style("fill-opacity", .5)
@@ -538,7 +533,7 @@ function addCosponsored( data ) {
 	 event_.append('rect')
 		.attr("width", 40)
 		.attr("height", 15)
-		.attr("class", "cosponsored")
+		.attr("class", "event cosponsored")
 		.style("fill", "red")
 		.style("fill-opacity", .5)
 		.style("stroke", "red")
@@ -646,7 +641,7 @@ function addSpeeches( data ){
 	 event_.append('rect')
 		.attr("width", 40)
 		.attr("height", 15)
-		.attr("class", "speech")
+		.attr("class", "event speech")
 		.style("fill", "orange")
 		.style("fill-opacity", .5)
 		.style("stroke", "orange")
@@ -730,7 +725,7 @@ function addVotes( data ){
 	 event_.append('rect')
 		.attr("width", 40)
 		.attr("height", 15)
-		.attr("class", "speech")
+		.attr("class", "event speech")
 		.style("fill", "indigo")
 		.style("fill-opacity", .5)
 		.style("stroke", "indigo")
@@ -1190,7 +1185,6 @@ function getColor(d){
 			break
 	}
 }
-
 
 var options = {
 
