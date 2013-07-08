@@ -3,8 +3,6 @@ var FilterView = Backbone.View.extend({
 	initialize : function() {
 		this.render()
 		$('#filter_container').hide()
-		// this.$el = $('#filter_container')
-		// this.delegateEvents()
 		this.model.bind('change', this.render, this);
 	},
 
@@ -39,7 +37,7 @@ var FilterView = Backbone.View.extend({
 
 		var attrVal = $('#industry_drop option:selected').val()
 
-		d3.selectAll('.event')[0].forEach(function(element, i){
+		d3.selectAll('.event, .context-event')[0].forEach(function(element, i){ 
 			
 			var el = d3.select(element)
 				, data = el.data()[0];
@@ -63,16 +61,6 @@ var FilterView = Backbone.View.extend({
 
 		filterActive = true
 
-	},
-
-	rebind : function() {
-		
-		console.log("rebinding")
-
-		this.$el = $('#filter_container')
-		this.delegateEvents()
-
-		console.log("the el is", this.$el)
 	}
 
 })

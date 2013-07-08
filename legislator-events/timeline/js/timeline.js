@@ -711,7 +711,7 @@ function addVotes( data ){
 				.attr('x1', 0)
 				.attr('x2', 0)
 				.attr('y1', 0)
-				.attr('y2', height - 315)
+				.attr('y2', height - 320)
 				.style("stroke-opacity", 0)
 				.style("stroke-width", 1)
 				.style("stroke", "indigo")
@@ -825,7 +825,7 @@ function addContextBills( data ){
 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",15)"; })
 
 	 event_.append('rect')
-		.attr("width", 8)
+		.attr("width", 6)
 		.attr("height", 2)
 		.attr("class", "context-sponsored")
 		.style("fill", "steelblue")
@@ -852,7 +852,7 @@ function addContextCosponsored ( data ){
 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",25)"; })
 
 	 event_.append('rect')
-		.attr("width", 8)
+		.attr("width", 6)
 		.attr("height", 2)
 		.style("fill", "red")
 		.style("fill-opacity", .5)
