@@ -91,25 +91,6 @@ function update( legisJson, view, funcName, headingModel ){
 			"industryName" : legislatorData["event_attributes"]["campaign_contribution"]["contributor_category_name"].sort()
 		}
 
-		// d3.selectAll('.event')[0].forEach(function(element, i){
-
-		// 	var data = d3.select(element)[0][0].__data__
-		// 		, amount = Number(data.info.amount)
-		// 		, el = d3.select(element);
-
-		// 	if ( data.info.hasOwnProperty('crp_catcode') ){
-		// 		if (data.info[attr] === attrVal ){
-		// 			console.log("got something connected")
-		// 			el.classed('connected', true)
-		// 		} else {
-		// 			el.classed('not-connected', true)
-		// 		}
-		// 	} else {
-		// 		el.classed('not-connected', true)
-		// 	}
-
-		// })
-
 		var legis_data = { 
 			"name" : data.bio.name.official_full,
 			"osid" : data.bio.id.opensecrets,
@@ -124,7 +105,7 @@ function update( legisJson, view, funcName, headingModel ){
 		}
 
 
-
+		// set the data in the models
 		headingModel.set(legis_data)
 		filterModel.set(filterData)
 		view[funcName]()
@@ -417,25 +398,13 @@ function addBills( data ){
 		.attr("width", 40)
 		.attr("height", 15)
 		.attr("class", "event sponsored")
-		//move to css
-		.style("fill", "steelblue")
-		.style("fill-opacity", .5)
-		.style("stroke", "steelblue")
 		.attr("transform", function(d) {
 	         return "rotate(-135)" 
 	     })
 
-	event_.append('svg:line')
-		.attr('x1', 0)
-		.attr('x2', 0)
-		.attr('y1', 0)
-		.attr('y2', 400 )
-		.style("stroke-opacity", 0)
-		.style("stroke-width", 1)
-		.style("stroke", "steelblue")
 
 	event_.on('mouseover', function(d){
-		console.log(d)
+		console.log([d, this] )
 
 		var el = d3.select(this),
 			templateData = templateId(d),
@@ -443,9 +412,18 @@ function addBills( data ){
 			templateSelector = '#' + templateData[0],
 			top = $(this).position().top - 50,
 			left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
-													$(this).position().left + 100			
+													$(this).position().left + 50			
 
 		if ( hoverable && !(filterActive)){
+
+			el.append('svg:line')
+				.attr('x1', 0)
+				.attr('x2', 0)
+				.attr('y1', 0)
+				.attr('y2', height - 140 )
+				.style("stroke-opacity", 0)
+				.style("stroke-width", 1)
+				.style("stroke", "steelblue")
 
 			el.select('line').transition().style("stroke-opacity", 1)
 			el.select('rect').transition().style("fill-opacity", 1)
@@ -468,11 +446,11 @@ function addBills( data ){
 
 	}).on('mouseout', function(d){
 		
-		var g = d3.select(this)
+		var el = d3.select(this)
 
-		g.select('line').transition().style("stroke-opacity", 0)
-		g.select('rect').transition().style("stroke-width", 1)
-		g.classed('hovered', false)
+		el.select('line').transition().style("stroke-opacity", 0).remove()
+		el.select('rect').transition().style("stroke-width", 1)
+		el.classed('hovered', false)
 		removePopup ? $('.event-popup').remove() : null
 
 	}).on('click', function(d){
@@ -541,15 +519,6 @@ function addCosponsored( data ) {
 	         return "rotate(-135)" 
 	     })
 
-	event_.append('svg:line')
-		.attr('x1', 0)
-		.attr('x2', 0)
-		.attr('y1', 0)
-		.attr('y2', 300)
-		.style("stroke-opacity", 0)
-		.style("stroke-width", 1)
-		.style("stroke", "red")
-
 	event_.on('mouseover', function(d){
 
 		var el = d3.select(this)
@@ -558,9 +527,18 @@ function addCosponsored( data ) {
 			, templateSelector = '#' + templateData[0]
 			, top = $(this).position().top - 50
 			, left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
-													$(this).position().left + 100;	
+													$(this).position().left + 50;	
 
 		if ( hoverable && !(filterActive) ){
+
+			el.append('svg:line')
+				.attr('x1', 0)
+				.attr('x2', 0)
+				.attr('y1', 0)
+				.attr('y2', height - 200)
+				.style("stroke-opacity", 0)
+				.style("stroke-width", 1)
+				.style("stroke", "red")
 
 			el.select('line').transition().style("stroke-opacity", 1)
 			el.select('rect').transition().style("fill-opacity", 1)
@@ -587,11 +565,11 @@ function addCosponsored( data ) {
 
 	}).on('mouseout', function(d){
 		
-		var g = d3.select(this)
+		var el = d3.select(this)
 
-		g.select('line').transition().style("stroke-opacity", 0)
-		g.select('rect').transition().style("stroke-width", 1)
-		g.classed('hovered', false)
+		el.select('line').transition().style("stroke-opacity", 0).remove()
+		el.select('rect').transition().style("stroke-width", 1)
+		el.classed('hovered', false)
 		removePopup ? $('.event-popup').remove() : null
 
 	}).on('click', function(d){
@@ -653,7 +631,7 @@ function addSpeeches( data ){
 		.attr('x1', 0)
 		.attr('x2', 0)
 		.attr('y1', 0)
-		.attr('y2', 300)
+		.attr('y2', height - 260)
 		.style("stroke-opacity", 0)
 		.style("stroke-width", 1)
 		.style("stroke", "orange")		
@@ -713,16 +691,20 @@ function addSpeeches( data ){
 
 function addVotes( data ){
 
-	data = _.filter(data, function(datum){ return datum.events[0].event_type === "vote" })
-	data = _.map(data, function(ev){return ev.events[0]})
+	data = _.filter(data, function(datum){ 
+			return datum.events[0].event_type === "vote" 
+		})
+	data = _.map(data, function(ev){ return ev.events[0]} )
 
 	var event_ = focus.selectAll(".vote")
 		.data(data)
 	  .enter().append('svg:g')
 	  	.attr('class', 'event vote')	
-	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",265)"; })	
+	  	.attr("transform", function(d) { 
+	  		return "translate(" + x(d.time * 1000) + ",265)"; 
+	  	})	
 
-	 event_.append('rect')
+	event_.append('rect')
 		.attr("width", 40)
 		.attr("height", 15)
 		.attr("class", "event speech")
@@ -731,63 +713,64 @@ function addVotes( data ){
 		.style("stroke", "indigo")
 		.attr("transform", function(d) {
 	         return "rotate(-135)" 
-	     })
-
-	event_.append('svg:line')
-		.attr('x1', 0)
-		.attr('x2', 0)
-		.attr('y1', 0)
-		.attr('y2', 300)
-		.style("stroke-opacity", 0)
-		.style("stroke-width", 1)
-		.style("stroke", "indigo")
+	    })
 
 	event_.on('mouseover', function(d){
 
-			var el = d3.select(this)
+		var el = d3.select(this)
 
-			el.select('line').transition().style("stroke-opacity", 1)
-			el.select('rect').transition().style("fill-opacity", 1)
-			el.select('rect').transition().style("stroke-width", 3)
+		el.select('line').transition().style("stroke-opacity", 1)
+		el.select('rect').transition().style("fill-opacity", 1)
+		el.select('rect').transition().style("stroke-width", 3)
 
-			var	templateData = templateId(d, legislatorData.bio.id.bioguide)
-				
-			var eventId = '#' + d.event_id,
-				templateSelector = '#' + templateData[0],
-				top = $(this).position().top - 50,
-				left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
-														$(this).position().left + 50
+		var	templateData = templateId(d, legislatorData.bio.id.bioguide)
+			
+		var eventId = '#' + d.event_id,
+			templateSelector = '#' + templateData[0],
+			top = $(this).position().top - 50,
+			left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
+													$(this).position().left + 50
 
-			if ( hoverable ){
+		if ( hoverable ){
 
-				el.classed(d.event_id, true)
-				  .classed('hovered', true)
-				
-				$('.event-popup').remove()
+			el.append('svg:line')
+				.attr('x1', 0)
+				.attr('x2', 0)
+				.attr('y1', 0)
+				.attr('y2', height - 315)
+				.style("stroke-opacity", 0)
+				.style("stroke-width", 1)
+				.style("stroke", "indigo")
 
-				var popup = new PopupView({
-					el : $('body'),
-					model : templateData[1],
-					tmpl : $(templateSelector),
-					top : top,
-					left : left
-				})
+			el.classed(d.event_id, true)
+			  .classed('hovered', true)
+			
+			$('.event-popup').remove()
 
-				console.log("the popup is", popup)
-				
-			}
+			var popup = new PopupView({
+				el : $('body'),
+				model : templateData[1],
+				tmpl : $(templateSelector),
+				top : top,
+				left : left
+			})
 
-		})
-		.on('mouseout', function(d){
-		
-			var g = d3.select(this)
+			console.log("the popup is", popup)
+			
+		}
 
-			g.select('line').transition().style("stroke-opacity", 0)
-			g.select('rect').transition().style("stroke-width", 1)
-			g.classed('hovered', false)
-			removePopup ? $('.event-popup').remove() : null
+	})
+	.on('mouseout', function(d){
+	
+		var el = d3.select(this)
 
-		})
+		el.select('line').transition().style("stroke-opacity", 0)
+		el.select('rect').transition().style("stroke-width", 1)
+		el.classed('hovered', false)
+		removePopup ? $('.event-popup').remove() : null
+
+	})
+
 }
 
 function addContextSpeeches( data ){
