@@ -97,7 +97,8 @@ h2 {
 	height: 30px;
 }
 
-#options_list {
+#filter_container
+ {
 	background-color: white;
 	position: fixed;
 	right: 0px;
@@ -116,16 +117,16 @@ h2 {
 }
 
 .expanded-filter {
-	width: 500px;
+	width: 400px;
 }
 
-#options_list li {
+#filter_container li {
 	display: inline-block;
 	padding: 10px;
 	margin: 0px
 }
 
-#options_list li:hover {
+#filter_container li:hover {
 	background-color: white;
 }
 
@@ -320,6 +321,13 @@ ul {
 	display: inline-block;
 }
 
+.sponsored, .context-sponsored {
+	fill: steelblue;
+	fill-opacity: .5;
+	stroke: steelblue;
+}
+
+
 h3, h5, a {
 	font-family: helvetica;
 }
@@ -381,7 +389,7 @@ a {
 	background-color: white;
 	position: absolute;
 	padding: 15px;
-	border: 1px solid #333;
+	border: 1px solid #555;
 	width: 350px;
 	box-shadow: 0px 2px 10px #ccc;
 	-webkit-transition: all 100ms linear;
