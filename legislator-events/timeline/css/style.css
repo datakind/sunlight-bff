@@ -214,6 +214,13 @@ text:hover {
 	fill-opacity: 1 !important;
 }
 
+.hovering {
+	fill-opacity: 1 !important;
+	stroke-opacity: 1 !important;
+	stroke-width: 3px !important;
+	-webkit-transition: all 250ms linear;
+}
+
 .hidden {
 	display: none !important;
 }
@@ -325,8 +332,29 @@ ul {
 	fill: steelblue;
 	fill-opacity: .5;
 	stroke: steelblue;
+	-webkit-transition: all 150ms linear;
 }
 
+.cosponsored, .context-cosponsored {
+	fill: red;
+	fill-opacity: .5;
+	stroke: red;
+	-webkit-transition: all 150ms linear;
+}
+
+.speech, .context-speech {
+	fill: orange;
+	fill-opacity: .5;
+	stroke: orange;
+	-webkit-transition: all 150ms linear;
+}
+
+.vote, .context-vote {
+	fill: indigo;
+	fill-opacity: .5;
+	stroke: indigo;
+	-webkit-transition: all 150ms linear;
+}
 
 h3, h5, a {
 	font-family: helvetica;

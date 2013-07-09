@@ -27,8 +27,8 @@
 				<div id="options_content">
 					<h5>Filter Events by Industry</h5>
 					<select name="event-type" id="industry_drop">
-						{{#each industryCode}}
-							<option value="{{this}}">{{this}}</option>
+						{{#each crpInfo}}
+							<option value="{{sectorCode}}">{{sectorName}}</option>
 						{{/each}}
 					</select>
 					<button id="industry_filter_button">Filter Events</button>
@@ -167,6 +167,10 @@
 					<div>
 						<h5>amount</h5>
 						<p>${{amount}}</p>
+					</div>
+					<div>
+						<h5>Industry</h5>
+						<p>{{industry}}</p>
 					</div>
 				</div>
 			</div>

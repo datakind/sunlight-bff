@@ -43,18 +43,36 @@ var FilterView = Backbone.View.extend({
 				, data = el.data()[0];
 
 			if (data.hasOwnProperty('info')){
-			if ( data.info.hasOwnProperty('crp_catcode') ||
-				 data.info.hasOwnProperty('contributor_category') ){
-				if ( data.info["crp_catcode"] === attrVal || 
-					 data.info["contributor_category"] === attrVal ){
-						console.log("got something connected")
+
+				if ( data.info.hasOwnProperty('contributor_category') && 
+					 data.info.contributor_category !== undefined ){
+					if ( data.info["contributor_category"].slice(0,2) === attrVal ){
+						console.log("got something connected", el)
 						el.classed('connected', true)
 					} else {
 						el.classed('not-connected', true)
 					}
-				} else {
-					el.classed('not-connected', true)
 				}
+
+				else if ( data.info.hasOwnProperty('crp_catcode') && 
+					 data.info.crp_catcode !== undefined ){
+					if ( data.info["crp_catcode"].slice(0,2) === attrVal ){
+						console.log("got something connected", el)
+						el.classed('connected', true)
+					} else {
+						el.classed('not-connected', true)
+					}
+				}
+
+				else {
+					el.classed('not-connected', true)
+				} 
+			}
+
+			else {
+
+				el.classed('not-connected', true)
+
 			}
 
 		})

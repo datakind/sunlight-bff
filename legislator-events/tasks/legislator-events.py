@@ -23,6 +23,7 @@ class LegisEvents():
         self.legis_name = options["legislator"].lower()
         self.legislator = None
         self.chamber = None
+        self.crp_catcodes = None
         self.events = [
             self.add_terms,
             self.add_sponsored_bills, self.add_parties,
@@ -120,12 +121,13 @@ class LegisEvents():
 
 
     def add_sponsored_bills(self):
+        print "adding sponsored legislation"
         bills = []
         pap_key = None
         #fetch sponosred bills ADD CACHING!
         legis_id = self.legislator["id"]["govtrack"]
         sponsored_url = ('http://www.govtrack.us/api/v2/bill?sponsor=%s'
-                         '&limit=1000') % legis_id
+                         '&limit=600') % legis_id
         r = requests.get(sponsored_url)
         self.sponsored_bills = r.json()
 
@@ -451,6 +453,7 @@ class LegisEvents():
         codes = csv.reader(open('cached/catcodes.csv', 'rb'))
         rows = [ row for row in codes ]
         d = dict(  ( v[1], [ v[2], v[3], v[4] ] ) for v in rows )
+        self.crp_catcodes = d
 
         for cycle in legis_cycles:
             print "adding contribution"
@@ -763,7 +766,8 @@ def run(options):
     final_dict = {
         "data" : events_list, 
         "bio" : legis.legislator,
-        "event_attributes" : legis.event_attributes
+        "event_attributes" : legis.event_attributes,
+        "crp_catcodes" : legis.crp_catcodes
     }
 
     filename = './data/%s.json' % legis.legis_name.replace(" ", "_")
