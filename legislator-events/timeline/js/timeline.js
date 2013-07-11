@@ -88,7 +88,8 @@ function update( legisJson, view, funcName, headingModel ){
 			   committeeAssignments = _.map(committeeAssignments, function(ev){ return ev.events[0] })
 
 		var crpCodes = legislatorData.crp_catcodes
-		window.catInfo = { "crpInfo" : [] }
+			, catInfo = { "crpInfo" : [] }
+			, sectors;
 		
 		for ( key in crpCodes ) {
 			catInfo.crpInfo.push({
@@ -99,6 +100,12 @@ function update( legisJson, view, funcName, headingModel ){
 				"sectorName" : crpCodes[key][1]
 			})
 		}
+
+		sectors = _.uniq(_.pluck(catInfo.crpInfo, "sectorName"))
+		sectors = _.map(sectors, function(sector){ 
+			return _.findWhere(catInfo.crpInfo, {sectorName: sector});
+		})
+		catInfo.crpInfo = sectors.sort(compare)
 
 		var legis_data = {
 			"name" : data.bio.name.official_full,
@@ -235,23 +242,59 @@ function brushed() {
 
 	if ( filterActive ){
 
-		d3.selectAll(filterSelector)[0].forEach(function(element, i){
+		// d3.selectAll(filterSelector)[0].forEach(function(element, i){
 		
-			var data = d3.select(element)[0][0].__data__
-				, amount = Number(data.info.amount)
-				, el = d3.select(element);
+		// 	var data = d3.select(element)[0][0].__data__
+		// 		, amount = Number(data.info.amount)
+		// 		, el = d3.select(element);
 
-			if ( data.info.hasOwnProperty(attr) ){
-				if (data.info[attr] === attrVal ){
-					el.classed('connected', true)
-				} else {
-					el.classed('not-connected', true)	
+		// 	if ( data.info.hasOwnProperty(attr) ){
+		// 		if (data.info[attr] === attrVal ){
+		// 			el.classed('connected', true)
+		// 		} else {
+		// 			el.classed('not-connected', true)	
+		// 		}
+		// 	} else {
+		// 		el.classed('not-connected', true)
+		// 	}
+
+		// })
+		var attrVal = $('#industry_drop option:selected').val()
+		
+		d3.selectAll('.event, .context-event')[0].forEach(function(element, i){ 
+			var el = d3.select(element)
+				, data = el.data()[0];
+
+			if (data.hasOwnProperty('info')){
+				if ( data.info.hasOwnProperty('contributor_category') && 
+					 data.info.contributor_category !== undefined ){
+					if ( data.info["contributor_category"].slice(0,2) === attrVal ){
+						console.log("got something connected", el)
+						el.classed('connected', true)						
+					} else {
+						el.classed('not-connected', true)
+					}
 				}
-			} else {
-				el.classed('not-connected', true)
-			}
+				else if ( data.info.hasOwnProperty('crp_catcode') && 
+					 data.info.crp_catcode !== undefined ){
+					if ( data.info["crp_catcode"].slice(0,2) === attrVal ){
+						console.log("got something connected", el)
+						el.classed('connected', true)
 
-		})
+					} else {
+						el.classed('not-connected', true)
+					}
+				}
+				else {
+					el.classed('not-connected', true)
+				} 
+			}
+			else {
+
+				el.classed('not-connected', true)
+
+			}
+		})	
 
 	}
 
@@ -343,7 +386,7 @@ function addContributions( data ){
 			
 			d3.select(this).classed('selected', true)
 
-			hoverable = false
+			// hoverable = false
 			removePopup = false
 
 			$('.event-popup').addClass('expanded')
@@ -425,7 +468,7 @@ function addBills( data ){
 			left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
 													$(this).position().left + 50;
 
-		if ( hoverable && !(filterActive) ){
+		if ( hoverable ){
 
 			el.append('svg:line')
 				.attr('x1', 0)
@@ -526,7 +569,7 @@ function addCosponsored( data ) {
 			, left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
 													$(this).position().left + 50;	
 
-		if ( hoverable && !(filterActive) ){
+		if ( hoverable ){
 
 			el.append('svg:line')
 				.attr('x1', 0)
@@ -586,7 +629,7 @@ function addCosponsored( data ) {
 	
 		d3.select(this).classed('selected', true)
 		
-		hoverable = false
+		// hoverable = false
 		removePopup = false
 
 		$('.event-popup').addClass('expanded')
@@ -641,7 +684,7 @@ function addSpeeches( data ){
 			left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
 													$(this).position().left + 50
 
-		if ( hoverable && !(filterActive) ){
+		if ( hoverable ){
 
 			el.append('svg:line')
 				.attr('x1', 0)
@@ -694,6 +737,22 @@ function addSpeeches( data ){
 		removePopup ? $('.event-popup').remove() : null
 
 	})
+	.on('click', function(d){
+	
+		d3.select(this).classed('selected', true)
+		
+		hoverable = false
+		removePopup = false
+
+		$('.event-popup').addClass('expanded')
+		$('.hidden-content').removeClass('hidden-content')
+
+		var expanded = new ExpandedView({
+			el : '#popup_content_container',
+			model : d
+		})
+	})
+
 }
 
 function addVotes( data ){
@@ -734,7 +793,7 @@ function addVotes( data ){
 			left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
 													$(this).position().left + 50
 
-		if ( hoverable && !(filterActive) ){
+		if ( hoverable ){
 
 			el.append('svg:line')
 				.attr('x1', 0)
@@ -1093,7 +1152,7 @@ function addCircles( data ) {
 			
 			d3.select(this).classed('selected', true)
 
-			hoverable = false
+			// hoverable = false
 			removePopup = false
 
 			$('.event-popup').addClass('expanded')
@@ -1327,6 +1386,19 @@ var addAttributeFilter = {
 
 	}
 
+}
+
+function compare(a,b) {
+  if (a.sectorName < b.sectorName){
+  	 return -1;
+  }
+  else if (a.sectorName > b.sectorName){
+  	return 1;
+  }
+  else{
+  	return 0;	
+  }
+  
 }
 
 function lowerUnderToUpperSpace( string ){

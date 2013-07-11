@@ -36,7 +36,8 @@ var FilterView = Backbone.View.extend({
 	filterIndustry : function() {
 
 		var attrVal = $('#industry_drop option:selected').val()
-
+		hoverable = true
+		
 		d3.selectAll('.event, .context-event')[0].forEach(function(element, i){ 
 			
 			var el = d3.select(element)
@@ -48,7 +49,7 @@ var FilterView = Backbone.View.extend({
 					 data.info.contributor_category !== undefined ){
 					if ( data.info["contributor_category"].slice(0,2) === attrVal ){
 						console.log("got something connected", el)
-						el.classed('connected', true)
+						el.classed('connected', true)						
 					} else {
 						el.classed('not-connected', true)
 					}
@@ -59,6 +60,7 @@ var FilterView = Backbone.View.extend({
 					if ( data.info["crp_catcode"].slice(0,2) === attrVal ){
 						console.log("got something connected", el)
 						el.classed('connected', true)
+						
 					} else {
 						el.classed('not-connected', true)
 					}
@@ -198,6 +200,15 @@ var PopupView = Backbone.View.extend({
 		$('body').append( template(this.model) )
 		$(eventId).css({ top : this.options.top, left : this.options.left })
 
+	},
+
+	events : {
+		"click #whiteout" : "removePopup"
+	},
+
+	removePopup : function() {
+		console.log("trying to remove")
+		$('#whiteout, .event-popup').remove()
 	}
 
 });
@@ -211,23 +222,27 @@ var ExpandedView = Backbone.View.extend({
 	},
 
 	render : function(){
-
-		var source = $('#campaign_contribution_details').html(),
-			template = Handlebars.compile( source )
-		
-		if ( this.model.info.contributor_type === "C" ){
-			this.model.info.contribotor_type = "Corporate"
+		if ( this.model.event_type === "received_campaign_contribution" ) {
+			var source = $('#campaign_contribution_details').html(),
+				template = Handlebars.compile( source )
+			
+			if ( this.model.info.contributor_type === "C" ){
+				this.model.info.contribotor_type = "Corporate"
+			} else {
+				this.model.info.contributor_type = "Individual"
+				this.model.info.contributor_name = fixContributorName(this.model.info.contributor_name)
+				this.model.info.contributor_string = this.model.info.contributor_name.replace(/ /g, "")
+			}
 		} else {
-			this.model.info.contributor_type = "Individual"
-			this.model.info.contributor_name = fixContributorName(this.model.info.contributor_name)
-			this.model.info.contributor_string = this.model.info.contributor_name.replace(/ /g, "")
+			var source = $('#speech_details').html(),
+				template = Handlebars.compile( source )
 		}
 
+		$('body').append('<div id="whiteout"</div>')
 		this.$el.html( template( this.model.info ))
 
 	},
 
-	events : {
+	events : {}
 
-	}
 })

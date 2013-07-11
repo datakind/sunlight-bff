@@ -58,6 +58,8 @@ class LegisEvents():
         if not os.path.exists('data'):
             os.makedirs('data')
 
+        print "add biographical data from https://github.com/unitedstates/congress-legislators"
+
         # creates the current legislators yaml and cached folder 
         # if they don't already exist.
         if not os.path.exists('cached/legislators-current.yaml'):
@@ -86,7 +88,7 @@ class LegisEvents():
 
         try:
             self.legislator["name"]
-            print self.legislator["id"]
+            # print self.legislator["id"]
         except Exception:
             print ('Sorry, not a recognized legislator.  Please'
                     ' try ./run list-legislators to see available legislators')
@@ -121,7 +123,7 @@ class LegisEvents():
 
 
     def add_sponsored_bills(self):
-        print "adding sponsored legislation"
+        print "adding sponsored legislation from Govtrack.us api"
         bills = []
         pap_key = None
         #fetch sponosred bills ADD CACHING!
@@ -131,6 +133,7 @@ class LegisEvents():
         r = requests.get(sponsored_url)
         self.sponsored_bills = r.json()
 
+        print "adding PAP/CRP metadata to sponsored bills"
         for bill in self.sponsored_bills['objects']:
             #add the crp_apa crosswalk attributes to the bill object
             bill = dict(crp_dict.items() + bill.items())
@@ -147,8 +150,11 @@ class LegisEvents():
                 bill["major_topic"] = ""
                 bill["minor_topic"] = ""
 
+            maj = bill['major_topic']
+            min = bill['minor_topic']
             for row in self.crp_pap_crosswalk:
-                if bill['major_topic'] == row[3] and bill['minor_topic'] == row[4]:
+                if pap_topic_subtopic([maj, min], [row[3], row[4], row[6], row[7], row[8]]):
+                    # print "got a crp industry"
                     bill['crp_catcode'] = row[0]
                     bill['crp_catname'] = row[1]
                     bill['crp_description'] = row[2]
@@ -205,6 +211,7 @@ class LegisEvents():
 
 
     def add_cosponsored_bills(self):
+        print "adding cosponsored bills from Sunlight Congress api"
         cosponsored_bills = []
         pap_key = None
         #make initial request to get number of cosponsored bills
@@ -219,6 +226,7 @@ class LegisEvents():
             cosponsored_bills.append(result)
         
         #this should probably use generators
+        print "adding CRP/PAP metadata to cosponsored bills"
         while page <= total_pages:
             cosponsor_url = ('http://congress.api.sunlightfoundation.com/'
                              'bills?cosponsor_ids__all=%s&per_page=50'
@@ -246,9 +254,11 @@ class LegisEvents():
                 cs["major_topic"] = ""
                 cs["minor_topic"] = ""
 
+            maj = cs['major_topic']
+            min = cs['minor_topic']
             for row in self.crp_pap_crosswalk:
-                if cs['major_topic'] == row[3] and cs['minor_topic'] == row[4]:
-                    print "gots a cs topic"
+                if pap_topic_subtopic([maj, min], [row[3], row[4], row[6], row[7], row[8]]):                    
+                    # print "gots a cs topic"
                     cs['crp_catcode'] = row[0]
                     cs['crp_catname'] = row[1]
                     cs['crp_description'] = row[2]
@@ -279,6 +289,7 @@ class LegisEvents():
 
 
     def add_committee_memberships(self):
+        print "adding committee memberships from Charles Stewart committee data"
         # GIST MAPPING CURRENT MEMBERS OF CONGRESS' ICPSR NO'S TO
         # BIOGUIDE IDS https://gist.github.com/konklone/1642406        
         if not os.path.exists('cached/icpsr_to_bioguide.csv'):
@@ -389,7 +400,7 @@ class LegisEvents():
                             "info" : u_date_list, 
                             "event_id" : str(uuid.uuid4()) 
                         }
-                    print ("adding committee")
+                    # print ("adding committee")
                     self.legis_list.append(committee_assignment)
 
         elif self.chamber == "sen":
@@ -440,7 +451,9 @@ class LegisEvents():
 
     def add_campaign_contributions(self):
         """hit the influence explorer api"""
-        
+
+        print "adding campaign contribution data from Sunlight Influence Explorer api"
+
         contributions = []
         contribution_events = []
         legis_cycles = []
@@ -456,7 +469,6 @@ class LegisEvents():
         self.crp_catcodes = d
 
         for cycle in legis_cycles:
-            print "adding contribution"
             contribution_url = ('http://transparencydata.com/api/1.0/contribution'
                                 's.json?apikey=7ed8089422bd4022bb9c236062377c5b'
                                 '&recipient_ft=%s&cycle=%s') % ( name, cycle )                                
@@ -568,6 +580,7 @@ class LegisEvents():
         #http://www.opensecrets.org/MyOS/download.php?f=Lobby.zip
 
     def add_speeches(self):
+        print "adding speech data from Sunlight Capitol Words api"
         speeches = []
         #make initial request to get number of cosponsored bills
         speeches_url = ('http://capitolwords.org/api/1/text.json?'
@@ -580,10 +593,9 @@ class LegisEvents():
         page = 2
         for result in res.json()["results"]:
             speeches.append(result)
-        
+
         #this should probably use generators
         while page <= total_pages:
-            print "adding speeches"
             speeches_url = ('http://capitolwords.org/api/1/text.json?'
                         'bioguide_id=%s&per_page=50&page=%s'
                         '&apikey=7ed8089422bd4022bb9c236062377'
@@ -611,10 +623,14 @@ class LegisEvents():
                         bill["major_topic"] = ""
                         bill["minor_topic"] = ""
 
+                    # for row in self.crp_pap_crosswalk:
+                    #     if (bill['major_topic'] == row[3] and
+                    #         bill['minor_topic'] == row[4]):
+                    maj = bill['major_topic']
+                    min = bill['minor_topic']
                     for row in self.crp_pap_crosswalk:
-                        if (bill['major_topic'] == row[3] and
-                            bill['minor_topic'] == row[4]):
-                            print "got a speech bill topic for bill %r" % pap_key
+                        if pap_topic_subtopic([maj, min], [row[3], row[4], row[6], row[7], row[8]]):
+                            # print "got a speech bill topic for bill %r" % pap_key
                             bill['crp_catcode'] = row[0]
                             bill['crp_catname'] = row[1]
                             bill['crp_description'] = row[2]
@@ -640,11 +656,13 @@ class LegisEvents():
             }
             self.legis_list.append(speech)
 
+        print "adding CRP/PAP metadata to speeches"
         # speeches = [ prep_speech(speech) for speech in speeches ]
         # filtered = dict( (key, list(set([speech[key] for speech in speeches]))) for key in speeches[0].keys() )
         # self.event_attributes["speeches"] = filtered
 
     def add_votes(self):
+        print "adding vote data from Sunlight Congress api"
         votes = []
         #make initial request to get number of cosponsored bills
         votes_url = ('http://congress.api.sunlightfoundation'
@@ -661,7 +679,7 @@ class LegisEvents():
         
         # this should probably use generators
         while page <= total_pages:
-            print "adding votes"
+            # print "adding votes"
             votes_url = ('http://congress.api.sunlightfoundation.com'
                          '/votes?&fields=bill,voters.%s,voted_at&per_page=50'
                          '&page=%s&apikey=7ed8089422bd4022bb9c2360623'
@@ -708,10 +726,11 @@ class LegisEvents():
 
                 # iterate through the crosswalk and look for rows that match
                 # bill's major and minor topic
+                maj = v['major_topic']
+                min = v['minor_topic']
                 for row in self.crp_pap_crosswalk:
-                    if (v['major_topic'] == row[3] and 
-                        v['minor_topic'] == row[4]):
-                        print "gots a vote topic with pap code %r %r %r" % ( pap_key, row[3], v['major_topic'])
+                    if pap_topic_subtopic([maj, min], [row[3], row[4], row[6], row[7], row[8]]):
+                        # print "gots a vote topic with pap code %r %r %r" % ( pap_key, row[3], v['major_topic'])
                         v['crp_catcode'] = row[0]
                         v['crp_catname'] = row[1]
                         v['crp_description'] = row[2]
@@ -736,6 +755,7 @@ class LegisEvents():
                 }
                 self.legis_list.append(vote)
 
+        print "adding CRP/PAP metadata to votes"
         # speeches = [ prep_speech(speech) for speech in speeches ]
         # filtered = dict( (key, list(set([speech[key] for speech in speeches]))) for key in speeches[0].keys() )
         # self.event_attributes["speeches"] = filtered
@@ -754,6 +774,8 @@ def run(options):
     times = [ obj["time"] for obj in legis.legis_list ]
     unique_times = list(set(times))
     events_list = []
+
+    print "ordering events"
 
     for time in unique_times:
         time_list = []        
@@ -774,6 +796,8 @@ def run(options):
     
     with IO.open(filename, 'wb') as outfile:
       json.dump(final_dict, outfile)
+
+    print "done!"
 
 
 def prepBills(bill):
@@ -840,6 +864,16 @@ def prep_speech(speech):
 
     return speech
 
+def pap_topic_subtopic(maj_min, topics):
+    if maj_min[0] == topics[0]:
+        if (maj_min[1] == topics[1] or 
+            maj_min[1] == topics[2] or 
+            maj_min[1] == topics[3] or 
+            maj_min[1] == topics[4]):
+            return True
+        else: 
+            return False
+
 crp_dict = {
     'crp_catcode' : '',
     'crp_catname' : '',
@@ -856,3 +890,4 @@ crp_dict = {
     "major_topic" : '',
     "minor_topic" : '',
 }
+

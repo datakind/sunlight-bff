@@ -44,7 +44,7 @@ $(document).ready(function(){
 
 	$('body').on('click', 'svg', function(ev){
 		
-		if ( !($(ev.target).is('circle')) ){
+		if ( !(($(ev.target).is('circle')) || !($(ev.target).hasClass('speech'))) ){
 			
 			hoverable = !hoverable;
 			removePopup = !removePopup;
