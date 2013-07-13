@@ -328,6 +328,35 @@ ul {
 	display: inline-block;
 }
 
+#popup_content_container,  
+#popup_content_container #contribution_top {
+	width: 100%;
+	margin: 0px;
+	display: block;
+}
+
+#popup_content_container #contribution_top div {
+	display: inline-block;
+}
+
+#popup_content_container #contributor_img {
+	width: 15%;
+}
+
+#popup_content_container #contributor_search_span a {
+	color:gray;
+	text-decoration: underline;
+	font-size: 12px;
+}
+
+.contribution-details {
+	width: 60%;
+}
+
+.contribution-details a {
+	font-size: 24px;
+}
+
 .sponsored, .context-sponsored {
 	fill: steelblue;
 	fill-opacity: .5;

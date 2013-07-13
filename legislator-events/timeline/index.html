@@ -179,9 +179,15 @@
 		</script>
 
 		<script id="campaign_contribution_details" type="x-handlebars-template">
-			<div>
-				<h5>donor</h5> 
-				<a href="#" class="contributor-name {{contributor_string}}">{{contributor_name}}</a>
+			<div id="contribution_top">
+				<img id="contributor_img" src="http://14ddv.com/wp-content/uploads/2012/05/person_placeholder-Copy.png"/>
+				<div class="contribution-details">
+					<h5>name</h5>
+					<a href="#" class="contributor-name {{contributor_ext_id}}">{{contributor_name}}</a>
+					<span id="contributor_search_span"><a href="{{searchString}}" target="_blank">web search</a></span>
+					<h5>category name</h5>
+					<a href="#" class="contributor-category {{info.contributor_category}}">{{contributor_category_industry}}</a>
+				</div>
 			</div>		
 			<div>
 				<h5>amount</h5>
@@ -189,7 +195,7 @@
 			</div>
 			<div>
 				<h5>type</h5> 
-				<p>{{contributor_type}}</p>
+				<p>{{info.contributor_type}}</p>
 			</div>
 			<div>
 				<h5>cycle</h5> 

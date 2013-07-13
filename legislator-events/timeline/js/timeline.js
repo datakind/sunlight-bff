@@ -349,7 +349,7 @@ function addContributions( data ){
       })
       .style("stroke", "green")
 		.on('mouseover', function(d){
-			// console.log(d)
+			console.log(d)
 			var el = d3.select(this),
 				templateData = templateId(d),
 				eventId = '#' + d.event_id,
@@ -396,6 +396,9 @@ function addContributions( data ){
 
 			$('.event-popup').addClass('expanded');
 			$('.hidden-content').removeClass('hidden-content');
+
+			d.info.searchString = 'https://www.google.com/search?q=pizza'; 
+			d.info.imageString;
 
 			var expanded = new ExpandedView({
 				el : '#popup_content_container',
@@ -462,7 +465,7 @@ function addBills( data ){
 	     })
 
 	event_.on('mouseover', function(d){
-		console.log([d, this] )
+		console.log(d)
 
 		var el = d3.select(this),
 			templateData = templateId(d),
