@@ -3,95 +3,55 @@ $(document).ready(function(){
 	window.removePopup = true;
 	window.hoverable = true;
 	window.mousePos = undefined;
+	window.filterActive = false;
+	
 	window.filterModel = new FilterModel();
-
 	var headingModel = new HeadingModel()
 		, headingView = new HeadingView({
 			el : '#top_bar',
 			model : headingModel
 		})
-	
-	window.filterView = new FilterView({
+		, filterView = new FilterView({
 			el : '#filter_container',
 			model : filterModel
 		});
 
-	// $('body').on('click', '#filter_img', function(){
-		
-	// 	var filter = $(this).parent();
-
-	// 	if ( filter.hasClass('expanded-filter') ){
-	// 		filter.removeClass('expanded-filter');
-	// 		$('#options_content').empty();
-	// 	} else {
-	// 		filter.addClass('expanded-filter');
-	// 		options.filter_li();
-	// 	}
-	
-	// })
-
-	$('#filter').click(function(){
-		
-		toggleFilter();
-
-	})
-
 	$(document).mousemove(function(e){
-
       mousePos = [e.pageX, e.pageY]
-
    	});
 
+	// remove filter on body click
 	$('body').on('click', 'svg', function(ev){
-		
-		if ( !(($(ev.target).is('circle')) || !($(ev.target).hasClass('speech'))) ){
-			
-			hoverable = !hoverable;
-			removePopup = !removePopup;
-
-			$('.event-popup').remove();
-
-			d3.select('.selected')
-				.classed('selected', false);
-
-			d3.selectAll('.not-connected')
-				.classed('not-connected', false);
-
-			d3.selectAll('.connected')
-				.classed('connected', false);
-
-			filterActive = false;
-
-		}
-
+		var isEvent = d3.select(ev.target).classed('event')
+		if ( filterActive && !(isEvent) ) removeFilter()
 	});
 
-	$('body').on('click', '.contributor-name', function(ev){		
+	// $('body').on('click', '.contributor-name', function(ev){		
 		
-		ev.preventDefault();
-		var targetName = $(ev.target).attr('class').split(" ")[1];
+	// 	ev.preventDefault();
+	// 	var targetName = $(ev.target).attr('class').split(" ")[1];
 
-		// REFACTOR
-		d3.selectAll('.context-container .recieved')[0].forEach(function(circle, i){		
+	// 	// REFACTOR
+	// 	d3.selectAll('.context-container .recieved')[0].forEach(function(circle, i){		
 
-			var data = d3.select(circle)[0][0].__data__,
-				stripped = data.info.contributor_name.replace(/ /g, ""),
-				el = d3.select(circle)
+	// 		var data = d3.select(circle)[0][0].__data__,
+	// 			stripped = data.info.contributor_name.replace(/ /g, ""),
+	// 			el = d3.select(circle)
 
-			if ( stripped !== targetName ){
-				el.classed('not-connected', true)
-			} else {
-				console.log("the stripped name is", stripped)
-				console.log("the target name is", targetName)
-				el.classed('connected', true)
-				el.attr('r', function(){
-					return d3.select(this).attr('r') * 5
-				})
-				console.log(data)
-			}
+	// 		if ( stripped !== targetName ){
+	// 			el.classed('not-connected', true)
+	// 		} else {
+	// 			console.log("the stripped name is", stripped)
+	// 			console.log("the target name is", targetName)
+	// 			el.classed('connected', true)
+	// 			el.attr('r', function(){
+	// 				return d3.select(this).attr('r') * 5
+	// 			})
+	// 			console.log(data)
+	// 		}
 
-		})
-	})
+	// 	})
+	// })
 
 	// $('body').on('click', '#key_li, #filter_li', function(){
 	// 	toggleOption($(this))
