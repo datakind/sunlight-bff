@@ -17,6 +17,7 @@ var FilterView = Backbone.View.extend({
 	events : {
 		'click #filter_img' : 'toggleFilter',
 		'click #industry_filter_button' : 'filterIndustry'
+		// 'click body' : 'removeFilter'
 	},
 
 	toggleFilter : function() {
@@ -33,6 +34,7 @@ var FilterView = Backbone.View.extend({
 		}
 	},
 
+	//REFACTORRRR!
 	filterIndustry : function() {
 
 		var attrVal = $('#industry_drop option:selected').val()
@@ -81,6 +83,23 @@ var FilterView = Backbone.View.extend({
 
 		filterActive = true
 
+	},
+
+	removeFilter : function() {
+		console.log('trying to filter')
+		if ( filterActive ){
+			console.log('removing filter')
+			d3.select('.selected')
+				.classed('selected', false);
+
+			d3.selectAll('.not-connected')
+				.classed('not-connected', false);
+
+			d3.selectAll('.connected')
+				.classed('connected', false);
+
+			filterActive = false;
+		}
 	}
 
 })
@@ -163,7 +182,7 @@ var HeadingView = Backbone.View.extend({
 			})
 			$('#info, #filter_container, .event-labels').show()
 			this.$el.find('#hgroup').hide()
-			console.log('SHOWING')
+
 		} else {
 			$('#info, #filter_container, .event-labels').hide()
 			this.$el.find('#hgroup').show()
@@ -184,22 +203,17 @@ var HeadingView = Backbone.View.extend({
 
 var PopupView = Backbone.View.extend({
 	
-
 	initialize : function(){
-
 		this.render()
-
 	},
 
 	render : function(){
-
 		var source = $(this.options.tmpl).html(),
 			template = Handlebars.compile( source ),
 			eventId = '#' + this.model.id
 
 		$('body').append( template(this.model) )
 		$(eventId).css({ top : this.options.top, left : this.options.left })
-
 	},
 
 	events : {
@@ -207,8 +221,8 @@ var PopupView = Backbone.View.extend({
 	},
 
 	removePopup : function() {
-		console.log("trying to remove")
-		$('#whiteout, .event-popup').remove()
+		$('#whiteout, .event-popup').remove();
+		removePopup = true;
 	}
 
 });

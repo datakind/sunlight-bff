@@ -216,6 +216,21 @@ function compare( a, b ) {
 	return 0;
 }
 
+function removeFilter() {
+
+	d3.select('.selected')
+		.classed('selected', false);
+
+	d3.selectAll('.not-connected')
+		.classed('not-connected', false);
+
+	d3.selectAll('.connected')
+		.classed('connected', false);
+
+	filterActive = false;
+	
+}
+
 function brushed() {
 
 	d3.selectAll('.event').remove()
@@ -334,9 +349,7 @@ function addContributions( data ){
       })
       .style("stroke", "green")
 		.on('mouseover', function(d){
-
-			console.log("the d is", d)
-			
+			// console.log(d)
 			var el = d3.select(this),
 				templateData = templateId(d),
 				eventId = '#' + d.event_id,
@@ -345,26 +358,20 @@ function addContributions( data ){
 				left = $(this).position().left >= 800 ? $(this).position().left - 400 - (d.r/2) : 
 														$(this).position().left + 50 + (d.r/2)
 
-			if ( hoverable ){
+			el.classed(d.event_id, true)
+			  .classed('hovered', true)
+			
+			$('.event-popup').remove()
 
-				el.classed(d.event_id, true)
-				  .classed('hovered', true)
-				
-				$('.event-popup').remove()
-
-				var popup = new PopupView({
-					el : $('body'),
-					model : templateData[1],
-					tmpl : $(templateSelector),
-					top : top,
-					left : left
-				})
-				
-			}
-
+			var popup = new PopupView({
+				el : $('body'),
+				model : templateData[1],
+				tmpl : $(templateSelector),
+				top : top,
+				left : left
+			})
 		})
 		.on('mouseout', function(){
-
 			removePopup ? $('.event-popup').remove() : null
 			
 			d3.select(this.parentNode.parentNode)
@@ -382,22 +389,19 @@ function addContributions( data ){
 			// }
 
 		})
-		.on('click', function(d){
+		.on('click', function(d){			
+			d3.select(this).classed('selected', true);
 			
-			d3.select(this).classed('selected', true)
+			removePopup = false;
 
-			// hoverable = false
-			removePopup = false
-
-			$('.event-popup').addClass('expanded')
-			$('.hidden-content').removeClass('hidden-content')
+			$('.event-popup').addClass('expanded');
+			$('.hidden-content').removeClass('hidden-content');
 
 			var expanded = new ExpandedView({
 				el : '#popup_content_container',
 				model : d
-			})
-		})
-
+			});
+		});
 }
 
 function addContextContribution( data ){
@@ -468,47 +472,43 @@ function addBills( data ){
 			left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
 													$(this).position().left + 50;
 
-		if ( hoverable ){
+		el.append('svg:line')
+			.attr('x1', 0)
+			.attr('x2', 0)
+			.attr('y1', 0)
+			.attr('y2', height - 140 )
+			.style("stroke-opacity", 0)
+			.style("stroke", "steelblue")
 
-			el.append('svg:line')
-				.attr('x1', 0)
-				.attr('x2', 0)
-				.attr('y1', 0)
-				.attr('y2', height - 140 )
-				.style("stroke-opacity", 0)
-				.style("stroke", "steelblue")
-
-			el.append('svg:text')
-				.text(function(d){
-					return formatEventDate(new Date(Number(d.time) * 1000))
-				})
-				.attr('x', function(d){
-					return -this.getComputedTextLength()/2
-				})
-				.attr('y', height - 115)
-				.attr('class', 'event-date')
-				.style('font-family', 'helvetica')
-				.style('font-size', '12px')
-				.style('fill', 'steelblue')
-				.style('fill-opacity', 1)
-
-			el.select('line').transition().style("stroke-opacity", 1);
-			el.select('rect').classed('hovering', true);
-
-			el.classed(d.event_id, true)
-			  .classed('hovered', true)
-			
-			$('.event-popup').remove()
-
-			var popup = new PopupView({
-				el : $('body'),
-				model : templateData[1],
-				tmpl : $(templateSelector),
-				top : top,
-				left : left
+		el.append('svg:text')
+			.text(function(d){
+				return formatEventDate(new Date(Number(d.time) * 1000))
 			})
-			
-		}
+			.attr('x', function(d){
+				return -this.getComputedTextLength()/2
+			})
+			.attr('y', height - 115)
+			.attr('class', 'event-date')
+			.style('font-family', 'helvetica')
+			.style('font-size', '12px')
+			.style('fill', 'steelblue')
+			.style('fill-opacity', 1)
+
+		el.select('line').transition().style("stroke-opacity", 1);
+		el.select('rect').classed('hovering', true);
+
+		el.classed(d.event_id, true)
+		  .classed('hovered', true)
+		
+		$('.event-popup').remove()
+
+		var popup = new PopupView({
+			el : $('body'),
+			model : templateData[1],
+			tmpl : $(templateSelector),
+			top : top,
+			left : left
+		})
 
 	}).on('mouseout', function(d){
 		
@@ -524,7 +524,7 @@ function addBills( data ){
 	
 		d3.select(this).classed('selected', true)
 		
-		hoverable = false
+		// hoverable = false
 		removePopup = false
 
 		$('.event-popup').addClass('expanded')
@@ -567,9 +567,7 @@ function addCosponsored( data ) {
 			, templateSelector = '#' + templateData[0]
 			, top = $(this).position().top - 50
 			, left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
-													$(this).position().left + 50;	
-
-		if ( hoverable ){
+													$(this).position().left + 50;
 
 			el.append('svg:line')
 				.attr('x1', 0)
@@ -608,12 +606,6 @@ function addCosponsored( data ) {
 				top : top,
 				left : left
 			})
-			
-		} else {
-
-			console.log("filteractive is", filterActive)
-
-		}
 
 	}).on('mouseout', function(d){
 		
@@ -628,8 +620,6 @@ function addCosponsored( data ) {
 	}).on('click', function(d){
 	
 		d3.select(this).classed('selected', true)
-		
-		// hoverable = false
 		removePopup = false
 
 		$('.event-popup').addClass('expanded')
@@ -684,46 +674,44 @@ function addSpeeches( data ){
 			left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
 													$(this).position().left + 50
 
-		if ( hoverable ){
 
-			el.append('svg:line')
-				.attr('x1', 0)
-				.attr('x2', 0)
-				.attr('y1', 0)
-				.attr('y2', height - 260)
-				.style("stroke-opacity", 0)
-				.style("stroke", "orange")
+		el.append('svg:line')
+			.attr('x1', 0)
+			.attr('x2', 0)
+			.attr('y1', 0)
+			.attr('y2', height - 260)
+			.style("stroke-opacity", 0)
+			.style("stroke", "orange")
 
-			el.append('svg:text')
-				.text(function(d){
-					return formatEventDate(new Date(Number(d.time) * 1000))
-				})
-				.attr('x', function(d){
-					return -this.getComputedTextLength()/2
-				})
-				.attr('y', height - 235)
-				.attr('class', 'event-date')
-				.style('font-family', 'helvetica')
-				.style('font-size', '12px')
-				.style('fill', 'orange')
-				.style('fill-opacity', 1)
+		el.append('svg:text')
+			.text(function(d){
+				return formatEventDate(new Date(Number(d.time) * 1000))
+			})
+			.attr('x', function(d){
+				return -this.getComputedTextLength()/2
+			})
+			.attr('y', height - 235)
+			.attr('class', 'event-date')
+			.style('font-family', 'helvetica')
+			.style('font-size', '12px')
+			.style('fill', 'orange')
+			.style('fill-opacity', 1)
+	
+		el.select('line').transition().style("stroke-opacity", 1)
+		el.select('rect').classed('hovering', true);
+
+		el.classed(d.event_id, true)
+		  .classed('hovered', true)
 		
-			el.select('line').transition().style("stroke-opacity", 1)
-			el.select('rect').classed('hovering', true);
+		$('.event-popup').remove()
 
-			el.classed(d.event_id, true)
-			  .classed('hovered', true)
-			
-			$('.event-popup').remove()
-
-			var popup = new PopupView({
-				el : $('body'),
-				model : templateData[1],
-				tmpl : $(templateSelector),
-				top : top,
-				left : left
-			})	
-		}
+		var popup = new PopupView({
+			el : $('body'),
+			model : templateData[1],
+			tmpl : $(templateSelector),
+			top : top,
+			left : left
+		})
 
 	})
 	.on('mouseout', function(d){
@@ -741,7 +729,7 @@ function addSpeeches( data ){
 	
 		d3.select(this).classed('selected', true)
 		
-		hoverable = false
+		// hoverable = false
 		removePopup = false
 
 		$('.event-popup').addClass('expanded')
@@ -793,49 +781,43 @@ function addVotes( data ){
 			left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
 													$(this).position().left + 50
 
-		if ( hoverable ){
+		el.append('svg:line')
+			.attr('x1', 0)
+			.attr('x2', 0)
+			.attr('y1', 0)
+			.attr('y2', height - 320)
+			.style("stroke-opacity", 0)
+			.style("stroke", "indigo")
 
-			el.append('svg:line')
-				.attr('x1', 0)
-				.attr('x2', 0)
-				.attr('y1', 0)
-				.attr('y2', height - 320)
-				.style("stroke-opacity", 0)
-				.style("stroke", "indigo")
-
-			el.append('svg:text')
-				.text(function(d){
-					return formatEventDate(new Date(Number(d.time) * 1000))
-				})
-				.attr('x', function(d){
-					return -this.getComputedTextLength()/2
-				})
-				.attr('y', height - 295)
-				.attr('class', 'event-date')
-				.style('font-family', 'helvetica')
-				.style('font-size', '12px')
-				.style('fill', 'indigo')
-				.style('fill-opacity', 1)				
-
-			el.select('rect').classed('hovering', true);
-			el.select('line').transition().style("stroke-opacity", 1)
-
-			el.classed(d.event_id, true)
-			  .classed('hovered', true)
-			
-			$('.event-popup').remove()
-
-			var popup = new PopupView({
-				el : $('body'),
-				model : templateData[1],
-				tmpl : $(templateSelector),
-				top : top,
-				left : left
+		el.append('svg:text')
+			.text(function(d){
+				return formatEventDate(new Date(Number(d.time) * 1000))
 			})
+			.attr('x', function(d){
+				return -this.getComputedTextLength()/2
+			})
+			.attr('y', height - 295)
+			.attr('class', 'event-date')
+			.style('font-family', 'helvetica')
+			.style('font-size', '12px')
+			.style('fill', 'indigo')
+			.style('fill-opacity', 1)				
 
-			console.log("the popup is", popup)
-			
-		}
+		el.select('rect').classed('hovering', true);
+		el.select('line').transition().style("stroke-opacity", 1)
+
+		el.classed(d.event_id, true)
+		  .classed('hovered', true)
+		
+		$('.event-popup').remove()
+
+		var popup = new PopupView({
+			el : $('body'),
+			model : templateData[1],
+			tmpl : $(templateSelector),
+			top : top,
+			left : left
+		})
 
 	})
 	.on('mouseout', function(d){
@@ -890,22 +872,18 @@ function addCommittees(){
 				left = mousePos[0] + 50,
 				top = mousePos[1]
 
-			if ( hoverable ){
+			el.classed(el_data.event_id, true)
+			  .classed('hovered', true)
+			
+			$('.event-popup').remove()
 
-				el.classed(el_data.event_id, true)
-				  .classed('hovered', true)
-				
-				$('.event-popup').remove()
-
-				var popup = new PopupView({
-					el : $('body'),
-					model : templateData[1],
-					tmpl : $(templateSelector),
-					top : top,
-					left : left
-				})
-				
-			}
+			var popup = new PopupView({
+				el : $('body'),
+				model : templateData[1],
+				tmpl : $(templateSelector),
+				top : top,
+				left : left
+			})
 
 		})
 		.on('mouseout', function(d){
@@ -1053,118 +1031,118 @@ function addContextCommittee(){
 }
 
 // REFACTOR: NOT NEEDED ANYMORE 
-function addCircles( data ) {
+// function addCircles( data ) {
 
-	var event_ = focus.selectAll(".event")
-		.data(data)
-	  .enter().append('svg:g')
-	  	.attr('class', 'event')	
-	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
+// 	var event_ = focus.selectAll(".event")
+// 		.data(data)
+// 	  .enter().append('svg:g')
+// 	  	.attr('class', 'event')	
+// 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
 
-	// append the shape 
-	event_.append('g').selectAll("ev")
-		.data(function(d){
-			return d.events
-		})
-		.enter().append('circle')
-	  	.attr('cy', function(d, i){
-	  		var yVal = 460 -  ( ( (i + 1) * 20 ) + ( (831 * (1/data.length)) / 2 ) ) 
-	  		return yVal - 100	  		
-	  	})
-		.attr('class', function(d) { 
-			return d.event.split(" ")[0] + ' ' + 'focus-circle'
-		})
-		.attr('r', function(d){
-			var r = 600 * ( 1/data.length )
-			return r
-		})
-		.attr('cx', 0)
-		.style('stroke', function(d){ 
-			var color
-			color = getColor(d)
-			return color
-		})
-		.style('fill', function(d){ 
-			var color
-			color = getColor(d)
-			return color
-		})
-		.on('mouseover', function(d){
+// 	// append the shape 
+// 	event_.append('g').selectAll("ev")
+// 		.data(function(d){
+// 			return d.events
+// 		})
+// 		.enter().append('circle')
+// 	  	.attr('cy', function(d, i){
+// 	  		var yVal = 460 -  ( ( (i + 1) * 20 ) + ( (831 * (1/data.length)) / 2 ) ) 
+// 	  		return yVal - 100	  		
+// 	  	})
+// 		.attr('class', function(d) { 
+// 			return d.event.split(" ")[0] + ' ' + 'focus-circle'
+// 		})
+// 		.attr('r', function(d){
+// 			var r = 600 * ( 1/data.length )
+// 			return r
+// 		})
+// 		.attr('cx', 0)
+// 		.style('stroke', function(d){ 
+// 			var color
+// 			color = getColor(d)
+// 			return color
+// 		})
+// 		.style('fill', function(d){ 
+// 			var color
+// 			color = getColor(d)
+// 			return color
+// 		})
+// 		.on('mouseover', function(d){
 			
-			if ( hoverable ){
-				var self = this
-				d3.select(this.parentNode.parentNode).select('.event-date').classed('shown', true)
-				d3.select(this).transition().attr('r', function(){
-					return d3.select(self).attr('r') * 2
-				})
+// 			if ( hoverable ){
+// 				var self = this
+// 				d3.select(this.parentNode.parentNode).select('.event-date').classed('shown', true)
+// 				d3.select(this).transition().attr('r', function(){
+// 					return d3.select(self).attr('r') * 2
+// 				})
 
-				var el = d3.select(this),
-					r = el.attr('r'),
-					top = $(this).position().top - 50,
-					left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
-															$(this).position().left + 50
+// 				var el = d3.select(this),
+// 					r = el.attr('r'),
+// 					top = $(this).position().top - 50,
+// 					left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
+// 															$(this).position().left + 50
 
-				console.log("the position is", $(this).position())
+// 				console.log("the position is", $(this).position())
 
-				el.classed(d.event_id, true)
-				  .classed('hovered', true)
+// 				el.classed(d.event_id, true)
+// 				  .classed('hovered', true)
 
-				var templateData = templateId(d)
-				console.log(d)
-				console.log("the template info is", templateData)
+// 				var templateData = templateId(d)
+// 				console.log(d)
+// 				console.log("the template info is", templateData)
 
-				var eventId = '#' + d.event_id,
-					templateSelector = '#' + templateData[0]
+// 				var eventId = '#' + d.event_id,
+// 					templateSelector = '#' + templateData[0]
 				
-				$('.event-popup').remove()
+// 				$('.event-popup').remove()
 
-				var popup = new PopupView({
-					el : $('body'),
-					model : templateData[1],
-					tmpl : $(templateSelector),
-					top : top,
-					left : left
-				})
+// 				var popup = new PopupView({
+// 					el : $('body'),
+// 					model : templateData[1],
+// 					tmpl : $(templateSelector),
+// 					top : top,
+// 					left : left
+// 				})
 				
-			}
+// 			}
 
-		})
-		.on('mouseout', function(){
+// 		})
+// 		.on('mouseout', function(){
 
-			removePopup ? $('.event-popup').remove() : null
+// 			removePopup ? $('.event-popup').remove() : null
 			
-			d3.select(this.parentNode.parentNode)
-				.select('.event-date')
-				.classed('shown', false)				
+// 			d3.select(this.parentNode.parentNode)
+// 				.select('.event-date')
+// 				.classed('shown', false)				
 
-			d3.select(this).classed('hovered', false)				
+// 			d3.select(this).classed('hovered', false)				
 
-			if (!(d3.select(this).classed('selected'))){
+// 			if (!(d3.select(this).classed('selected'))){
 
-				d3.select(this).transition().attr('r', function(d){
-					var r = 600 * (1/data.length) 
-					return r
-				})
-			}
+// 				d3.select(this).transition().attr('r', function(d){
+// 					var r = 600 * (1/data.length) 
+// 					return r
+// 				})
+// 			}
 
-		})
-		.on('click', function(d){
+// 		})
+// 		.on('click', function(d){
 			
-			d3.select(this).classed('selected', true)
+// 			d3.select(this).classed('selected', true)
 
-			// hoverable = false
-			removePopup = false
+			// // hoverable = false
+// 			removePopup = false
 
-			$('.event-popup').addClass('expanded')
-			$('.hidden-content').removeClass('hidden-content')
+// 			$('.event-popup').addClass('expanded')
+// 			$('.hidden-content').removeClass('hidden-content')
 
-			var expanded = new ExpandedView({
-				el : '#popup_content_container',
-				model : d
-			})
-		})
+// 			var expanded = new ExpandedView({
+// 				el : '#popup_content_container',
+// 				model : d
+// 			})
+// 		})
 
-}
+// }
 
 // REFACTOR: CHANGE SWITCH TO OBJECT 
 function templateId (d, bioguide){
