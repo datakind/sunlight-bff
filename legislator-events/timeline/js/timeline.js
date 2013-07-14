@@ -257,23 +257,6 @@ function brushed() {
 
 	if ( filterActive ){
 
-		// d3.selectAll(filterSelector)[0].forEach(function(element, i){
-		
-		// 	var data = d3.select(element)[0][0].__data__
-		// 		, amount = Number(data.info.amount)
-		// 		, el = d3.select(element);
-
-		// 	if ( data.info.hasOwnProperty(attr) ){
-		// 		if (data.info[attr] === attrVal ){
-		// 			el.classed('connected', true)
-		// 		} else {
-		// 			el.classed('not-connected', true)	
-		// 		}
-		// 	} else {
-		// 		el.classed('not-connected', true)
-		// 	}
-
-		// })
 		var attrVal = $('#industry_drop option:selected').val()
 		
 		d3.selectAll('.event, .context-event')[0].forEach(function(element, i){ 
@@ -1038,120 +1021,6 @@ function addContextCommittee(){
 
 }
 
-// REFACTOR: NOT NEEDED ANYMORE 
-// function addCircles( data ) {
-
-// 	var event_ = focus.selectAll(".event")
-// 		.data(data)
-// 	  .enter().append('svg:g')
-// 	  	.attr('class', 'event')	
-// 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
-
-// 	// append the shape 
-// 	event_.append('g').selectAll("ev")
-// 		.data(function(d){
-// 			return d.events
-// 		})
-// 		.enter().append('circle')
-// 	  	.attr('cy', function(d, i){
-// 	  		var yVal = 460 -  ( ( (i + 1) * 20 ) + ( (831 * (1/data.length)) / 2 ) ) 
-// 	  		return yVal - 100	  		
-// 	  	})
-// 		.attr('class', function(d) { 
-// 			return d.event.split(" ")[0] + ' ' + 'focus-circle'
-// 		})
-// 		.attr('r', function(d){
-// 			var r = 600 * ( 1/data.length )
-// 			return r
-// 		})
-// 		.attr('cx', 0)
-// 		.style('stroke', function(d){ 
-// 			var color
-// 			color = getColor(d)
-// 			return color
-// 		})
-// 		.style('fill', function(d){ 
-// 			var color
-// 			color = getColor(d)
-// 			return color
-// 		})
-// 		.on('mouseover', function(d){
-			
-// 			if ( hoverable ){
-// 				var self = this
-// 				d3.select(this.parentNode.parentNode).select('.event-date').classed('shown', true)
-// 				d3.select(this).transition().attr('r', function(){
-// 					return d3.select(self).attr('r') * 2
-// 				})
-
-// 				var el = d3.select(this),
-// 					r = el.attr('r'),
-// 					top = $(this).position().top - 50,
-// 					left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
-// 															$(this).position().left + 50
-
-// 				console.log("the position is", $(this).position())
-
-// 				el.classed(d.event_id, true)
-// 				  .classed('hovered', true)
-
-// 				var templateData = templateId(d)
-// 				console.log(d)
-// 				console.log("the template info is", templateData)
-
-// 				var eventId = '#' + d.event_id,
-// 					templateSelector = '#' + templateData[0]
-				
-// 				$('.event-popup').remove()
-
-// 				var popup = new PopupView({
-// 					el : $('body'),
-// 					model : templateData[1],
-// 					tmpl : $(templateSelector),
-// 					top : top,
-// 					left : left
-// 				})
-				
-// 			}
-
-// 		})
-// 		.on('mouseout', function(){
-
-// 			removePopup ? $('.event-popup').remove() : null
-			
-// 			d3.select(this.parentNode.parentNode)
-// 				.select('.event-date')
-// 				.classed('shown', false)				
-
-// 			d3.select(this).classed('hovered', false)				
-
-// 			if (!(d3.select(this).classed('selected'))){
-
-// 				d3.select(this).transition().attr('r', function(d){
-// 					var r = 600 * (1/data.length) 
-// 					return r
-// 				})
-// 			}
-
-// 		})
-// 		.on('click', function(d){
-			
-// 			d3.select(this).classed('selected', true)
-
-			// // hoverable = false
-// 			removePopup = false
-
-// 			$('.event-popup').addClass('expanded')
-// 			$('.hidden-content').removeClass('hidden-content')
-
-// 			var expanded = new ExpandedView({
-// 				el : '#popup_content_container',
-// 				model : d
-// 			})
-// 		})
-
-// }
-
 function searchString( d ){
 	var searchString = d.info.contributor_name
 	searchString += ' ' + d.info.contributor_occupation
@@ -1196,7 +1065,8 @@ function toTitleCase( str ) {
     });
 }
 
-// REFACTOR: CHANGE SWITCH TO OBJECT 
+// REFACTOR: this function shiouldn't be needed
+// data from event dom element should be sufficient 
 function templateId ( d, bioguide ){
 	var data
 	// console.log("incoming data is", d)
@@ -1209,7 +1079,6 @@ function templateId ( d, bioguide ){
 				"govtrack_link" : d.info.link,
 				"id" : d.event_id
 			}
-
 			return [ "sponsored_legislation", data ] 
 			break;
 
@@ -1304,42 +1173,38 @@ function fixContributorName( name ){
 }
 
 function capitaliseFirstLetter(string){
-
     return string.charAt(0).toUpperCase() + string.slice(1);
-
 }
 
 function getTimestamp(str) {
-
 	var d = str.match(/\d+/g); // extract date parts
 	return +new Date(d[0], d[1] - 1, d[2], d[3], d[4], d[5]); // build Date object
-
 }
 
 // REFACTOR: SHOULD BE OBJECT
-function getColor(d){
+// function getColor(d){
 
-	switch(d.event) {
-		case "sponsored legislation":
-			return "yellow"
-			break;
-		case "event/party":
-			return "red"
-			break;
-		case "bill cosponsorship":
-			return "blue"
-			break
-		case "start congressional term":
-			return "green"
-			break
-		case "joined committee":
-			return "purple"
-			break
-		case "month of campaign contributions":
-			return "#333"
-			break
-	}
-}
+// 	switch(d.event) {
+// 		case "sponsored legislation":
+// 			return "yellow"
+// 			break;
+// 		case "event/party":
+// 			return "red"
+// 			break;
+// 		case "bill cosponsorship":
+// 			return "blue"
+// 			break
+// 		case "start congressional term":
+// 			return "green"
+// 			break
+// 		case "joined committee":
+// 			return "purple"
+// 			break
+// 		case "month of campaign contributions":
+// 			return "#333"
+// 			break
+// 	}
+// }
 
 var options = {
 

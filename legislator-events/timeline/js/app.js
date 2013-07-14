@@ -1,11 +1,11 @@
 $(document).ready(function(){
-
+	
 	window.removePopup = true;
 	window.hoverable = true;
 	window.mousePos = undefined;
 	window.filterActive = false;
-	
 	window.filterModel = new FilterModel();
+	
 	var headingModel = new HeadingModel()
 		, headingView = new HeadingView({
 			el : '#top_bar',
@@ -27,7 +27,6 @@ $(document).ready(function(){
 	});
 
 	// $('body').on('click', '.contributor-name', function(ev){		
-		
 	// 	ev.preventDefault();
 	// 	var targetName = $(ev.target).attr('class').split(" ")[1];
 
@@ -51,10 +50,6 @@ $(document).ready(function(){
 	// 		}
 
 	// 	})
-	// })
-
-	// $('body').on('click', '#key_li, #filter_li', function(){
-	// 	toggleOption($(this))
 	// })
 
 	$('body').on('change', '#event_type_filter_drop', function(){

@@ -12,6 +12,8 @@ var FilterView = Backbone.View.extend({
 			, model = this.model.toJSON();
 
 		$('#filter_container').html( template(model) );
+		$('#options_content').hide()
+
 	},
 
 	events : {

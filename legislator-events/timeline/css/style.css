@@ -492,7 +492,7 @@ a {
 .expanded {
 	position: absolute; !important;
 	width: 960px !important;
-	top: 40px !important;
+	top: 60px !important;
 	left: 230px !important;
 	z-index: 10 !important;
 	/*margin: 20px auto !important;*/
