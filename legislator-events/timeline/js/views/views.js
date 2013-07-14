@@ -230,33 +230,45 @@ var PopupView = Backbone.View.extend({
 // REFACTOR: CHANGE TO ALLOW FOR ALL EVENT TYPES
 var ExpandedView = Backbone.View.extend({
 	
+	templateIds : {
+		'recieved_campaign_contribution' : '#campaign_contribution_details',
+		'speech' : '#speech_details',
+		'vote' : '#vote_details',
+		'sponsored' : '#sponsored_details',
+		'cosponsored' : '#cosponsored_details'
+	},
+
 	initialize : function(){		
 		$('#popup_content_container').empty()
 		this.render()
 	},
 
 	render : function(){
-		if ( this.model.event_type === "received_campaign_contribution" ) {
-			var source = $('#campaign_contribution_details').html(),
-				template = Handlebars.compile( source )
-			
-			if ( this.model.info.contributor_type === "C" ){
-				this.model.info.contribotor_type = "Corporate"
-			} else {
-				this.model.info.contributor_type = "Individual"
-				this.model.info.contributor_name = fixContributorName(this.model.info.contributor_name)
-				this.model.info.contributor_string = this.model.info.contributor_name.replace(/ /g, "")
-			}
-		} else {
-			var source = $('#speech_details').html(),
-				template = Handlebars.compile( source )
-		}
+		var templateSelector = this.templateIds[this.model.event_type]
+			, source = $(templateSelector).html()
+			, template = Handlebars.compile( source );
 
 		$('body').append('<div id="whiteout"</div>')
 		this.$el.html( template( this.model.info ))
-
 	},
 
 	events : {}
 
 })
+
+
+		// if ( this.model.event_type === "received_campaign_contribution" ) {
+		// 	var source = $('#campaign_contribution_details').html(),
+		// 		template = Handlebars.compile( source )
+			
+			// if ( this.model.info.contributor_type === "C" ){
+			// 	this.model.info.contribotor_type = "Corporate"
+			// } else {
+			// 	this.model.info.contributor_type = "Individual"
+			// 	this.model.info.contributor_name = fixContributorName(this.model.info.contributor_name)
+			// 	this.model.info.contributor_string = this.model.info.contributor_name.replace(/ /g, "")
+			// }
+		// } else {
+		// 	var source = $('#speech_details').html(),
+		// 		template = Handlebars.compile( source )
+		// }

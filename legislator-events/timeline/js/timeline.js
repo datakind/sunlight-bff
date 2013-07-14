@@ -165,7 +165,7 @@ function update( legisJson, view, funcName, headingModel ){
 		  	.attr('class', 'event')	
 		  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
 
-		// addContextContribution( values )
+		addContextContribution( values )
 		addContextBills( values )
 		addContextCosponsored( values )
 		addContextSpeeches( values )
@@ -349,7 +349,7 @@ function addContributions( data ){
       })
       .style("stroke", "green")
 		.on('mouseover', function(d){
-			// console.log(d)
+			console.log(d)
 			var el = d3.select(this),
 				templateData = templateId(d),
 				eventId = '#' + d.event_id,
@@ -390,12 +390,18 @@ function addContributions( data ){
 
 		})
 		.on('click', function(d){			
-			d3.select(this).classed('selected', true);
+			var contribInfo = contributionInfo( d )
 			
+			d3.select(this).classed('selected', true);
 			removePopup = false;
 
 			$('.event-popup').addClass('expanded');
 			$('.hidden-content').removeClass('hidden-content');
+
+			d.info.searchString = searchString( d )
+			d.info.imageString = imageString( d )
+			d.info.totalContributed = contribInfo['totalContributed']
+			d.info.totalContributions = contribInfo['totalContributions']
 
 			var expanded = new ExpandedView({
 				el : '#popup_content_container',
@@ -420,7 +426,7 @@ function addContextContribution( data ){
 		.data(data)
 	  .enter().append('svg:g')
 	  	.attr('class', 'context-contrib')	
-	  	.attr("transform", function(d) { return "translate(" + ( x(d.time * 1000) - 5 ) + ",35)"; })
+	  	.attr("transform", function(d) { return "translate(" + ( x(d.time * 1000) - 5 ) + ",60)"; })
 
 	var node = event_.selectAll(".node")
 		  .data(pack.nodes)
@@ -436,6 +442,9 @@ function addContextContribution( data ){
       		return class_
       })
       .style("stroke", "green")
+
+      // hide everything but montsh
+      context.selectAll('.recieved').style('display', 'none');
 }
 
 function addBills( data ){
@@ -462,7 +471,7 @@ function addBills( data ){
 	     })
 
 	event_.on('mouseover', function(d){
-		console.log([d, this] )
+		console.log(d)
 
 		var el = d3.select(this),
 			templateData = templateId(d),
@@ -1144,13 +1153,58 @@ function addContextCommittee(){
 
 // }
 
+function searchString( d ){
+	var searchString = d.info.contributor_name
+	searchString += ' ' + d.info.contributor_occupation
+	searchString = $.trim(searchString.toLowerCase());
+	searchString = searchString.split(' ').join('+');
+	return 'https://www.google.com/search?q=' + searchString
+}
+
+function imageString ( d ) {
+	return 'http://14ddv.com/wp-content/uploads/2012/05/person_placeholder-Copy.png'
+}
+
+function contributionInfo( d ) {
+	var contributions = _.pluck(context.selectAll('.recieved').data(), 'info')
+		, amounts
+		, sum = 0
+		, contribInfo = {};
+
+	amounts = _.filter(contributions, function(contrib){
+			if ( contrib.contributor_ext_id === d.info.contributor_ext_id ){
+				return Number(contrib.amount)
+			}
+		})
+
+	_.each(amounts, function(a){
+		sum += Number(a.amount)
+	})
+
+	contribInfo['totalContributed'] = numberWithCommas( sum );
+	contribInfo['totalContributions'] = amounts.length;
+
+	return contribInfo
+}
+
+function numberWithCommas( x ) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function toTitleCase( str ) {
+    return str.replace(/\w\S*/g, function(txt){
+    	return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+
 // REFACTOR: CHANGE SWITCH TO OBJECT 
-function templateId (d, bioguide){
+function templateId ( d, bioguide ){
 	var data
 	// console.log("incoming data is", d)
 	switch(d.event) {
 		case "sponsored legislation":
 			data = {
+				"date" : d.time,
 				"title" : d.info.title,
 				"thomas_link" : d.info.thomas_link,
 				"govtrack_link" : d.info.link,
@@ -1166,6 +1220,7 @@ function templateId (d, bioguide){
 
 		case "bill cosponsorship":
 			data = {
+				"date" : d.time,
 				"title" : d.info.official_title,
 				"thomas_link" : d.info.thomas_link,
 				"govtrack_link" : d.info.link,
@@ -1181,7 +1236,7 @@ function templateId (d, bioguide){
 
 		case "joined committee":
 			data = {
-				"date" : new Date( Number(d.time) * 1000).toString('dddd,MMMM,yyyy'),
+				"date" : d.time,
 				"committee" : d.info[14],
 				"id" : d.event_id
 			}
@@ -1197,7 +1252,7 @@ function templateId (d, bioguide){
 			}
 
 			data = {
-				"date" : new Date( Number(d.time) * 1000).toString('dddd,MMMM,yyyy'),
+				"date" : d.time,
 				"contributor_name" : contributor_name,
 				"contributor_string" : d.info.contributor_name.replace(/ /g, ""),
 				"contributor_occupation" : d.info.contributor_occupation,
@@ -1214,6 +1269,7 @@ function templateId (d, bioguide){
 			break
 		case "speech":
 			data = {
+				"date" : d.time,
 				"title" : d.info.title,
 				"date" : d.info.date,
 				"bills" : d.info.bills || [],
@@ -1222,9 +1278,9 @@ function templateId (d, bioguide){
 			return ["speech", data]
 			break
 		case "vote":
-			console.log("the incoming data is", d)
+			
 			data = {
-				"date" : new Date( Number(d.time) * 1000).toString('dddd,MMMM,yyyy'),
+				"date" : d.time,
 				"bill_title" : d.info.official_title,
 				"vote" : d.info.vote,
 				"id" : d.event_id
@@ -1398,3 +1454,18 @@ Handlebars.registerHelper('formatDate', function(v){
     return number
 })
 
+Handlebars.registerHelper('numberWithCommas', function(v){
+	v = parseInt(v)
+	return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+})
+
+Handlebars.registerHelper('stringToTitleCase', function(str){
+	 return str.replace(/\w\S*/g, function(txt){
+    	return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+})
+
+Handlebars.registerHelper('timestampToDateString', function(ts){
+	var formatEventDate = d3.time.format("%B %d, %Y");
+	return formatEventDate(new Date(Number(ts) * 1000))
+})
