@@ -165,7 +165,7 @@ function update( legisJson, view, funcName, headingModel ){
 		  	.attr('class', 'event')	
 		  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
 
-		// addContextContribution( values )
+		addContextContribution( values )
 		addContextBills( values )
 		addContextCosponsored( values )
 		addContextSpeeches( values )
@@ -390,8 +390,9 @@ function addContributions( data ){
 
 		})
 		.on('click', function(d){			
-			d3.select(this).classed('selected', true);
+			var contribInfo = contributionInfo( d )
 			
+			d3.select(this).classed('selected', true);
 			removePopup = false;
 
 			$('.event-popup').addClass('expanded');
@@ -399,6 +400,8 @@ function addContributions( data ){
 
 			d.info.searchString = searchString( d )
 			d.info.imageString = imageString( d )
+			d.info.totalContributed = contribInfo['totalContributed']
+			d.info.totalContributions = contribInfo['totalContributions']
 
 			var expanded = new ExpandedView({
 				el : '#popup_content_container',
@@ -423,7 +426,7 @@ function addContextContribution( data ){
 		.data(data)
 	  .enter().append('svg:g')
 	  	.attr('class', 'context-contrib')	
-	  	.attr("transform", function(d) { return "translate(" + ( x(d.time * 1000) - 5 ) + ",35)"; })
+	  	.attr("transform", function(d) { return "translate(" + ( x(d.time * 1000) - 5 ) + ",60)"; })
 
 	var node = event_.selectAll(".node")
 		  .data(pack.nodes)
@@ -439,6 +442,9 @@ function addContextContribution( data ){
       		return class_
       })
       .style("stroke", "green")
+
+      // hide everything but montsh
+      context.selectAll('.recieved').style('display', 'none');
 }
 
 function addBills( data ){
@@ -1155,6 +1161,42 @@ function searchString( d ){
 	return 'https://www.google.com/search?q=' + searchString
 }
 
+function imageString ( d ) {
+	return 'http://14ddv.com/wp-content/uploads/2012/05/person_placeholder-Copy.png'
+}
+
+function contributionInfo( d ) {
+	var contributions = _.pluck(context.selectAll('.recieved').data(), 'info')
+		, amounts
+		, sum = 0
+		, contribInfo = {};
+
+	amounts = _.filter(contributions, function(contrib){
+			if ( contrib.contributor_ext_id === d.info.contributor_ext_id ){
+				return Number(contrib.amount)
+			}
+		})
+
+	_.each(amounts, function(a){
+		sum += Number(a.amount)
+	})
+
+	contribInfo['totalContributed'] = numberWithCommas( sum );
+	contribInfo['totalContributions'] = amounts.length;
+
+	return contribInfo
+}
+
+function numberWithCommas( x ) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function toTitleCase( str ) {
+    return str.replace(/\w\S*/g, function(txt){
+    	return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+
 // REFACTOR: CHANGE SWITCH TO OBJECT 
 function templateId ( d, bioguide ){
 	var data
@@ -1409,3 +1451,13 @@ Handlebars.registerHelper('formatDate', function(v){
     return number
 })
 
+Handlebars.registerHelper('numberWithCommas', function(v){
+	v = parseInt(v)
+	return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+})
+
+Handlebars.registerHelper('stringToTitleCase', function(str){
+	 return str.replace(/\w\S*/g, function(txt){
+    	return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+})
