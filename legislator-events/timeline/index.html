@@ -21,8 +21,7 @@
 		<div id="filter_container"></div>
 		<script type="text/javascript" src="js/timeline.js"></script>
 		
-		<script id="filter" type="x-handlebars-template">
-			
+		<script id="filter" type="x-handlebars-template">			
 				<img id="filter_img" src="img/filter.svg"/>
 				<div id="options_content">
 					<h5>Filter Events by Interest Group</h5>
@@ -33,7 +32,6 @@
 					</select>
 					<button id="industry_filter_button">Filter Events</button>
 				</div>
-				
 		</script>
 
 		<script id="legislator" type="x-handlebars-template">
@@ -78,7 +76,8 @@
 		</script>
 
 		<script id="sponsored_legislation" type="x-handlebars-template">
-			<div class="event-popup" id="{{id}}">								
+			<div class="event-popup" id="{{id}}">					
+				<h5>{{timestampToDateString date}}</h5>
 				<h3>Sponsored Legislation</h3>
 				<div>
 					<h5>title</h5> 
@@ -90,7 +89,8 @@
 		</script>
 
 		<script id="cosponsored_legislation" type="x-handlebars-template">
-			<div class="event-popup" id="{{id}}">				
+			<div class="event-popup" id="{{id}}">	
+				<h5>{{timestampToDateString date}}</h5>
 				<h3>Cosponsored Legislation</h3>
 				<div>
 					<h5>title</h5> 
@@ -121,7 +121,7 @@
 
 		<script id="joined_committee" type="x-handlebars-template">
 			<div class="event-popup" id="{{id}}">
-				<h5>{{date}}</h5>
+				<h5>{{timestampToDateString date}}</h5>
 				<h3>Committee</h3>
 				<div>
 					<h5>committee/position</h5>
@@ -132,7 +132,7 @@
 
 		<script id="vote" type="x-handlebars-template">
 			<div class="event-popup" id="{{id}}">
-				<h5>{{date}}</h5>
+				<h5>{{timestampToDateString date}}</h5>
 				<h3>Vote</h3>
 				<div>
 					<h5>Bill Title</h5>
@@ -159,7 +159,7 @@
 
 		<script id="campaign_contribution" type="x-handlebars-template">
 			<div class="event-popup" id="{{id}}">
-				<h5>{{date}}</h5>
+				<h5>{{timestampToDateString date}}</h5>
 				<h3>Campaign Contribution</h3>
 				<div id="popup_content_container">
 					<div>
@@ -182,16 +182,14 @@
 			<div id="contribution_top">
 				<img id="contributor_img" src="{{imageString}}"/>
 				<div class="contribution-details">
-					
 					<h5>name</h5>
 					<a href="#" class="contributor-name {{contributor_ext_id}}">{{contributor_name}}</a>
 					<a id="contributor_web_search" href="{{searchString}}" target="_blank">web search</a>
 
-					<h5>category name</h5>
+					<h5>Interest Group</h5>
 					<a href="#" class="contributor-category {{info.contributor_category}}">
 						{{stringToTitleCase contributor_category_industry}}
 					</a>
-					
 					<div id="type_and_cycle">
 						<div>
 							<h5>type</h5>
@@ -202,7 +200,6 @@
 							<p>{{cycle}}</p>
 						</div>
 					</div>
-				
 				</div>
 					
 				<div class="contribution-amounts">
@@ -223,7 +220,8 @@
 
 		<script id="speech_details" type="x-handlebars-template">
 			<div>
-				<h5>title</h5> 
+				<h5>{{timestampToDateString date}}</h5>
+				<h5>title</h5>
 				<a href="#" class="speech-title">{{stringToTitleCase title}}</a>
 			</div>
 			<div>

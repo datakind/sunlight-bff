@@ -368,6 +368,7 @@ ul {
 
 #popup_content_container #type_and_cycle {
 	display: block;
+	margin-top: 10px;
 }
 
 #popup_content_container #type_and_cycle div {
@@ -422,7 +423,7 @@ h3, h5, a {
 }
 
 h3 {
-	margin: 5px 0px;
+	margin: 0px 0px 5px 0px;
 }
 
 h5, .event-popup p {

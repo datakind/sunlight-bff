@@ -1204,6 +1204,7 @@ function templateId ( d, bioguide ){
 	switch(d.event) {
 		case "sponsored legislation":
 			data = {
+				"date" : d.time,
 				"title" : d.info.title,
 				"thomas_link" : d.info.thomas_link,
 				"govtrack_link" : d.info.link,
@@ -1219,6 +1220,7 @@ function templateId ( d, bioguide ){
 
 		case "bill cosponsorship":
 			data = {
+				"date" : d.time,
 				"title" : d.info.official_title,
 				"thomas_link" : d.info.thomas_link,
 				"govtrack_link" : d.info.link,
@@ -1234,7 +1236,7 @@ function templateId ( d, bioguide ){
 
 		case "joined committee":
 			data = {
-				"date" : new Date( Number(d.time) * 1000).toString('dddd,MMMM,yyyy'),
+				"date" : d.time,
 				"committee" : d.info[14],
 				"id" : d.event_id
 			}
@@ -1250,7 +1252,7 @@ function templateId ( d, bioguide ){
 			}
 
 			data = {
-				"date" : new Date( Number(d.time) * 1000).toString('dddd,MMMM,yyyy'),
+				"date" : d.time,
 				"contributor_name" : contributor_name,
 				"contributor_string" : d.info.contributor_name.replace(/ /g, ""),
 				"contributor_occupation" : d.info.contributor_occupation,
@@ -1267,6 +1269,7 @@ function templateId ( d, bioguide ){
 			break
 		case "speech":
 			data = {
+				"date" : d.time,
 				"title" : d.info.title,
 				"date" : d.info.date,
 				"bills" : d.info.bills || [],
@@ -1275,9 +1278,9 @@ function templateId ( d, bioguide ){
 			return ["speech", data]
 			break
 		case "vote":
-			console.log("the incoming data is", d)
+			
 			data = {
-				"date" : new Date( Number(d.time) * 1000).toString('dddd,MMMM,yyyy'),
+				"date" : d.time,
 				"bill_title" : d.info.official_title,
 				"vote" : d.info.vote,
 				"id" : d.event_id
@@ -1460,4 +1463,9 @@ Handlebars.registerHelper('stringToTitleCase', function(str){
 	 return str.replace(/\w\S*/g, function(txt){
     	return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
+})
+
+Handlebars.registerHelper('timestampToDateString', function(ts){
+	var formatEventDate = d3.time.format("%B %d, %Y");
+	return formatEventDate(new Date(Number(ts) * 1000))
 })
