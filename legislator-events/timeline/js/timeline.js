@@ -779,16 +779,15 @@ function addVotes( data ){
 	    })
 
 	event_.on('mouseover', function(d){
+		console.log(d)
 
 		var el = d3.select(this)
-
-		var	templateData = templateId(d, legislatorData.bio.id.bioguide)
-			
-		var eventId = '#' + d.event_id,
-			templateSelector = '#' + templateData[0],
-			top = $(this).position().top - 50,
-			left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
-													$(this).position().left + 50
+			, templateData = templateId(d, legislatorData.bio.id.bioguide)
+			, eventId = '#' + d.event_id
+			, templateSelector = '#' + templateData[0]
+			, top = $(this).position().top - 50
+			, left = $(this).position().left >= 800 ? $(this).position().left - 400 : 
+													$(this).position().left + 50;
 
 		el.append('svg:line')
 			.attr('x1', 0)
