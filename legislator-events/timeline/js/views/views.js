@@ -248,8 +248,6 @@ var ExpandedView = Backbone.View.extend({
 			, source = $(templateSelector).html()
 			, template = Handlebars.compile( source );
 
-		console.log('model', this.model.info)
-
 		$('body').append('<div id="whiteout"</div>')
 		this.$el.html( template( this.model.info ))
 	},

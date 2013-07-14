@@ -397,8 +397,8 @@ function addContributions( data ){
 			$('.event-popup').addClass('expanded');
 			$('.hidden-content').removeClass('hidden-content');
 
-			d.info.searchString = 'https://www.google.com/search?q=pizza'; 
-			d.info.imageString;
+			d.info.searchString = searchString( d )
+			d.info.imageString = imageString( d )
 
 			var expanded = new ExpandedView({
 				el : '#popup_content_container',
@@ -1147,8 +1147,16 @@ function addContextCommittee(){
 
 // }
 
+function searchString( d ){
+	var searchString = d.info.contributor_name
+	searchString += ' ' + d.info.contributor_occupation
+	searchString = $.trim(searchString.toLowerCase());
+	searchString = searchString.split(' ').join('+');
+	return 'https://www.google.com/search?q=' + searchString
+}
+
 // REFACTOR: CHANGE SWITCH TO OBJECT 
-function templateId (d, bioguide){
+function templateId ( d, bioguide ){
 	var data
 	// console.log("incoming data is", d)
 	switch(d.event) {
