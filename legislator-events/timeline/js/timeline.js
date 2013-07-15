@@ -292,8 +292,8 @@ function brushed() {
 				el.classed('not-connected', true)
 
 			}
-		})	
-
+		})
+		context.selectAll('.context-connected').select('circle').classed('not-connected', false)
 	}
 
 

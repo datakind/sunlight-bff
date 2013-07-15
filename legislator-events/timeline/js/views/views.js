@@ -45,43 +45,46 @@ var FilterView = Backbone.View.extend({
 		d3.selectAll('.event, .context-event')[0].forEach(function(element, i){ 
 			
 			var el = d3.select(element)
-				, data = el.data()[0];
+				, data = el.data()[0]
+				, contextNode;
 
 			if (data.hasOwnProperty('info')){
-
 				if ( data.info.hasOwnProperty('contributor_category') && 
 					 data.info.contributor_category !== undefined ){
 					if ( data.info["contributor_category"].slice(0,2) === attrVal ){
-						console.log("got something connected", el)
-						el.classed('connected', true)						
+						// console.log("got something connected", el)
+						try {
+							contextNode = d3.select(el.node().parentNode.parentNode);
+							contextNode.classed('context-connected', true);
+							console.log('adding context node', contextNode.classed('context-connected'));
+						}
+						catch(err) {
+							console.log(err);
+						}
+						el.classed('connected', true)
 					} else {
 						el.classed('not-connected', true)
 					}
 				}
-
 				else if ( data.info.hasOwnProperty('crp_catcode') && 
 					 data.info.crp_catcode !== undefined ){
 					if ( data.info["crp_catcode"].slice(0,2) === attrVal ){
-						console.log("got something connected", el)
-						el.classed('connected', true)
-						
+						console.log("got something connected", el);
+						el.classed('connected', true);
 					} else {
-						el.classed('not-connected', true)
+						el.classed('not-connected', true);
 					}
 				}
-
 				else {
 					el.classed('not-connected', true)
 				} 
 			}
-
 			else {
-
 				el.classed('not-connected', true)
-
 			}
-
 		})
+		context.selectAll('.context-connected').select('circle').classed('not-connected', false);
+		context.selectAll('.context-connected').select('rect').classed('not-connected', false);
 
 		filterActive = true
 
@@ -161,7 +164,7 @@ var HeadingView = Backbone.View.extend({
 
 	    this.$el.html( template );
 
-	    if ( model.get('name') === undefined ){	    	
+	    if ( model.get('name') === undefined ) {	    	
 	    	this.toggleExpansion();
 	    }
 	},
@@ -240,12 +243,12 @@ var ExpandedView = Backbone.View.extend({
 		'bill_cosponsorship' : '#cosponsored_details'
 	},
 
-	initialize : function(){		
+	initialize : function() {
 		$('#popup_content_container').empty()
 		this.render()
 	},
 
-	render : function(){
+	render : function() {
 		console.log('trying to add expanded');
 		var templateSelector = this.templateIds[this.model.event_type]
 			, source = $(templateSelector).html()
@@ -259,21 +262,4 @@ var ExpandedView = Backbone.View.extend({
 
 	events : {}
 
-})
-
-
-		// if ( this.model.event_type === "received_campaign_contribution" ) {
-		// 	var source = $('#campaign_contribution_details').html(),
-		// 		template = Handlebars.compile( source )
-			
-			// if ( this.model.info.contributor_type === "C" ){
-			// 	this.model.info.contribotor_type = "Corporate"
-			// } else {
-			// 	this.model.info.contributor_type = "Individual"
-			// 	this.model.info.contributor_name = fixContributorName(this.model.info.contributor_name)
-			// 	this.model.info.contributor_string = this.model.info.contributor_name.replace(/ /g, "")
-			// }
-		// } else {
-		// 	var source = $('#speech_details').html(),
-		// 		template = Handlebars.compile( source )
-		// }
+});

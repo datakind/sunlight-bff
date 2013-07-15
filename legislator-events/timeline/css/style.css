@@ -239,6 +239,12 @@ text:hover {
 	fill-opacity: 1 !important;
 }
 
+.context-connected {
+	stroke-opacity: 1 !important;
+	fill-opacity:1 !important;
+	stroke: red;
+}
+
 .not-connected {
 	fill-opacity: .1 !important;
 	stroke-width: 0px;
