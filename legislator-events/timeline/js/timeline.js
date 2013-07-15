@@ -514,18 +514,17 @@ function addBills( data ){
 
 	}).on('click', function(d){
 	
-		d3.select(this).classed('selected', true)
-		
-		// hoverable = false
-		removePopup = false
+		d3.select(this).classed('selected', true);
+		removePopup = false;
 
-		$('.event-popup').addClass('expanded')
-		$('.hidden-content').removeClass('hidden-content')
+		$('.event-popup').addClass('expanded');
+		$('.hidden-content').removeClass('hidden-content');
 
 		var expanded = new ExpandedView({
 			el : '#popup_content_container',
 			model : d
-		})
+		});
+	
 	})
 }
 
@@ -552,7 +551,7 @@ function addCosponsored( data ) {
 	     })
 
 	event_.on('mouseover', function(d){
-
+		console.log(d);
 		var el = d3.select(this)
 			, templateData = templateId(d)
 			, eventId = '#' + d.event_id
@@ -812,7 +811,7 @@ function addVotes( data ){
 
 	})
 	.on('mouseout', function(d){
-	
+
 		var el = d3.select(this)
 
 		el.selectAll('line').transition().style("stroke-opacity", 0).remove()
@@ -822,6 +821,19 @@ function addVotes( data ){
 		removePopup ? $('.event-popup').remove() : null
 
 	})
+	.on('click', function(d){
+
+		d3.select(this).classed('selected', true);
+		removePopup = false;
+
+		$('.event-popup').addClass('expanded');
+		$('.hidden-content').removeClass('hidden-content'); // ?
+
+		var expanded = new ExpandedView({
+			el : '#popup_content_container',
+			model : d
+		});
+	});
 
 }
 
@@ -1181,57 +1193,26 @@ function getTimestamp(str) {
 	return +new Date(d[0], d[1] - 1, d[2], d[3], d[4], d[5]); // build Date object
 }
 
-// REFACTOR: SHOULD BE OBJECT
-// function getColor(d){
-
-// 	switch(d.event) {
-// 		case "sponsored legislation":
-// 			return "yellow"
-// 			break;
-// 		case "event/party":
-// 			return "red"
-// 			break;
-// 		case "bill cosponsorship":
-// 			return "blue"
-// 			break
-// 		case "start congressional term":
-// 			return "green"
-// 			break
-// 		case "joined committee":
-// 			return "purple"
-// 			break
-// 		case "month of campaign contributions":
-// 			return "#333"
-// 			break
-// 	}
-// }
-
 var options = {
-
 	filter_li : function(){
-
-		var source = $('#filter_template').html(),
-			template = Handlebars.compile( source )
-
+		var source = $('#filter_template').html()
+			, template = Handlebars.compile( source )
 		$('#options_content').html( template )
-
 	},
 
 	key_li : function(){
-
-		var source = $('#key_template').html(),
-			template = Handlebars.compile( source )
+		var source = $('#key_template').html()
+			, template = Handlebars.compile( source );
 
 		$('#options_content').html( template )
-
 	}
 }
 
 var addAttributeFilter = {
-
 	elected : function(){
 
 	},
+
 	committee : function() {
 
 	},
@@ -1247,12 +1228,9 @@ var addAttributeFilter = {
 			var option = '<option value="' + attr + '"">' + lowerUnderToUpperSpace( attr ) + '</option>';
 			$('.attribute-drop').append(option);
 		})
-
 	}, 
 
 	lobbying_contribution : function(){
-
-		
 
 	},
 
@@ -1267,7 +1245,6 @@ var addAttributeFilter = {
 			var option = '<option value="' + attr + '"">' + lowerUnderToUpperSpace( attr ) + '</option>';
 			$('.attribute-drop').append(option);
 		})
-
 	},
 
 	cosponsored_legislation : function(){
@@ -1281,7 +1258,6 @@ var addAttributeFilter = {
 			var option = '<option value="' + attr + '"">' + lowerUnderToUpperSpace( attr ) + '</option>';
 			$('.attribute-drop').append(option);
 		})
-
 	}
 
 }

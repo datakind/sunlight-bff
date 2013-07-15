@@ -80,13 +80,22 @@
 				<h5>{{timestampToDateString date}}</h5>
 				<h3>Sponsored Legislation</h3>
 				<div>
-					<h5>title</h5> 
+					<h5>title</h5>
 					<p>{{title}}</p>
 					<a href="{{thomas_link}}" target="_blank">Thomas</a>
-					<a href="{{govtrack_link}}" target="_blank">Govtrack</a>
+					<a href="{{link}}" target="_blank">Govtrack</a>
 				</div>
 			</div>
 		</script>
+
+		<script id="sponsored_details" type="x-handlebars-template">
+			<div>
+				<h5>title</h5>
+				<p>{{title}}</p>
+				<a href="{{thomas_link}}" target="_blank">Thomas</a>
+				<a href="{{link}}" target="_blank">Govtrack</a>
+			</div>
+		</script>		
 
 		<script id="cosponsored_legislation" type="x-handlebars-template">
 			<div class="event-popup" id="{{id}}">	
@@ -99,6 +108,15 @@
 					<a href="{{govtrack_link}}" target="_blank">Govtrack</a>
 				</div>
 			</div>
+		</script>
+
+		<script id="cosponsored_details" type="x-handlebars-template">
+			<div>
+				<h5>title</h5>
+				<p>{{title}}</p>
+				<a href="{{thomas_link}}" target="_blank">Thomas</a>
+				<a href="{{link}}" target="_blank">Govtrack</a>
+			</div>			
 		</script>
 
 		<script id="speech" type="x-handlebars-template">
@@ -140,6 +158,13 @@
 					<p>{{vote}}</p>
 				</div>
 			</div>			
+		</script>
+
+		<script id="vote_details" type="x-handlebars-template">
+			<div>
+				<h5>bill</h5>
+				<p>{{bill_title}}</p>
+			</div>
 		</script>
 
 		<script id="filter_template" type="x-handlebars-template">
@@ -219,7 +244,6 @@
 
 		<script id="speech_details" type="x-handlebars-template">
 			<div>
-				<h5>{{timestampToDateString date}}</h5>
 				<h5>title</h5>
 				<a href="#" class="speech-title">{{stringToTitleCase title}}</a>
 			</div>
@@ -230,7 +254,6 @@
 				{{/each}}
 			</div>
 		</script>
-
 
 	</body>
 </html>

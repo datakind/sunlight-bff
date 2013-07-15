@@ -236,8 +236,8 @@ var ExpandedView = Backbone.View.extend({
 		'recieved_campaign_contribution' : '#campaign_contribution_details',
 		'speech' : '#speech_details',
 		'vote' : '#vote_details',
-		'sponsored' : '#sponsored_details',
-		'cosponsored' : '#cosponsored_details'
+		'sponsored_legislation' : '#sponsored_details',
+		'bill_cosponsorship' : '#cosponsored_details'
 	},
 
 	initialize : function(){		
@@ -246,12 +246,15 @@ var ExpandedView = Backbone.View.extend({
 	},
 
 	render : function(){
+		console.log('trying to add expanded');
 		var templateSelector = this.templateIds[this.model.event_type]
 			, source = $(templateSelector).html()
-			, template = Handlebars.compile( source );
+			, template = Handlebars.compile( source )
+			, model = this.model.info
 
-		$('body').append('<div id="whiteout"</div>')
-		this.$el.html( template( this.model.info ))
+		console.log('the model is', model);
+		$('body').append('<div id="whiteout"</div>');
+		this.$el.html( template( model ));
 	},
 
 	events : {}
