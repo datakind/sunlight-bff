@@ -623,9 +623,6 @@ class LegisEvents():
                         bill["major_topic"] = ""
                         bill["minor_topic"] = ""
 
-                    # for row in self.crp_pap_crosswalk:
-                    #     if (bill['major_topic'] == row[3] and
-                    #         bill['minor_topic'] == row[4]):
                     maj = bill['major_topic']
                     min = bill['minor_topic']
                     for row in self.crp_pap_crosswalk:

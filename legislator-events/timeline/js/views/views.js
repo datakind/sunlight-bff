@@ -127,14 +127,15 @@ var LegisInfoView = Backbone.View.extend({
 
 var HeadingView = Backbone.View.extend({
 	legislators : [
-		{ label : "Chuck Grassley", value : "data/chuck_grassley.json" },
+		{ label : "Cathy McMorris Rodgers", value : "data/cathy_mcmorris_rodgers.json" },
 		{ label : "John Boehner", value : "data/john_a_boehner.json" },
-		{ label : "David Vitter", value : "data/david_vitter.json" },
-		{ label : "Jeff Sessions", value : "data/jeff_sessions.json" },
-		{ label : "Jeff Flake", value : "data/jeff_flake.json" },
+		{ label : "Eric Cantor", value : "data/eric_cantor.json" },
+		{ label : "James Lankford", value : "data/james_lankford.json" },
+		{ label : "John Cornyn", value : "data/john_cornyn.json" },
 		{ label : "Nancy Pelosi", value : "data/nancy_pelosi.json" },
-		{ label : "John McCain", value : "data/john_mccain.json" },
-		{ label : "Barbara Boxer", value : "data/barbara_boxer.json" },
+		{ label : "James Clyburn", value : "data/james_e_clyburn.json" },
+		{ label : "Kevin McCarthy", value : "data/kevin_mccarthy.json" },
+		{ label : "Steny Hoyer", value : "data/steny_h_hoyer.json" }
 	],
 
 	initialize : function() {
