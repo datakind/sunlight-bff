@@ -77,9 +77,153 @@
 		})
 
 
-function update( legisJson, view, funcName, headingModel ){
+function update( legisJson, view, funcName, headingModel, total ){
 
-	d3.json( legisJson, function(data){
+	// d3.json( legisJson, function(data){
+
+	// 	window.legislatorData = data
+	// 	window.contribs = _.filter(data.data, function(datum){ return datum.events[0].event_type === "recieved_campaign_contributions" })
+	// 		   contribs = _.map(contribs, function(ev){return ev.events[0]})
+	// 	window.committeeAssignments = _.filter(data.data, function(datum){ return datum.events[0].event_type === "joined_committee" })
+	// 		   committeeAssignments = _.map(committeeAssignments, function(ev){ return ev.events[0] })
+
+	// 	var crpCodes = legislatorData.crp_catcodes
+	// 		, catInfo = { "crpInfo" : [] }
+	// 		, sectors;
+		
+	// 	for ( key in crpCodes ) {
+	// 		catInfo.crpInfo.push({
+	// 			"industryCode" : key,
+	// 			"industryName" : crpCodes[key][0],
+	// 			"sectorCode" : key.slice(0,2),
+	// 			"sectorCoding" : crpCodes[key][2],
+	// 			"sectorName" : crpCodes[key][1]
+	// 		})
+	// 	}
+
+	// 	sectors = _.uniq(_.pluck(catInfo.crpInfo, "sectorName"))
+	// 	sectors = _.map(sectors, function(sector){ 
+	// 		return _.findWhere(catInfo.crpInfo, {sectorName: sector});
+	// 	})
+	// 	catInfo.crpInfo = sectors.sort(compare)
+
+	// 	var legis_data = {
+	// 		"name" : data.bio.name.official_full,
+	// 		"osid" : data.bio.id.opensecrets,
+	// 		"type" : capitaliseFirstLetter( data.bio.terms[data.bio.terms.length-1].type ),
+	// 		"party" : data.bio.terms[data.bio.terms.length-1].party,
+	// 		"district" : data.bio.terms[data.bio.terms.length-1].district,
+	// 		"state" : data.bio.terms[data.bio.terms.length-1].state,
+	// 		"eventTypes" : [ 
+	// 			"Sponsored Legislation", "Cosponsored Legislation", 
+	// 			"Event or Party", "Joined Committee", "Elected to Office" 
+	// 		]
+	// 	}
+
+	// 	// set the data in the models
+	// 	headingModel.set(legis_data)
+	// 	filterModel.set(catInfo)
+	// 	view[funcName]()
+
+	// 	// sort the objects by timestamp
+	// 	var sorted = data.data.sort(compare).reverse()
+	// 		values = sorted
+
+	// 	x.domain(d3.extent(sorted.map(function(d) { return d.time * 1000; })));	 
+	// 	x2.domain(x.domain());
+
+	// 	focus.append("g")
+	// 	  .attr("class", "x axis")
+	// 	  .attr("transform", "translate(0," + ( height - 50 ) + ")")	  
+	// 	  .call(xAxis);
+
+	// 	context.append("g")
+	// 	  .attr("class", "x axis")
+	// 	  .attr("transform", "translate(0," + height2 + ")")
+	// 	  .call(xAxis2);
+
+	// 	context.append("g")
+	// 	  .attr("class", "x brush")
+	// 	  .call(brush)
+	// 	.selectAll("rect")
+	// 	  .attr("y", -6)
+	// 	  .attr("height", height2 + 7);
+
+	// 	// get the min and timestamp values 
+	// 	var minTime = sorted[0].time,
+	// 		maxTime = sorted[sorted.length - 1].time
+
+	// 	// create dates from the min and max timestamps
+	// 	var startDate = new Date(minTime * 1000),
+	// 		endDate = new Date(maxTime * 1000)
+
+	// 	// select the events elements, append legis event data
+	// 	// and translate element based on time
+	// 	var event_ = focus.selectAll(".event")
+	// 		.data(sorted)
+	// 	  .enter().append('svg:g')
+	// 	  	.attr('class', 'event')	
+	// 	  	.attr("transform", function(d) { return "translate(" + x(d.time * 1000) + ",75)"; })
+
+	// 	addContextContribution( values )
+	// 	addContextBills( values )
+	// 	addContextCosponsored( values )
+	// 	addContextSpeeches( values )
+	// 	addContextVotes( values )
+	// 	addContextCommittee()
+
+	// })
+
+	var w = 100,
+	    h = 100,
+	    twoPi = 2 * Math.PI,
+	    progress = 0,
+	    formatPercent = d3.format(".0%");
+	 
+	var arc = d3.svg.arc()
+	    .startAngle(0)
+	    .innerRadius(36)
+	    .outerRadius(48);
+
+	 var wHeight = window.innerHeight
+	 	, wWidth = window.innerWidth;
+
+	var meter = svg.append("g")
+	    .attr("class", "progress-meter")
+	 	.attr("transform", "translate(" + wWidth / 2  + "," + 550 + ")");
+
+	meter.append("path")
+	    .attr("class", "background")
+	    .attr("d", arc.endAngle(twoPi));
+	 
+	var foreground = meter.append("path")
+	    .attr("class", "foreground");
+	 
+	var text = meter.append("text")
+	    .attr("text-anchor", "middle")
+	    .attr("dy", ".35em");
+
+	var progress = 0;
+	console.log('the total is', total)
+	d3.json(legisJson)
+	.on('progress', function(){
+	  console.log('total size is', d3.event.loaded)
+      var i = d3.interpolate(progress, d3.event.loaded / total);
+      d3.transition().tween('progress', function() {
+        return function(t) {
+          progress = i(t);
+          foreground.attr("d", arc.endAngle(twoPi * progress));
+          text.text(formatPercent(progress));
+          console.log('i should be fucking firing')
+        };
+      });
+	}).get(function(err, data){
+		$('#top_bar').css({'z-index' : '1'});
+		meter.transition()
+			.attr("transform", "translate(" + wWidth / 2  + "," + wHeight / 2 + ")")
+			.delay(3000)
+			.style('fill-opacity', 0)
+			.remove();
 
 		window.legislatorData = data
 		window.contribs = _.filter(data.data, function(datum){ return datum.events[0].event_type === "recieved_campaign_contributions" })
@@ -170,8 +314,7 @@ function update( legisJson, view, funcName, headingModel ){
 		addContextCosponsored( values )
 		addContextSpeeches( values )
 		addContextVotes( values )
-		addContextCommittee()
-
+		addContextCommittee()		
 	})
 
 }

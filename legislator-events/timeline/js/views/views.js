@@ -138,6 +138,15 @@ var HeadingView = Backbone.View.extend({
 		{ label : "Steny Hoyer", value : "data/steny_h_hoyer.json" }
 	],
 
+	fileSizes : {
+		"data/cathy_mcmorris_rodgers.json" : 22062533,
+		"data/john_a_boehner.json" : 42810525,
+		"data/john_cornyn.json" : 18321982,
+		"data/nancy_pelosi.json" : 40887172,
+		"data/kevin_mccarthy.json" : 21382668,
+		"data/steny_h_hoyer.json" : 58230870
+	},
+
 	initialize : function() {
 		var self = this
 
@@ -145,11 +154,14 @@ var HeadingView = Backbone.View.extend({
 		this.$el.find('input').autocomplete({
 			source : this.legislators,
 			select : function( ev, ui ) {
+				var legislator = ui.item.value
+					, fileSize = self.fileSizes[legislator];
 				ev.preventDefault()
 				$('#legislator_input').val( ui.item.label )
+				$('#top_bar').css({'z-index' : '-1'});
 				focus.selectAll('g').remove()
 				context.selectAll('g').remove()
-				update( ui.item.value, self, "toggleExpansion", self.model )
+				update( ui.item.value, self, "toggleExpansion", self.model, fileSize )
 			},
 		    focus: function( ev, ui) {
 		        ev.preventDefault();
