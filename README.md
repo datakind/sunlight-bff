@@ -21,8 +21,8 @@ This does two things: 1) creates a json object with info about all of the
 actions taken by, or events relating to, a given legislator and 2) visualizes 
 those actions and events on an interactive timeline.
 
-The CLI is inspired by https://github.com/unitedstates/congress.  To see the list of
-available senators:
+The CLI is inspired by https://github.com/unitedstates/congress.
+To see the list of available senators:
 
 ```bash
 ./run list-legislators --chamber=senate

@@ -214,7 +214,6 @@ function update( legisJson, view, funcName, headingModel, total ){
           progress = i(t);
           foreground.attr("d", arc.endAngle(twoPi * progress));
           text.text(formatPercent(progress));
-          console.log('i should be fucking firing')
         };
       });
 	}).get(function(err, data){
@@ -597,7 +596,7 @@ function addBills( data ){
 	     })
 
 	event_.on('mouseover', function(d){
-		console.log(d)
+		console.log( JSON.stringify(d));
 
 		var el = d3.select(this),
 			templateData = templateId(d),
@@ -694,7 +693,9 @@ function addCosponsored( data ) {
 	     })
 
 	event_.on('mouseover', function(d){
-		console.log(d);
+		
+		console.log( JSON.stringify(d));
+
 		var el = d3.select(this)
 			, templateData = templateId(d)
 			, eventId = '#' + d.event_id
@@ -793,7 +794,7 @@ function addSpeeches( data ){
 
 	event_.on('mouseover', function(d){
 
-		console.log(d);
+		console.log(JSON.stringify(d));
 
 		var el = d3.select(this),
 			el_data = d3.select(this.parentNode).data()[0]
@@ -1005,6 +1006,8 @@ function addCommittees(){
 		.style("stroke-width", 10)
 		.style("stroke", "yellow")
 		.on('mouseover', function(d){
+
+			console.log(JSON.stringify(d))
 
 			var el = d3.select(this),
 				el_data = d3.select(this.parentNode).data()[0]
