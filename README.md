@@ -4,8 +4,8 @@ influence of money in politics.
 
 Wiki
 ====
-If you want to contribute to this project, you should join the wiki at
-http://datakind.org/mediawiki-1.19.0/index.php?title=Sunlight_Best_Friends
+Information about the project, as well as code documentation
+can be found [here](https://github.com/datakind/sunlight-bff/wiki) 
 
 Components
 ==========
