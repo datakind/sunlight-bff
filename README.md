@@ -4,14 +4,15 @@ influence of money in politics.
 
 Wiki
 ====
-Information about the project, as well as code documentation
-can be found [here](https://github.com/datakind/sunlight-bff/wiki) 
+Information about the project, api documentation, and data documentation
+can be found at the [project wiki](https://github.com/datakind/sunlight-bff/wiki).  
+The wiki serves as the knowledge repository of the project.  Feel free to add or elaborate
+on the information contained therein.   
 
 Components
 ==========
 
-This describes the various components of the utilities. Currently there are
-very few. You should add some!!!!!
+Below is information about the various components of the utilities.
 
 Legislation (legis)
 ------------
