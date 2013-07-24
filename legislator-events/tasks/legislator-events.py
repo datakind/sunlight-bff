@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import subprocess
 import requests
 import yaml
 import time
@@ -491,7 +492,7 @@ class LegisEvents():
                     catcode = contribution["contributor_category"].encode('utf-8')            
                     try: 
                         contribution["contributor_category_name"] = d[catcode][0]
-                        contribution["contributor_category_industry"] = d[catcode][1]`
+                        contribution["contributor_category_industry"] = d[catcode][1]
                         contribution["contributor_category_order"] = d[catcode][2]
                     except:
                         contribution["contributor_category_name"] = ""
@@ -801,7 +802,7 @@ def run(options):
         "crp_catcodes" : legis.crp_catcodes
     }
 
-    filename = './data/%s.json' % legis.legis_name.replace(" ", "_")
+    filename = './timeline/data/%s.json' % legis.legis_name.replace(" ", "_")
     
     with IO.open(filename, 'wb') as outfile:
       json.dump(final_dict, outfile)
