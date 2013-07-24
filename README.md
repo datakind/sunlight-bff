@@ -22,6 +22,14 @@ actions taken by, or events relating to, a given legislator and 2) visualizes
 those actions and events on an interactive timeline.
 
 The CLI is inspired by https://github.com/unitedstates/congress.
+Setup
+
+```bash
+cd legislator-events
+cp config.example.py config.py
+```
+Add your Sunlight API key
+
 To see the list of available senators:
 
 ```bash

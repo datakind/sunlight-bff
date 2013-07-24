@@ -4,3 +4,4 @@ legislator-events/data/
 legislator-events/cached/
 legislator-events/timeline/data
 legislator-events/tasks/temp_contrib.py
+legislator-events/config.py
