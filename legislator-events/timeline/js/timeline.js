@@ -204,10 +204,10 @@ function update( legisJson, view, funcName, headingModel, total ){
 	    .attr("dy", ".35em");
 
 	var progress = 0;
-	console.log('the total is', total)
+	
 	d3.json(legisJson)
 	.on('progress', function(){
-	  console.log('total size is', d3.event.loaded)
+	  
       var i = d3.interpolate(progress, d3.event.loaded / total);
       d3.transition().tween('progress', function() {
         return function(t) {
@@ -409,7 +409,7 @@ function brushed() {
 				if ( data.info.hasOwnProperty('contributor_category') && 
 					 data.info.contributor_category !== undefined ){
 					if ( data.info["contributor_category"].slice(0,2) === attrVal ){
-						console.log("got something connected", el)
+						
 						el.classed('connected', true)						
 					} else {
 						el.classed('not-connected', true)
@@ -418,7 +418,7 @@ function brushed() {
 				else if ( data.info.hasOwnProperty('crp_catcode') && 
 					 data.info.crp_catcode !== undefined ){
 					if ( data.info["crp_catcode"].slice(0,2) === attrVal ){
-						console.log("got something connected", el)
+						
 						el.classed('connected', true)
 
 					} else {
@@ -474,7 +474,7 @@ function addContributions( data ){
       })
       .style("stroke", "green")
 		.on('mouseover', function(d){
-			console.log(d)
+			
 			var el = d3.select(this),
 				templateData = templateId(d),
 				eventId = '#' + d.event_id,
@@ -596,7 +596,7 @@ function addBills( data ){
 	     })
 
 	event_.on('mouseover', function(d){
-		console.log( JSON.stringify(d));
+		
 
 		var el = d3.select(this),
 			templateData = templateId(d),
@@ -694,7 +694,7 @@ function addCosponsored( data ) {
 
 	event_.on('mouseover', function(d){
 		
-		console.log( JSON.stringify(d));
+		
 
 		var el = d3.select(this)
 			, templateData = templateId(d)
@@ -794,7 +794,7 @@ function addSpeeches( data ){
 
 	event_.on('mouseover', function(d){
 
-		console.log(JSON.stringify(d));
+		
 
 		var el = d3.select(this),
 			el_data = d3.select(this.parentNode).data()[0]
@@ -905,7 +905,7 @@ function addVotes( data ){
 	    })
 
 	event_.on('mouseover', function(d){
-		console.log(d)
+		
 
 		var el = d3.select(this)
 			, templateData = templateId(d, legislatorData.bio.id.bioguide)
@@ -1007,7 +1007,7 @@ function addCommittees(){
 		.style("stroke", "yellow")
 		.on('mouseover', function(d){
 
-			console.log(JSON.stringify(d))
+			
 
 			var el = d3.select(this),
 				el_data = d3.select(this.parentNode).data()[0]
@@ -1067,7 +1067,7 @@ function addContextBills( data ){
 	         return "rotate(-135)" 
 	     })
 		.on('mouseover', function(d){
-			console.log("the d is d", d)
+			
 		})
 
 } 
@@ -1093,7 +1093,7 @@ function addContextCosponsored ( data ){
 	         return "rotate(-135)" 
 	     })
 		.on('mouseover', function(d){
-			console.log("the d is d", d)
+			
 		})
 }
 
@@ -1120,7 +1120,7 @@ function addContextSpeeches( data ){
 	     })
 
 	event_.on('mouseover', function(d){
-		console.log("the speech data is", d)
+		
 	})
 
 }
@@ -1148,7 +1148,7 @@ function addContextVotes( data ){
 	     })
 
 	event_.on('mouseover', function(d){
-		console.log("the speech data is", d)
+		
 	})
 
 }
@@ -1227,7 +1227,7 @@ function toTitleCase( str ) {
 // data from event dom element should be sufficient 
 function templateId ( d, bioguide ){
 	var data
-	// console.log("incoming data is", d)
+	// 
 	switch(d.event) {
 		case "sponsored legislation":
 			data = {
@@ -1324,7 +1324,7 @@ function fixContributorName( name ){
 
 	first = split[1].charAt(0).toUpperCase() + split[1].slice(1);
 	last = split[0].charAt(0).toUpperCase() + split[0].slice(1);
-	console.log(last.search(/,/g, ""));
+	
 	last.replace(/,/g, "");
 
 	return first + ' ' + last;
@@ -1435,7 +1435,7 @@ function lowerUnderToUpperSpace( string ){
 
 
 Handlebars.registerHelper('formatDate', function(v){
-    console.log("rounding this mother", v)
+    
     var number = round(v)
     return number
 })

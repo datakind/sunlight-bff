@@ -15,8 +15,9 @@ import dateutil.parser as dup
 from pandas import *
 
 class LegisEvents():
-    """ a class for building a json object containing events
-        and actions associated with a given legislator """
+    """ a class for building a json object containing events,
+        legislative actions, and influence (money, etc) 
+        related to a associated with a given legislator """
 
     def __init__(self, options):
         self.legis_list = []
@@ -45,23 +46,25 @@ class LegisEvents():
         }
 
         f = open('cached/crp_pap_crosswalk.csv')
-        self.crp_pap_crosswalk = [row for row in csv.reader(f, delimiter='|')]
-                                                
+        self.crp_pap_crosswalk = [row for row in csv.reader(f, delimiter='|')]                                             
+        
         pap_bill_info = csv.reader(open('cached/bills93-111.csv', 'rb'), 
                                         delimiter="|")
         pap_bills = [row for row in pap_bill_info]
         self.bill_topic_dict = dict( ( "%s-%s-%s" % (row[7].encode('utf-8'), 
-                                    row[3].encode('utf-8'), row[2].encode('utf-8')),
-                                    [row[10], row[11]] ) for row in pap_bills )
+                                    row[3].encode('utf-8'), 
+                                    row[2].encode('utf-8')),
+                                    [row[10], row[11]] ) for row in pap_bills)
 
         # create data file if it doesn't exist
         if not os.path.exists('data'):
             os.makedirs('data')
 
-        print "add biographical data from https://github.com/unitedstates/congress-legislators"
+        print """add biographical data from 
+            https://github.com/unitedstates/congress-legislators"""
 
-        # creates the current legislators yaml and cached folder 
-        # if they don't already exist.
+        # creates the current legislators yaml and 
+        # cached folder if they don't already exist.        
         if not os.path.exists('cached/legislators-current.yaml'):
             #create cached file if it doesn't exist
             if not os.path.exists('cached'):
@@ -88,13 +91,14 @@ class LegisEvents():
 
         try:
             self.legislator["name"]
-            # print self.legislator["id"]
         except Exception:
-            print ('Sorry, not a recognized legislator.  Please'
-                    ' try ./run list-legislators to see available legislators')
+            print ('Sorry, not a recognized legislator.  Please try '
+                    './run list-legislators to see available legislators')
 
 
     def add_birthday(self):
+        """ add selected legislator's birthday to the events object """
+
         t = str(int(time.mktime(
             time.strptime(self.legislator["bio"]["birthday"], '%Y-%m-%d'))))
         self.legislator["bio"].update(self.legislator["name"])
@@ -109,6 +113,7 @@ class LegisEvents():
 
 
     def add_terms(self):
+        """ add selected legislators terms to the events object"""
         for term in self.legislator["terms"][:-1]:
             t = str(int(time.mktime(
                 time.strptime(term["start"], '%Y-%m-%d'))))
@@ -123,10 +128,11 @@ class LegisEvents():
 
 
     def add_sponsored_bills(self):
+        """ add selected legislator's cosponsored legislation """
         print "adding sponsored legislation from Govtrack.us api"
         bills = []
         pap_key = None
-        #fetch sponosred bills ADD CACHING!
+
         legis_id = self.legislator["id"]["govtrack"]
         sponsored_url = ('http://www.govtrack.us/api/v2/bill?sponsor=%s'
                          '&limit=600') % legis_id
@@ -138,9 +144,11 @@ class LegisEvents():
             #add the crp_apa crosswalk attributes to the bill object
             bill = dict(crp_dict.items() + bill.items())
             if bill["bill_type"] == "house_bill":
-                pap_key = "%s-HR-%s" % (str(bill["congress"]), str(bill["number"]))
+                pap_key = "%s-HR-%s" % (str(bill["congress"]), 
+                                        str(bill["number"]))
             elif bill["bill_type"] == "senate_bill":
-                pap_key = "%s-S-%s" % (str(bill["congress"]), str(bill["number"]))
+                pap_key = "%s-S-%s" % (str(bill["congress"]), 
+                                       str(bill["number"]))
          
             try:
                 bill["major_topic"] = self.bill_topic_dict[pap_key][0]
@@ -153,8 +161,8 @@ class LegisEvents():
             maj = bill['major_topic']
             min = bill['minor_topic']
             for row in self.crp_pap_crosswalk:
-                if pap_topic_subtopic([maj, min], [row[3], row[4], row[6], row[7], row[8]]):
-                    # print "got a crp industry"
+                if pap_topic_subtopic([maj, min], 
+                   [row[3], row[4], row[6], row[7], row[8]]):
                     bill['crp_catcode'] = row[0]
                     bill['crp_catname'] = row[1]
                     bill['crp_description'] = row[2]
@@ -181,11 +189,13 @@ class LegisEvents():
             bills.append(bill)
 
         bills = [ prepBills(bill) for bill in bills]
-        filtered = dict( (key, list(set([bill[key] for bill in bills]))) for key in bills[0].keys() )
+        filtered = dict((key, list(set([bill[key] for bill in bills]))) 
+                        for key in bills[0].keys())
         self.event_attributes["sponsored_legislation"] = filtered
 
 
     def add_parties(self):
+        """ add selected legislator's fundraising parties and events """
         #fetch parties ADD CACHING!
         if hasattr(self.legislator['id'], 'opensecrets'):
             print "fetching parties"
@@ -211,6 +221,7 @@ class LegisEvents():
 
 
     def add_cosponsored_bills(self):
+        """ add selected legilsator's cosponsored legislation"""
         print "adding cosponsored bills from Sunlight Congress api"
         cosponsored_bills = []
         pap_key = None
@@ -289,6 +300,7 @@ class LegisEvents():
 
 
     def add_committee_memberships(self):
+        """ add selected legsilator's committee memberships"""
         print "adding committee memberships from Charles Stewart committee data"
         # GIST MAPPING CURRENT MEMBERS OF CONGRESS' ICPSR NO'S TO
         # BIOGUIDE IDS https://gist.github.com/konklone/1642406        
@@ -450,10 +462,8 @@ class LegisEvents():
 
 
     def add_campaign_contributions(self):
-        """hit the influence explorer api"""
-
+        """add selected legislator's campaign contributiosn recieved"""
         print "adding campaign contribution data from Sunlight Influence Explorer api"
-
         contributions = []
         contribution_events = []
         legis_cycles = []
@@ -481,7 +491,7 @@ class LegisEvents():
                     catcode = contribution["contributor_category"].encode('utf-8')            
                     try: 
                         contribution["contributor_category_name"] = d[catcode][0]
-                        contribution["contributor_category_industry"] = d[catcode][1]
+                        contribution["contributor_category_industry"] = d[catcode][1]`
                         contribution["contributor_category_order"] = d[catcode][2]
                     except:
                         contribution["contributor_category_name"] = ""
@@ -503,7 +513,7 @@ class LegisEvents():
                 except:
                     print "somethings wong with this thing"
 
-        #REFACTOR!!!!!
+        #REFACTOR!
         my_string = [ str(dt.datetime.fromtimestamp(int(c["time"])).month) + "_" + str(dt.datetime.fromtimestamp(int(c["time"])).year) for c in contribution_events ]
         unique_month_year_string = list(set(my_string))
 
@@ -580,6 +590,7 @@ class LegisEvents():
         #http://www.opensecrets.org/MyOS/download.php?f=Lobby.zip
 
     def add_speeches(self):
+        """ add selected legislator's floor speeches"""
         print "adding speech data from Sunlight Capitol Words api"
         speeches = []
         #make initial request to get number of cosponsored bills
@@ -659,6 +670,7 @@ class LegisEvents():
         # self.event_attributes["speeches"] = filtered
 
     def add_votes(self):
+        """ add selected legilsator's votes cast"""
         print "adding vote data from Sunlight Congress api"
         votes = []
         #make initial request to get number of cosponsored bills
@@ -772,8 +784,8 @@ def run(options):
     unique_times = list(set(times))
     events_list = []
 
+    # order events by timestamp
     print "ordering events"
-
     for time in unique_times:
         time_list = []        
         for event in legis.legis_list:            
@@ -816,42 +828,6 @@ def prepCosponsored(bill):
 
     if hasattr(bill, "last_version"):
         del bill["last_version"]
-
-    # if hasattr(bill, "history"):
-    #     del bill["history"]
-    # if hasattr(bill, "related_bill_ids"):        
-    #     del bill["related_bill_ids"]
-    # if hasattr(bill, "urls"):        
-    #     del bill["urls"]
-    # if hasattr(bill, "committee_ids"):
-    #     del bill["committee_ids"]
-    # if hasattr(bill, "enacted_as"):        
-    #     del bill["enacted_as"]
-
-    # if hasattr(bill, "last_version"):
-    #     bill["xml"] = bill["last_version"]["urls"]["xml"]
-    #     bill["html"] = bill["last_version"]["urls"]["html"]
-    #     bill["pdf"] = bill["last_version"]["urls"]["pdf"]
-    #     bill["version_name"] = bill["last_version"]["version_name"]
-    #     del bill["last_version"]
-
-    # if hasattr(bill, "history"):    
-    #     bill["active"] = bill["history"]["active"]
-    #     bill["awaiting_signature"] = bill["history"]["awaiting_signature"]
-    #     bill["enacted"] = bill["history"]["enacted"]
-    #     bill["vetoed"] = bill["history"]["vetoed"]
-    #     del bill["history"]
-
-    # if hasattr(bill, "related_bill_ids"):
-    #     del bill["related_bill_ids"]
-
-    # if hasattr(bill, "urls"):
-    #     bill["xml"] = bill["last_version"]["urls"]["xml"]
-    #     bill["html"] = bill["last_version"]["urls"]["html"]
-    #     bill["pdf"] = bill["last_version"]["urls"]["pdf"]
-    #     del bill["urls"]
-
-    # del bill["committee_ids"]
 
     return bill
 
