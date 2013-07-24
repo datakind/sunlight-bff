@@ -4,14 +4,48 @@ influence of money in politics.
 
 Wiki
 ====
-If you want to contribute to this project, you should join the wiki at
-http://datakind.org/mediawiki-1.19.0/index.php?title=Sunlight_Best_Friends
+Information about the project, api documentation, and data documentation
+can be found at the [project wiki](https://github.com/datakind/sunlight-bff/wiki).  
+The wiki serves as the knowledge repository of the project.  Feel free to add or elaborate
+on the information contained therein.   
 
 Components
 ==========
 
-This describes the various components of the utilities. Currently there are
-very few. You should add some!!!!!
+Below is information about the various components of the utilities.
+
+Legislator Events
+------------
+
+This does two things: 1) creates a json object with info about all of the 
+actions taken by, or events relating to, a given legislator and 2) visualizes 
+those actions and events on an interactive timeline.
+
+The CLI is inspired by https://github.com/unitedstates/congress.
+To see the list of available senators:
+
+```bash
+./run list-legislators --chamber=senate
+```
+Available representatives can be listed by passing 'house' to the chamber flag.
+Both chambers will be listed if one or the other is not specified.
+
+To see the list of available events/actions to include in the output object:
+
+```bash
+./run list-events
+```
+
+To generate the json for a given legislator:
+
+```bash
+./run legislator-events --legislator="John A. Boehner"
+```
+This command will create a data folder to store the output json (and subsequent output files)
+as well as a cached folder for reusable data files that aren't output files themselves. 
+
+Note: the legislator names are the full official names listed by the list-legislators task.  This
+is usually First Last, but sometimes names deviate.
 
 Legislation (legis)
 ------------
@@ -54,38 +88,5 @@ For the fiscal year 2012, $10,000,0000.
 but have different years and values. This is an artifact of the fact that
 Congress sets the budget and that this is the standard phrasing for budget
 bills and I sha only _forthefiscalyear_.
-
-Legislator Events
-------------
-
-This does two things: 1) creates a json object with info about all of the 
-actions taken by, or events relating to, a given legislator and 2) visualizes 
-those actions and events on an interactive timeline.
-
-The CLI is inspired by https://github.com/unitedstates/congress.  To see the list of
-available senators:
-
-```bash
-./run list-legislators --chamber=senate
-```
-Available representatives can be listed by passing 'house' to the chamber flag.
-Both chambers will be listed if one or the other is not specified.
-
-To see the list of available events/actions to include in the output object:
-
-```bash
-./run list-events
-```
-
-To generate the json for a given legislator:
-
-```bash
-./run legislator-events --legislator="John A. Boehner"
-```
-This command will create a data folder to store the output json (and subsequent output files)
-as well as a cached folder for reusable data files that aren't output files themselves. 
-
-Note: the legislator names are the full official names listed by the list-legislators task.  This
-is usually First Last, but sometimes names deviate.   
  
 
