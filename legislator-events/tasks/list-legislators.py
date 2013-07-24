@@ -38,18 +38,17 @@ def list_legislators(options):
 		elif l["terms"][-1]["type"] == "rep":
 			reps.append(l["name"]["official_full"])
 
-	if options["chamber"] == "senate":
-		print "SENATORS:"
-		for sen in sens:
-			print sen
-
-	elif options["chamber"] == "house":
-		print "REPRESENTATIVES:"
-		for rep in reps:
-			print rep
-
+	if hasattr(options, "champber"):
+		if options["chamber"] == "senate":
+			print "SENATORS:"
+			for sen in sens:
+				print sen
+		elif options["chamber"] == "house":
+			print "REPRESENTATIVES:"
+			for rep in reps:
+				print rep
 	else:
-		print "the options are %r" % options
+		print "No chamber specificed.  Listing legislators from both."
 		print "SENATORS:"
 		for sen in sens:
 			print sen
