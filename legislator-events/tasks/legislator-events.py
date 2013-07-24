@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import subprocess
+from config import apikey
 import requests
 import yaml
 import time
@@ -20,7 +20,8 @@ class LegisEvents():
         legislative actions, and influence (money, etc) 
         related to a associated with a given legislator """
 
-    def __init__(self, options):
+    def __init__(self, options, apikey):
+        self.apikey = apikey
         self.legis_list = []
         self.legis_name = options["legislator"].lower()
         self.legislator = None
@@ -202,8 +203,7 @@ class LegisEvents():
             print "fetching parties"
             parties_url = ('http://politicalpartytime.org/api/v1/event/'
                            '?beneficiaries__crp_id=%s&format=json&apikey='
-                           '7ed8089422bd4022bb9c236062377'
-                           'c5b' ) % self.legislator['id']['opensecrets']
+                           '%s') % (self.legislator['id']['opensecrets'], self.apikey)
             p = requests.get(parties_url)
             self.parties = p.json()
 
@@ -229,8 +229,7 @@ class LegisEvents():
         #make initial request to get number of cosponsored bills
         cosponsor_url = ('http://congress.api.sunlightfoundation.com/'
                          'bills?cosponsor_ids__all=%s&per_page=50'
-                         '&apikey=7ed8089422bd4022bb9c236062377'
-                         'c5b') % self.legislator['id']['bioguide']
+                         '&apikey=%s') % (self.legislator['id']['bioguide'], self.apikey)
         res = requests.get(cosponsor_url)
         total_pages = (res.json()["count"]/50) + 1
         page = 2
@@ -242,9 +241,8 @@ class LegisEvents():
         while page <= total_pages:
             cosponsor_url = ('http://congress.api.sunlightfoundation.com/'
                              'bills?cosponsor_ids__all=%s&per_page=50'
-                             '&page=%s&apikey='
-                             '7ed8089422bd4022bb9c236062377c5b'
-                             ) % (self.legislator['id']['bioguide'], page)
+                             '&page=%s&apikey=%s'
+                             ) % (self.legislator['id']['bioguide'], page, self.apikey)
             res = requests.get(cosponsor_url)
             for result in res.json()["results"]:
                 cosponsored_bills.append(result)
@@ -597,8 +595,7 @@ class LegisEvents():
         #make initial request to get number of cosponsored bills
         speeches_url = ('http://capitolwords.org/api/1/text.json?'
                         'bioguide_id=%s&per_page=50'
-                        '&apikey=7ed8089422bd4022bb9c236062377'
-                        'c5b') % self.legislator['id']['bioguide']
+                        '&apikey=%s') % (self.legislator['id']['bioguide'], self.apikey)
 
         res = requests.get(speeches_url)
         total_pages = (res.json()["num_found"]/50) + 1
@@ -610,8 +607,7 @@ class LegisEvents():
         while page <= total_pages:
             speeches_url = ('http://capitolwords.org/api/1/text.json?'
                         'bioguide_id=%s&per_page=50&page=%s'
-                        '&apikey=7ed8089422bd4022bb9c236062377'
-                        'c5b') % (self.legislator['id']['bioguide'], page)
+                        '&apikey=%s') % (self.legislator['id']['bioguide'], page, self.apikey)
             res = requests.get(speeches_url)
             for result in res.json()["results"]:
                 speeches.append(result)
@@ -692,8 +688,7 @@ class LegisEvents():
             # print "adding votes"
             votes_url = ('http://congress.api.sunlightfoundation.com'
                          '/votes?&fields=bill,voters.%s,voted_at&per_page=50'
-                         '&page=%s&apikey=7ed8089422bd4022bb9c2360623'
-                         '77c5b') % (self.legislator['id']['bioguide'], page)
+                         '&page=%s&apikey=%s') % (self.legislator['id']['bioguide'], page, self.apikey)
 
             res = requests.get(votes_url)
             for result in res.json()["results"]:
@@ -778,7 +773,7 @@ class LegisEvents():
 def run(options):
     print "building json for %s" % options["legislator"]
 
-    legis = LegisEvents(options)
+    legis = LegisEvents(options, apikey)
     legis.create_object()
 
     times = [ obj["time"] for obj in legis.legis_list ]
