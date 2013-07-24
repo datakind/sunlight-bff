@@ -55,6 +55,15 @@ as well as a cached folder for reusable data files that aren't output files them
 Note: the legislator names are the full official names listed by the list-legislators task.  This
 is usually First Last, but sometimes names deviate.
 
+To see the timeline:
+
+```bash
+cd legislator-events/timeline
+python -m SimpleHTTPServer 8000 # d3 xhr cross origin requests are only supported for HTTP.
+```
+
+Open a browser and got to http://localhost:8000
+
 Legislation (legis)
 ------------
 
